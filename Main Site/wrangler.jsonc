@@ -1,0 +1,15 @@
+{
+  "name": "ttc-main-site",
+  "compatibility_date": "2026-05-01",
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash"
+  },
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true
+    }
+  }
+}
