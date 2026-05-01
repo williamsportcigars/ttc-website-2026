@@ -1,8 +1,10 @@
 {
   "name": "ttc-main-site",
+  "main": "index.js",
   "compatibility_date": "2026-05-01",
   "assets": {
-    "directory": "./",
-    "binding": "ASSETS"
+    "directory": ".",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
   }
 }
