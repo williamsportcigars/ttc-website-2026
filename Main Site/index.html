@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Tobacco Center | Boutique Cigar Lounge | Williamsport, PA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #c9a84c; /* Gold/Brass */
+            --bg: #1a1a1a;
+            --text: #e0e0e0;
+            --accent: #2c2c2c;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Garamond', serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+        nav {
+            background: rgba(0,0,0,0.9);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav ul { list-style: none; display: flex; margin: 0; }
+        nav ul li { margin-left: 20px; }
+        nav a { color: var(--text); text-decoration: none; text-transform: uppercase; font-size: 0.9rem; }
+        nav a:hover { color: var(--primary); }
+
+        .hero {
+            padding: 100px 20px;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1513106580661-8d234c06208a?auto=format&fit=crop&q=80');
+            background-size: cover;
+            border-bottom: 5px solid var(--primary);
+        }
+        .hero h1 { font-size: 3.5rem; color: var(--primary); margin-bottom: 0; }
+        .hero p { font-style: italic; font-size: 1.2rem; }
+
+        .section { padding: 60px 20px; max-width: 1000px; margin: auto; }
+        h2 { color: var(--primary); border-bottom: 1px solid var(--primary); padding-bottom: 10px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: var(--accent); padding: 20px; border-radius: 5px; border-left: 4px solid var(--primary); }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: black;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            border-radius: 3px;
+        }
+        .portal-link {
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+        }
+
+        /* Age Verification Overlay */
+        #age-gate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); z-index: 9999; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+        }
+
+        footer { text-align: center; padding: 40px; font-size: 0.8rem; border-top: 1px solid var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div id="age-gate">
+        <h1>THE TOBACCO CENTER</h1>
+        <p>YOU MUST BE 21 OR OLDER TO ENTER</p>
+        <div>
+            <button class="btn" onclick="document.getElementById('age-gate').style.display='none'">YES, I AM 21+</button>
+            <a href="https://google.com" class="btn portal-link">NO, EXIT</a>
+        </div>
+    </div>
+
+    <nav>
+        <div style="font-weight: bold; color: var(--primary);">TTC</div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#cotm">COTM Club</a></li>
+            <li><a href="#events">Events</a></li>
+            <li><a href="/my-humidor" style="color: var(--primary);">Member Portal</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero" id="home">
+        <h1>The Tobacco Center</h1>
+        <p>tabacarius qui curat — The Tobacconist Who Cares</p>
+        <p>Boutique Cigars | Veteran Owned | 21 W Church St, Williamsport, PA</p>
+        <a href="/my-humidor" class="btn">View My Personal Humidor</a>
+    </div>
+
+    <div class="section" id="about">
+        <h2>49 Years of History. A New Chapter.</h2>
+        <p>The Tobacco Center has been a Williamsport institution since 1977. When Gray Hogan (Navy Veteran) and Jennifer Hogan took over in 2025, the goal was to save a piece of history and create a world-class boutique lounge.</p>
+        <div class="grid">
+            <div class="card">
+                <h3>Veteran-Owned</h3>
+                <p>Gray Hogan is a 100% P&T Service-Disabled Navy Veteran.</p>
+            </div>
+            <div class="card">
+                <h3>Boutique Only</h3>
+                <p>We feature brands like RomaCraft, Foundation, Stolen Throne, and LCA releases.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="cotm" style="background: var(--accent);">
+        <div style="max-width: 1000px; margin: auto;">
+            <h2>Cigar of the Month Club</h2>
+            <p>A monthly flight of hand-selected premium cigars curated by Gray. Includes 4-5 sticks and a 10% in-store discount.</p>
+            <a href="mailto:gray@thetobaccocenter.com" class="btn">Inquire About Membership</a>
+        </div>
+    </div>
+
+    <div class="section" id="events">
+        <h2>Lounge Events</h2>
+        <div class="grid">
+            <div class="card">
+                <h4>First Friday</h4>
+                <p>Exclusive LCA/Privada drops at noon.</p>
+            </div>
+            <div class="card">
+                <h4>Poker Night</h4>
+                <p>Monthly fellowship and smokes. 7 PM.</p>
+            </div>
+            <div class="card">
+                <h4>PA Pipe Club</h4>
+                <p>Home of the Billtown Chapter meeting.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 The Tobacco Center LLC · 21 W Church St, Williamsport, PA</p>
+        <p>(570) 322-7766 · Veteran-Owned · Woman-Owned</p>
+    </footer>
+
+</body>
+</html>

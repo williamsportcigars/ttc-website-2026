@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operations Hub — The Tobacco Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:  #001b16;
+    --forest: #033d33;
+    --jungle: #022e27;
+    --teal:   #0d6354;
+    --mint:   #259f8a;
+    --mint-pale: #e0fef8;
+    --gold:   #c9a84c;
+    --gold-light: #e8c76a;
+    --cream:  #f0fdf8;
+    --muted:  #4a8a7a;
+    --border: #0d4a3a;
+    --green:  #5ce08a;
+    --red:    #e05c5c;
+    --blue:   #5c9ce0;
+    --orange: #e09a3c;
+    --purple: #a07be0;
+    --dark:   #001b16;
+    --dark2:  #012318;
+    --dark3:  #022e27;
+    --dark4:  #033d33;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Josefin Sans', 'Inconsolata', monospace; background: var(--black); color: var(--cream); line-height: 1.6; }
+
+  .header {
+    background: linear-gradient(135deg, #001b16 0%, #022e27 100%);
+    border-bottom: 2px solid var(--mint);
+    padding: 18px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  .header-left h1 { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--mint-pale); letter-spacing: 0.02em; }
+  .header-left p { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+  .header-stats { display: flex; gap: 40px; }
+  .hstat { text-align: right; }
+  .hstat-val { font-size: 1.4rem; font-weight: 700; color: var(--gold-light); font-family: 'Playfair Display', serif; }
+  .hstat-lbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .tabs {
+    display: flex;
+    background: var(--dark2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px; gap: 2px; overflow-x: auto;
+  }
+  .tab {
+    padding: 16px 24px; font-size: 0.75rem; color: var(--muted);
+    cursor: pointer; border-bottom: 2px solid transparent;
+    text-transform: uppercase; font-weight: 600; transition: 0.2s;
+    white-space: nowrap; letter-spacing: 0.1em;
+  }
+  .tab.active { color: var(--mint); border-bottom-color: var(--mint); background: rgba(37,159,138,0.08); }
+  .tab:hover:not(.active) { color: var(--cream); }
+
+  .main { padding: 32px 40px; max-width: 1800px; margin: 0 auto; }
+  .page { display: none; } .page.active { display: block; }
+
+  .section {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+  .section-header {
+    padding: 18px 28px;
+    background: linear-gradient(135deg, var(--dark3) 0%, var(--dark2) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--mint-pale); }
+
+  .table-wrap { overflow-x: auto; max-height: 800px; overflow-y: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--dark3); color: var(--mint);
+    padding: 12px 16px; text-align: left; font-size: 0.68rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10; white-space: nowrap;
+    font-family: 'Josefin Sans', sans-serif;
+  }
+  td { padding: 13px 16px; border-bottom: 1px solid rgba(13,74,58,0.4); font-size: 0.88rem; color: var(--cream); }
+  tr:hover td { background: rgba(37,159,138,0.05); }
+
+  .btn {
+    padding: 8px 16px; border: none; border-radius: 6px;
+    font-family: 'Josefin Sans', monospace; font-weight: 600;
+    cursor: pointer; text-transform: uppercase; font-size: 0.7rem;
+    transition: 0.2s; letter-spacing: 0.08em;
+  }
+  .btn-gold { background: var(--gold); color: var(--black); }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-mint { background: var(--mint); color: var(--black); }
+  .btn-mint:hover { background: #2bb89e; }
+  .btn-blue { background: transparent; border: 1px solid var(--blue); color: var(--blue); }
+  .btn-blue:hover { background: rgba(92,156,224,0.1); }
+  .btn-red { background: transparent; border: 1px solid var(--red); color: var(--red); }
+  .btn-red:hover { background: rgba(224,92,92,0.1); }
+  .btn-green { background: transparent; border: 1px solid var(--green); color: var(--green); }
+  .btn-green:hover { background: rgba(92,224,138,0.1); }
+  .btn-sm { padding: 4px 10px; font-size: 0.62rem; }
+
+  .filter-input, .filter-select {
+    background: var(--dark3); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 12px; color: var(--cream);
+    font-family: 'Josefin Sans', monospace; outline: none; font-size: 0.82rem;
+  }
+  .filter-input { width: 200px; }
+  .filter-select { cursor: pointer; }
+  .filter-input:focus, .filter-select:focus { border-color: var(--mint); box-shadow: 0 0 0 2px rgba(37,159,138,0.15); }
+
+  /* Status badges */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .badge-delivered  { background: rgba(92,224,138,0.15); color: var(--green); border: 1px solid rgba(92,224,138,0.3); }
+  .badge-shipped    { background: rgba(92,156,224,0.15); color: var(--blue);  border: 1px solid rgba(92,156,224,0.3); }
+  .badge-ordered    { background: rgba(200,134,10,0.15);  color: var(--gold);  border: 1px solid rgba(200,134,10,0.3); }
+  .badge-confirmed  { background: rgba(224,154,60,0.15); color: var(--orange);border: 1px solid rgba(224,154,60,0.3); }
+  .badge-invoiced   { background: rgba(160,123,224,0.15);color: var(--purple);border: 1px solid rgba(160,123,224,0.3); }
+  .badge-cancelled  { background: rgba(224,92,92,0.15);  color: var(--red);   border: 1px solid rgba(224,92,92,0.3); }
+  .badge-shipping   { background: rgba(92,156,224,0.12);  color: #8ab4d4;  border: 1px solid rgba(92,156,224,0.25); }
+  .badge-tax        { background: rgba(160,123,224,0.12); color: #b89de0;  border: 1px solid rgba(160,123,224,0.25); }
+
+  /* Tracking pill */
+  .tracking-pill { font-size: 0.72rem; color: var(--muted); font-family: monospace; background: var(--dark3); padding: 2px 8px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; display: inline-block; cursor: copy; }
+  .tracking-pill:hover { color: var(--blue); }
+
+  /* Summary bar */
+  .summary-bar { display: flex; gap: 20px; padding: 20px 30px; background: var(--dark3); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .sum-item { display: flex; flex-direction: column; }
+  .sum-val { font-size: 1.4rem; font-weight: 700; color: var(--mint); font-family: 'Playfair Display', serif; }
+  .sum-lbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Vendor Cards */
+  .vendor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 20px; }
+  .vendor-card { background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; padding: 24px; border-top: 3px solid var(--mint); }
+  .vendor-card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--mint-pale); margin-bottom: 12px; font-style: italic; }
+  .v-stat { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.85rem; }
+  .v-stat-val { font-weight: 700; color: var(--gold-light); }
+  .v-bar-wrap { margin-top: 12px; background: var(--dark4); border-radius: 4px; height: 6px; overflow: hidden; }
+  .v-bar { height: 100%; background: linear-gradient(90deg, var(--teal), var(--mint)); border-radius: 4px; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--dark2); border: 1px solid var(--mint); border-radius: 12px; padding: 32px; width: 90%; max-width: 540px; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+  .modal h3 { font-family: 'Playfair Display', serif; color: var(--mint-pale); margin-bottom: 20px; font-size: 1.25rem; font-style: italic; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 0.7rem; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; letter-spacing: 0.5px; }
+  .form-input, .form-select { width: 100%; background: var(--dark3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; color: var(--cream); font-family: 'Josefin Sans',monospace; font-size: 0.88rem; outline: none; }
+  .form-input:focus, .form-select:focus { border-color: var(--mint); box-shadow: 0 0 0 2px rgba(37,159,138,0.15); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 30px; right: 30px; background: var(--dark3); border: 1px solid var(--mint); border-radius: 8px; padding: 12px 20px; color: var(--cream); font-size: 0.82rem; z-index: 999; opacity: 0; transform: translateY(20px); transition: 0.3s; pointer-events: none; font-family: 'Josefin Sans',sans-serif; letter-spacing: 0.05em; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Bulk import instructions */
+  .instructions { background: var(--dark3); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.8; }
+  .instructions code { background: var(--dark4); padding: 2px 8px; border-radius: 4px; color: var(--green); font-family: monospace; }
+  .step-num { display: inline-block; width: 22px; height: 22px; background: var(--gold); color: var(--dark); border-radius: 50%; text-align: center; line-height: 22px; font-size: 0.75rem; font-weight: 700; margin-right: 8px; }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state .icon { font-size: 3rem; margin-bottom: 15px; }
+  .empty-state p { font-size: 0.9rem; }
+
+  select option { background: var(--dark3); }
+</style>
+</head>
+<body>
+<script>
+(function() {
+  if (sessionStorage.getItem('ttc-ops-auth') === 'yes') return;
+  var pw = prompt('The Tobacco Center — Operations Hub\nEnter access code:');
+  if (pw !== '6116') {
+    document.body.innerHTML = '<div style="background:#001b16;color:#259f8a;font-family:Georgia,serif;display:flex;align-items:center;justify-content:center;height:100vh;font-size:1.1rem;letter-spacing:0.1em;">ACCESS DENIED</div>';
+    return;
+  }
+  sessionStorage.setItem('ttc-ops-auth', 'yes');
+})();
+</script>
+
+
+<div class="header" style="position:relative;overflow:hidden;">
+  <div style="position:absolute;right:0;top:0;bottom:0;width:120px;opacity:0.04;background:url('data:image/svg+xml,<svg viewBox=\"0 0 200 260\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M100 10 C65 28 20 72 18 124 C14 178 46 228 96 232 C146 236 182 188 182 134 C182 80 142 22 100 10Z\" fill=\"white\"/></svg>') no-repeat center;background-size:contain;pointer-events:none;"></div>
+  <div class="header-left">
+    <h1 style="font-style:italic;">The Tobacco Center</h1><div style="font-family:'Josefin Sans',sans-serif;font-size:0.65rem;letter-spacing:0.2em;color:var(--mint);text-transform:uppercase;margin-top:2px;">Operations Hub</div>
+    <p>Gray Hogan &nbsp;·&nbsp; The Tobacco Center &nbsp;<span id="sync-status" style="font-size:0.72rem;color:#5ce08a;margin-left:8px;"></span></p>
+  </div>
+  <div class="header-stats">
+    <div class="hstat"><div class="hstat-val" id="hs-orders">0</div><div class="hstat-lbl">Order Items</div></div>
+    <div class="hstat"><div class="hstat-val" id="hs-spend">$0</div><div class="hstat-lbl">Total Spend</div></div>
+    <div class="hstat"><div class="hstat-val" id="hs-plans">0</div><div class="hstat-lbl">Planned</div></div>
+    <div class="hstat"><div class="hstat-val" id="hs-harry" style="color:#259f8a;">0</div><div class="hstat-lbl">Harry Pending</div></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('dashboard',this)">🌿 Dashboard</div>
+  <div class="tab" onclick="showPage('orders',this)">📦 Order Log</div>
+  <div class="tab" onclick="showPage('planning',this)">📋 Planning</div>
+  <div class="tab" onclick="showPage('vendors',this)">🤝 Vendors</div>
+  <div class="tab" onclick="showPage('bulk',this)">💾 Bulk Import</div>
+  <div class="tab" onclick="showPage('harry',this)" style="color:#a07be0;">🔷 Harry</div>
+</div>
+
+<div class="main">
+
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+
+    <!-- Key metrics row -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+      <div class="section" style="margin:0;">
+        <div style="padding:24px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--mint);" id="db-orders">—</div>
+          <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Total Orders</div>
+        </div>
+      </div>
+      <div class="section" style="margin:0;">
+        <div style="padding:24px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold-light);" id="db-spend">—</div>
+          <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Total Spend</div>
+        </div>
+      </div>
+      <div class="section" style="margin:0;">
+        <div style="padding:24px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--orange);" id="db-pending">—</div>
+          <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Pending Orders</div>
+        </div>
+      </div>
+      <div class="section" style="margin:0;">
+        <div style="padding:24px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--purple);" id="db-harry">—</div>
+          <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Harry Pending</div>
+        </div>
+      </div>
+      <div class="section" style="margin:0;">
+        <div style="padding:24px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--mint);" id="db-plans">—</div>
+          <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Planned Buys</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+
+      <!-- Monthly spend chart -->
+      <div class="section">
+        <div class="section-header"><h2>Monthly Spend</h2></div>
+        <div style="padding:24px;" id="db-chart">
+          <canvas id="spend-chart" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Recent orders -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Recent Orders</h2>
+          <button class="btn btn-mint btn-sm" onclick="showPage('orders',document.querySelectorAll('.tab')[1])">View All</button>
+        </div>
+        <div class="table-wrap" style="max-height:300px;">
+          <table><thead><tr><th>Date</th><th>Brand</th><th>Status</th><th>Total</th></tr></thead>
+          <tbody id="db-recent-orders"></tbody></table>
+        </div>
+      </div>
+
+      <!-- Top vendors -->
+      <div class="section">
+        <div class="section-header"><h2>Top Vendors</h2></div>
+        <div style="padding:20px;" id="db-vendors-list"></div>
+      </div>
+
+      <!-- Outstanding orders -->
+      <div class="section">
+        <div class="section-header"><h2>Outstanding Orders</h2></div>
+        <div class="table-wrap" style="max-height:300px;">
+          <table><thead><tr><th>Date</th><th>Brand</th><th>Vendor</th><th>Status</th></tr></thead>
+          <tbody id="db-outstanding"></tbody></table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- ORDER LOG -->
+  <div class="page" id="page-orders">
+    <div class="section">
+      <div class="section-header">
+        <h2>Order History</h2>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <input type="text" id="order-search" class="filter-input" placeholder="Search brand / vendor..." oninput="renderOrders()">
+          <select id="status-filter" class="filter-select" onchange="renderOrders()">
+            <option value="">All Statuses</option>
+            <option>Delivered</option>
+            <option>Shipped</option>
+            <option>Confirmed</option>
+            <option>Ordered</option>
+            <option>Invoiced</option>
+            <option>Cancelled</option>
+          </select>
+          <select id="vendor-filter" class="filter-select" onchange="renderOrders()">
+            <option value="">All Vendors</option>
+          </select>
+          <button class="btn btn-gold btn-sm" onclick="openOrderModal()">+ Add Order</button>
+          <button class="btn btn-blue btn-sm" onclick="exportData()">⬇ Export</button>
+          <button class="btn btn-blue btn-sm" onclick="document.getElementById('imp-file').click()">⬆ Import</button>
+          <input type="file" id="imp-file" accept=".json" style="display:none" onchange="importData(this)">
+          <button class="btn btn-red btn-sm" onclick="purgeZeroOrders()">🔥 Purge $0</button>
+          <button class="btn btn-red btn-sm" onclick="clearAllOrders()">🗑 Clear All</button>
+          <button class="btn btn-green btn-sm" onclick="openReorderModal()">🔄 Reorder List</button>
+        </div>
+      </div>
+      <div id="bulk-bar" style="display:none;background:rgba(200,134,10,0.08);border-bottom:1px solid var(--border);padding:10px 20px;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span id="bulk-count" style="font-size:0.8rem;color:var(--gold-light);font-weight:700;"></span>
+        <select class="form-select" id="bulk-status" style="padding:5px 10px;font-size:0.78rem;width:130px;"><option value="">— Status —</option><option>Ordered</option><option>Confirmed</option><option>Invoiced</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option></select>
+        <input class="form-input" id="bulk-tracking" style="padding:5px 10px;font-size:0.78rem;width:170px;" placeholder="Set tracking #">
+        <input class="form-input" id="bulk-vendor" style="padding:5px 10px;font-size:0.78rem;width:130px;" placeholder="Set vendor">
+        <button class="btn btn-gold btn-sm" onclick="applyBulkEdit()">✓ Apply</button>
+        <button class="btn btn-red btn-sm" onclick="document.getElementById('bulk-bar').style.display='none';">✕</button>
+      </div>
+      <!-- Summary bar -->
+      <div class="summary-bar" id="summary-bar"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Brand / Description</th>
+              <th>Vendor</th>
+              <th>Qty</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Tracking #</th>
+              <th>Order #</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANNING -->
+  <div class="page" id="page-planning">
+    <div class="section">
+      <div class="section-header">
+        <h2>Wishlist & Strategy</h2>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-blue btn-sm" onclick="togglePlanSort()">⇅ Sort by Vendor</button>
+          <button class="btn btn-gold btn-sm" onclick="openPlanModal()">+ Add New Item</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Brand</th><th>Vendor</th><th>Qty</th><th>Estimated Total</th><th>Actions</th></tr></thead>
+          <tbody id="plans-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- VENDORS -->
+  <div class="page" id="page-vendors">
+    <div class="section">
+      <div class="section-header"><h2>Vendor Directory</h2></div>
+      <div class="vendor-grid" id="vendor-grid"></div>
+    </div>
+  </div>
+
+  <!-- BULK IMPORT -->
+  <div class="page" id="page-bulk">
+    <div class="section">
+      <div class="section-header">
+        <h2>📄 Invoice Parser</h2>
+        <span style="font-size:0.75rem;color:var(--muted);">Paste text or upload PDF — auto-extracts line items</span>
+      </div>
+      <div style="padding:20px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+          <div><label class="form-label">Vendor</label><input class="form-input" id="ai-vendor" placeholder="e.g. Warfighter Cigars"></div>
+          <div><label class="form-label">Invoice Date</label><input class="form-input" id="ai-date" type="date"></div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label class="form-label">Paste Invoice Text</label>
+          <textarea class="form-input" id="ai-invoice-text" rows="7" style="resize:vertical;line-height:1.6;font-size:0.85rem;" placeholder="Paste invoice here — works with most formats including multi-line."></textarea>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-gold" onclick="parseInvoice()">📄 Parse Text</button>
+          <button class="btn btn-blue" onclick="document.getElementById('pdf-upload').click()">📎 Upload PDF</button>
+          <input type="file" id="pdf-upload" accept=".pdf" style="display:none" onchange="parsePDF(this)">
+          <span id="ai-status" style="font-size:0.78rem;color:var(--muted);"></span>
+        </div>
+        <div id="ai-preview" style="display:none;margin-top:18px;border-top:1px solid var(--border);padding-top:16px;">
+          <div style="font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:12px;">Parsed Items — Edit if Needed</div>
+          <div class="table-wrap" style="max-height:280px;">
+            <table><thead><tr>
+              <th><input type="checkbox" checked onchange="toggleAllParsed(this)"></th>
+              <th>Product</th><th>SKU</th><th>Qty (Mine)</th><th>Harry Split</th><th>Unit Cost</th><th>Total</th>
+            </tr></thead><tbody id="ai-preview-body"></tbody></table>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+            <button class="btn btn-green" onclick="addParsedToLog()">✓ Add to Order Log</button>
+            <button class="btn btn-blue" onclick="addParsedToPlanning()">→ Add to Planning</button>
+            <button class="btn btn-red" onclick="clearInvoiceParser()">✕ Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><h2>Bulk Import — From Email Parser</h2></div>
+      <div style="padding:30px;">
+        <div class="instructions">
+          <div style="margin-bottom:12px; color:var(--gold-light); font-weight:700;">How to import your Gmail order history:</div>
+          <div><span class="step-num">1</span>Download <strong>parse_orders.py</strong> (delivered separately)</div>
+          <div><span class="step-num">2</span>Export Gmail via Google Takeout → select <strong>Mail</strong> → format: <code>.mbox</code></div>
+          <div><span class="step-num">3</span>Run: <code>python3 parse_orders.py your_gmail.mbox</code></div>
+          <div><span class="step-num">4</span>Open the generated <code>orders.json</code> file, copy all contents</div>
+          <div><span class="step-num">5</span>Paste below and click <strong>Process Import</strong></div>
+        </div>
+
+        <div style="margin-bottom:12px; font-size:0.8rem; color:var(--muted);">
+          Expected JSON format: array of objects with fields: <code>date, brand, vendor, qty, cost, status, tracking, order_num</code>
+        </div>
+        <textarea id="bulk-json-input" style="width:100%; height:350px; background:var(--dark3); border:1px solid var(--border); color:var(--green); padding:20px; font-family:monospace; font-size:0.8rem; border-radius:10px; outline:none; resize:vertical;" placeholder='Paste JSON array here...&#10;&#10;Example:&#10;[&#10;  {&#10;    "date": "2026-02-14",&#10;    "brand": "Warped Maestro",&#10;    "vendor": "Warped",&#10;    "qty": 25,&#10;    "cost": 8.40,&#10;    "status": "Delivered",&#10;    "tracking": "1Z999AA10123456784",&#10;    "order_num": "WRP-2024-0481"&#10;  }&#10;]'></textarea>
+
+        <div style="display:flex; gap:10px; margin-top:15px; align-items:center; flex-wrap:wrap;">
+          <button class="btn btn-gold" onclick="importBulkData()">🚀 Process Import</button>
+          <button class="btn btn-blue btn-sm" onclick="validateJSON()">✓ Validate JSON</button>
+          <button class="btn btn-red btn-sm" onclick="document.getElementById('bulk-json-input').value=''">Clear</button>
+          <span id="validate-msg" style="font-size:0.8rem; color:var(--muted);"></span>
+        </div>
+
+        <div style="margin-top:30px; padding-top:20px; border-top:1px solid var(--border);">
+          <div style="color:var(--gold-light); font-weight:700; margin-bottom:12px; font-size:0.9rem;">Manual Single Entry</div>
+          <p style="font-size:0.8rem; color:var(--muted); margin-bottom:15px;">Add individual orders using the "+ Add Order" button on the Order Log tab.</p>
+          <button class="btn btn-gold btn-sm" onclick="showPage('orders', document.querySelector('.tab')); openOrderModal();">+ Add Single Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT ORDER MODAL -->
+
+  <!-- ══════════ HARRY'S ORDERS PAGE ══════════ -->
+  <div class="page" id="page-harry">
+
+    <!-- Summary bar -->
+    <div class="summary-bar">
+      <div class="sum-item"><span class="sum-val" id="h-wishlist-count" style="color:#a07be0;">0</span><span class="sum-lbl">On Wishlist</span></div>
+      <div class="sum-item"><span class="sum-val" id="h-submitted-count" style="color:#e09a3c;">0</span><span class="sum-lbl">Submitted</span></div>
+      <div class="sum-item"><span class="sum-val" id="h-ordered-count" style="color:#5c9ce0;">0</span><span class="sum-lbl">On Order</span></div>
+      <div class="sum-item"><span class="sum-val" id="h-delivered-count" style="color:#5ce08a;">0</span><span class="sum-lbl">Delivered</span></div>
+      <div class="sum-item"><span class="sum-val" id="h-pt-total">$0</span><span class="sum-lbl">PT Total</span></div>
+    </div>
+
+    <!-- Harry's Wishlist (items he added, not yet submitted) -->
+    <div class="section">
+      <div class="section-header">
+        <h2 style="color:#a07be0;">⭐ Harry's Wishlist</h2>
+        <div style="font-size:0.75rem;color:var(--muted);">Items Harry added but hasn't submitted yet</div>
+      </div>
+      <div class="table-wrap">
+        <table id="h-wish-table">
+          <thead><tr>
+            <th>Product</th><th>Vendor</th><th>Qty</th><th>Est. Cost</th><th>Notes</th><th>Date</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="h-wish-body"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px;">No wishlist items</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Harry's Submitted (waiting for Gray to approve/order) -->
+    <div class="section">
+      <div class="section-header">
+        <h2 style="color:#e09a3c;">📬 Submitted — Needs Your Action</h2>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-gold btn-sm" onclick="approveAllHarry()">✓ Move All to Planning</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Product</th><th>Vendor</th><th>Qty</th><th>Est. Cost</th><th>Notes</th><th>Date</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="h-submitted-body"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px;">No submitted items</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Harry's Active Orders (items Gray moved to order log) -->
+    <div class="section">
+      <div class="section-header">
+        <h2 style="color:#5c9ce0;">📦 Harry's Active Orders</h2>
+        <div style="font-size:0.75rem;color:var(--muted);">Orders you've placed that originated from Harry</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Product</th><th>Vendor</th><th>Qty</th><th>Total</th><th>Status</th><th>Order #</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="h-orders-body"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px;">No active orders</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Passthrough tracker -->
+    <div class="section">
+      <div class="section-header">
+        <h2>🔄 PA Act 57 Passthrough</h2>
+        <button class="btn btn-blue btn-sm" onclick="openPassthroughModal()">+ Mark as Passthrough</button>
+      </div>
+      <div style="background:rgba(200,134,10,0.06);border-bottom:1px solid var(--border);padding:12px 20px;font-size:0.78rem;color:var(--muted);">
+        All transactions pass through at <strong style="color:var(--gold-light);">vendor invoice cost — no markup</strong>. Complies with Pennsylvania Act 57 Joint Purchasing Agreement.
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Product</th><th>Vendor</th><th>Qty</th><th>Invoice Cost</th><th>Total</th><th>Status</th><th>PA Act 57</th>
+          </tr></thead>
+          <tbody id="h-pt-body"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px;">No passthrough items</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- end page-harry -->
+
+  <!-- Passthrough Modal -->
+  <div class="modal-overlay" id="modal-pt">
+    <div class="modal" style="max-width:500px;">
+      <h3>🔄 Mark as PA Act 57 Passthrough</h3>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:20px;">Tag an existing order as a Harry passthrough item. This will appear in his portal.</p>
+      <div class="form-group">
+        <label class="form-label">Select Order to Tag</label>
+        <select class="form-select" id="pt-order-select"><option value="">— Select an order —</option></select>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button class="btn btn-gold" onclick="savePassthrough()">✓ Mark Passthrough</button>
+        <button class="btn btn-red" onclick="document.getElementById('modal-pt').classList.remove('open')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+<div class="modal-overlay" id="modal-order">
+  <div class="modal">
+    <h3 id="order-modal-title">Add Order</h3>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="o-date"></div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-select" id="o-status">
+          <option>Ordered</option><option>Confirmed</option><option>Invoiced</option>
+          <option>Shipped</option><option>Delivered</option><option>Cancelled</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Brand / Description</label><input class="form-input" id="o-brand" placeholder="e.g. Warped Maestro Robusto"></div>
+    <div class="form-group"><label class="form-label">Vendor</label>
+      <input class="form-input" id="o-vendor" placeholder="e.g. Warped" list="vendor-datalist">
+      <datalist id="vendor-datalist"></datalist>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Quantity</label><input class="form-input" type="number" id="o-qty" placeholder="25"></div>
+      <div class="form-group"><label class="form-label">Unit Cost ($)</label><input class="form-input" type="number" step="0.01" id="o-cost" placeholder="8.40"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Order / Invoice #</label><input class="form-input" id="o-ordernum" placeholder="e.g. WRP-2024-0481"></div>
+      <div class="form-group"><label class="form-label">Tracking #</label><input class="form-input" id="o-tracking" placeholder="e.g. 1Z999AA1..."></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Shipping ($)</label><input class="form-input" type="number" step="0.01" id="o-shipping" placeholder="0.00"></div>
+      <div class="form-group"><label class="form-label">Import Tax ($)</label><input class="form-input" type="number" step="0.01" id="o-tax" placeholder="0.00"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Customer Order (for)</label><input class="form-input" id="o-customer" placeholder="e.g. John Smith"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+      <button class="btn btn-blue" onclick="closeOrderModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveOrder()">Save Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PLAN MODAL -->
+<div class="modal-overlay" id="modal-plan">
+  <div class="modal">
+    <h3>Add Strategic Buy</h3>
+    <div class="form-group"><label class="form-label">Brand</label><input class="form-input" id="p-brand"></div>
+    <div class="form-group"><label class="form-label">Vendor</label><input class="form-input" id="p-vendor"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Quantity</label><input class="form-input" type="number" id="p-qty"></div>
+      <div class="form-group"><label class="form-label">Unit Cost ($)</label><input class="form-input" type="number" step="0.01" id="p-cost"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Customer Order (for)</label><input class="form-input" id="p-customer" placeholder="e.g. John Smith — optional"></div>
+    <div class="form-group"><label class="form-label">Notes</label><input class="form-input" id="p-notes" placeholder="Optional notes"></div>
+    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+      <button class="btn btn-blue" onclick="closePlanModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="savePlan()">Save Plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS EDIT MODAL -->
+<div class="modal-overlay" id="modal-status">
+  <div class="modal" style="max-width:380px;">
+    <h3>Update Order Status</h3>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="s-status">
+        <option>Ordered</option><option>Confirmed</option><option>Invoiced</option>
+        <option>Shipped</option><option>Delivered</option><option>Cancelled</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Tracking Number</label><input class="form-input" id="s-tracking" placeholder="Enter tracking number"></div>
+    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+      <button class="btn btn-blue" onclick="closeStatusModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveStatus()">Update</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const _SEED = [{"id": 3933, "brand": "Laudisi #3271331", "vendor": "Laudisi", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "", "tracking": "1Z9YA2750396407848", "date": "2025-12-30", "source": "gray", "passthrough": false, "notes": ""}, {"id": 6469, "brand": "Order #68055", "vendor": "Warfighter", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "68055", "tracking": "", "date": "2026-02-16", "source": "gray", "passthrough": false, "notes": ""}, {"id": 461, "brand": "Laudisi #3488059", "vendor": "Laudisi", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "", "tracking": "1Z9YA2750398180893", "date": "2026-03-30", "source": "gray", "passthrough": false, "notes": ""}, {"id": 3500, "brand": "Order #67678", "vendor": "Warfighter", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "67678", "tracking": "", "date": "2025-12-29", "source": "gray", "passthrough": false, "notes": ""}, {"id": 2928, "brand": "67861", "vendor": "Warfighter", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "", "tracking": "", "date": "2026-01-19", "source": "gray", "passthrough": false, "notes": ""}, {"id": 3548, "brand": "RoMa Craft Order #42289", "vendor": "RoMa Craft", "qty": 1, "cost": 1289.22, "status": "Delivered", "order_num": "", "tracking": "", "date": "2025-12-23", "source": "gray", "passthrough": false, "notes": ""}, {"id": 5965, "brand": "Laudisi #3161715", "vendor": "Laudisi", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "", "tracking": "1Z9YA275YW95943138", "date": "2025-11-20", "source": "gray", "passthrough": false, "notes": ""}, {"id": 4397, "brand": "HC Cigars Invoice #5306", "vendor": "HC Cigars", "qty": 1, "cost": 528.75, "status": "Delivered", "order_num": "", "tracking": "", "date": "2025-11-20", "source": "gray", "passthrough": false, "notes": ""}, {"id": 4408, "brand": "Order #67010", "vendor": "Warfighter", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "67010", "tracking": "", "date": "2025-11-07", "source": "gray", "passthrough": false, "notes": ""}, {"id": 2924, "brand": "Cigarking #9246571", "vendor": "Cigarking", "qty": 4, "cost": 104.94, "status": "Delivered", "order_num": "", "tracking": "", "date": "2026-01-19", "source": "gray", "passthrough": false, "notes": ""}, {"id": 511, "brand": "Order #68579", "vendor": "Warfighter", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "68579", "tracking": "", "date": "2026-04-06", "source": "gray", "passthrough": false, "notes": ""}, {"id": 4411, "brand": "Cigarking #9240111", "vendor": "Cigarking", "qty": 4, "cost": 104.94, "status": "Delivered", "order_num": "", "tracking": "", "date": "2025-11-08", "source": "gray", "passthrough": false, "notes": ""}, {"id": 1780, "brand": "SO1100000607", "vendor": "Warped", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "SO1100000607", "tracking": "", "date": "2026-02-26", "source": "gray", "passthrough": false, "notes": ""}, {"id": 5383, "brand": "Laudisi #3137708", "vendor": "Laudisi", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "", "tracking": "1Z9YA275YW96330342", "date": "2025-11-08", "source": "gray", "passthrough": false, "notes": ""}, {"id": 3391, "brand": "Cigarking #9253179", "vendor": "Cigarking", "qty": 2, "cost": 105.94, "status": "Delivered", "order_num": "", "tracking": "", "date": "2026-04-06", "source": "gray", "passthrough": false, "notes": ""}, {"id": 4403, "brand": "Cigarking #9240112", "vendor": "Cigarking", "qty": 1, "cost": 29.55, "status": "Delivered", "order_num": "", "tracking": "", "date": "2025-11-08", "source": "gray", "passthrough": false, "notes": ""}, {"id": 5770, "brand": "Cigarking #9235453", "vendor": "Cigarking", "qty": 2, "cost": 104.94, "status": "Delivered", "order_num": "", "tracking": "", "date": "2025-09-19", "source": "gray", "passthrough": false, "notes": ""}, {"id": 4599, "brand": "Order #67449", "vendor": "Warfighter", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "67449", "tracking": "", "date": "2025-12-08", "source": "gray", "passthrough": false, "notes": ""}, {"id": 2831, "brand": "RoMa Craft Order #42603", "vendor": "RoMa Craft", "qty": 1, "cost": 504.4, "status": "Delivered", "order_num": "", "tracking": "", "date": "2026-03-01", "source": "gray", "passthrough": false, "notes": ""}, {"id": 2372, "brand": "SH1100000396 for Order # SO1100000537", "vendor": "Warped", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "SO1100000537", "tracking": "1ZV451600394042585", "date": "2026-02-09", "source": "gray", "passthrough": false, "notes": ""}, {"id": 4778, "brand": "Laudisi #3371100", "vendor": "Laudisi", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "", "tracking": "", "date": "2026-02-17", "source": "gray", "passthrough": false, "notes": ""}, {"id": 2915, "brand": "SO1100000537", "vendor": "Warped", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "SO1100000537", "tracking": "", "date": "2026-02-09", "source": "gray", "passthrough": false, "notes": ""}, {"id": 5233, "brand": "Order #66710", "vendor": "Warfighter", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "66710", "tracking": "", "date": "2025-10-06", "source": "gray", "passthrough": false, "notes": ""}, {"id": 1710, "brand": "SH1100000449 for Order # SO1100000607", "vendor": "Warped", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "SO1100000607", "tracking": "1ZV451600397224472", "date": "2026-02-26", "source": "gray", "passthrough": false, "notes": ""}, {"id": 2832, "brand": "RoMa Craft Order #42603", "vendor": "RoMa Craft", "qty": 1, "cost": 504.4, "status": "Delivered", "order_num": "", "tracking": "", "date": "2026-02-25", "source": "gray", "passthrough": false, "notes": ""}, {"id": 2829, "brand": "RoMa Craft Order #42603", "vendor": "RoMa Craft", "qty": 1, "cost": 504.4, "status": "Delivered", "order_num": "", "tracking": "", "date": "2026-03-03", "source": "gray", "passthrough": false, "notes": ""}, {"id": 589, "brand": "Order #68708", "vendor": "Warfighter", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "68708", "tracking": "", "date": "2026-04-22", "source": "gray", "passthrough": false, "notes": ""}, {"id": 5010, "brand": "Laudisi #3105295", "vendor": "Laudisi", "qty": 1, "cost": 0, "status": "Delivered", "order_num": "", "tracking": "1Z9YA275YW92423893", "date": "2025-10-21", "source": "gray", "passthrough": false, "notes": ""}];
+let orders  = JSON.parse(localStorage.getItem('tc_orders')  || 'null') || _SEED;
+let plans   = JSON.parse(localStorage.getItem('tc_plans')   || 'null') || [];
+let vendors = JSON.parse(localStorage.getItem('tc_vendors') || 'null') || [];
+if (!vendors.length) {
+  const _sv = new Set();
+  orders.forEach(o => { if(o.vendor&&!_sv.has(o.vendor.toLowerCase())){_sv.add(o.vendor.toLowerCase());vendors.push({id:Date.now()+Math.random(),name:o.vendor});} });
+}
+localStorage.setItem('tc_orders', JSON.stringify(orders));
+localStorage.setItem('tc_plans', JSON.stringify(plans));
+localStorage.setItem('tc_vendors', JSON.stringify(vendors));
+let planSortAsc  = true;
+let editingOrderId = null;
+let statusEditId   = null;
+
+const TOBACCO_WHITELIST = ['HC Cigars','J.C. Newman','Phillips & King','Warfighter','Oveja Negra','Cigarking','Southern Draw','Altadis','Oliva','Espinosa','Drew Estate','Zander-Greg','Toscano','Karen Berger','Hooten Young','Meier & Dutch','Domain Cigars','Laudisi','Notorious','Warped','BAMF','Raices Cubanas','Rojas','Arturo Fuente','AFCC','Gurkha','LFD','Foundation','RoMa Craft','RomaCraft','Wardogs','Santa Clara','SDC','Stolen Throne'];
+
+// ── KV SYNC ──────────────────────────────────────────────────────────────────
+const _KV_URL  = 'https://ttc-ops-api.williamsportcigars.workers.dev';
+const _KV_AUTH = 'e68a8c440b39487ba55bdf9e7ef5310a';
+
+async function kvGet(key) {
+  try {
+    const r = await fetch(_KV_URL+'/'+key, {headers:{'X-TTC-Auth':_KV_AUTH}});
+    if(!r.ok) throw new Error('KV GET '+r.status);
+    return await r.json();
+  } catch(e) { console.warn('KV read:',e.message); return null; }
+}
+
+async function kvSet(key, data) {
+  try {
+    await fetch(_KV_URL+'/'+key, {method:'POST',headers:{'Content-Type':'application/json','X-TTC-Auth':_KV_AUTH},body:JSON.stringify(data)});
+  } catch(e) { console.warn('KV write:',e.message); }
+}
+
+async function loadFromKV() {
+  setSyncStatus('⟳ Syncing...');
+  try {
+    const [kvO,kvP,kvV] = await Promise.all([kvGet('orders'),kvGet('plans'),kvGet('vendors')]);
+    let changed = false;
+    if(kvO&&Array.isArray(kvO)&&kvO.length>0){orders=kvO;changed=true;}
+    if(kvP&&Array.isArray(kvP)){plans=kvP;changed=true;}
+    if(kvV&&Array.isArray(kvV)&&kvV.length>0){vendors=kvV;changed=true;}
+    if(changed){
+      localStorage.setItem('tc_orders',JSON.stringify(orders));
+      localStorage.setItem('tc_plans',JSON.stringify(plans));
+      localStorage.setItem('tc_vendors',JSON.stringify(vendors));
+      renderOrders();renderPlans();renderVendors();renderHarry();renderDashboard();
+    }
+    setSyncStatus('✓ Synced');
+  } catch(e) { setSyncStatus('⚠ Offline'); }
+}
+
+function setSyncStatus(msg) {
+  const el = document.getElementById('sync-status');
+  if(!el) return;
+  el.textContent = msg;
+  if(msg.startsWith('✓')) setTimeout(()=>{el.textContent='';},3000);
+}
+
+function persist() {
+  localStorage.setItem('tc_orders',  JSON.stringify(orders));
+  localStorage.setItem('tc_plans',   JSON.stringify(plans));
+  localStorage.setItem('tc_vendors', JSON.stringify(vendors));
+  kvSet('orders',orders).catch(()=>{});
+  kvSet('plans',plans).catch(()=>{});
+  setSyncStatus('✓ Saved');
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── STATUS BADGE ─────────────────────────────────────────────────────────────
+function badge(status) {
+  const s = (status || 'Ordered').toLowerCase().replace(/\s+/g, '');
+  const map = { delivered:'delivered', shipped:'shipped', ordered:'ordered', confirmed:'confirmed', invoiced:'invoiced', cancelled:'cancelled' };
+  const cls = map[s] || 'ordered';
+  return `<span class="badge badge-${cls}">${status || 'Ordered'}</span>`;
+}
+
+// ─── ORDERS ──────────────────────────────────────────────────────────────────
+function renderOrders() {
+  const tbody  = document.getElementById('orders-tbody');
+  const q      = (document.getElementById('order-search').value || '').toLowerCase();
+  const sf     = document.getElementById('status-filter').value;
+  const vf     = document.getElementById('vendor-filter').value;
+
+  let list = [...orders].sort((a,b) => new Date(b.date) - new Date(a.date));
+  if (q)  list = list.filter(o => (o.brand||'').toLowerCase().includes(q) || (o.vendor||'').toLowerCase().includes(q) || (o.order_num||'').toLowerCase().includes(q));
+  if (sf) list = list.filter(o => (o.status||'Ordered') === sf);
+  if (vf) list = list.filter(o => o.vendor === vf);
+
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="icon">📦</div><p>No orders found. Import from email or add manually.</p></div></td></tr>`;
+  } else {
+    tbody.innerHTML = list.map(o => {
+      const total = (o.qty || 0) * (o.cost || 0);
+      const trackHtml = o.tracking
+        ? `<span class="tracking-pill" title="Click to copy" onclick="copyText('${o.tracking}')">${o.tracking}</span>`
+        : `<span style="color:var(--muted);font-size:0.75rem;">—</span>`;
+      const orderNumHtml = o.order_num
+        ? `<span style="font-size:0.78rem; color:var(--muted);">${o.order_num}</span>`
+        : `<span style="color:var(--muted);font-size:0.75rem;">—</span>`;
+      const shipping = o.shipping||0;
+      const tax = o.tax||0;
+      const extraCosts = shipping + tax;
+      const grandTotal = total + extraCosts;
+      const numCols = 11;
+      const subRows = [];
+      if (shipping > 0) subRows.push(`
+        <tr style="background:rgba(0,0,0,0.15);">
+          <td></td>
+          <td></td>
+          <td style="padding-left:2rem;font-size:0.78rem;color:var(--muted);font-style:italic;">↳ Shipping</td>
+          <td style="font-size:0.78rem;color:var(--muted);">${o.vendor||'—'}</td>
+          <td style="font-size:0.78rem;color:var(--muted);">—</td>
+          <td style="font-size:0.78rem;color:var(--gold-light);">$${shipping.toFixed(2)}</td>
+          <td></td>
+          <td>${badge('Shipping')}</td>
+          <td></td><td></td><td></td>
+        </tr>`);
+      if (tax > 0) subRows.push(`
+        <tr style="background:rgba(0,0,0,0.15);">
+          <td></td>
+          <td></td>
+          <td style="padding-left:2rem;font-size:0.78rem;color:var(--muted);font-style:italic;">↳ Import Tax</td>
+          <td style="font-size:0.78rem;color:var(--muted);">${o.vendor||'—'}</td>
+          <td style="font-size:0.78rem;color:var(--muted);">—</td>
+          <td style="font-size:0.78rem;color:var(--gold-light);">$${tax.toFixed(2)}</td>
+          <td></td>
+          <td>${badge('Tax')}</td>
+          <td></td><td></td><td></td>
+        </tr>`);
+      return `
+        <tr>
+          <td><input type="checkbox" class="bulk-check" data-id="${o.id}" onchange="updateBulkBar()"></td>
+          <td style="white-space:nowrap;font-size:0.85rem;">${o.date||'—'}</td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+            <strong>${o.brand||'—'}</strong>
+            ${o.customer?'<br><span style="font-size:0.7rem;color:#5ce08a;">👤 '+o.customer+'</span>':''}
+          </td>
+          <td>${o.vendor||'—'}</td>
+          <td>${o.qty||0}</td>
+          <td style="color:var(--gold-light);">$${grandTotal.toFixed(2)}${extraCosts>0?'<span style="font-size:0.7rem;color:var(--muted);"> (incl. s/t)</span>':''}</td>
+          <td style="color:var(--muted);font-size:0.8rem;">${extraCosts>0?'+$'+extraCosts.toFixed(2):'—'}</td>
+          <td>${badge(o.status)}</td>
+          <td>${trackHtml}</td>
+          <td>${orderNumHtml}</td>
+          <td style="white-space:nowrap;">
+            <button class="btn btn-blue btn-sm" onclick="openOrderModal(${o.id})" style="margin-right:4px;">✏ Edit</button>
+            <button class="btn btn-green btn-sm" onclick="openTimeline(${o.id})" style="margin-right:4px;">⏱</button>
+            <button class="btn btn-red btn-sm" onclick="delOrder(${o.id})">✕</button>
+          </td>
+        </tr>
+        ${subRows.join('')}`;
+    }).join('');
+  }
+
+  // Summary bar
+  const totalSpend = list.reduce((s,o) => s + (o.qty||0)*(o.cost||0), 0);
+  const byStatus = {};
+  list.forEach(o => { const s = o.status || 'Ordered'; byStatus[s] = (byStatus[s]||0)+1; });
+  document.getElementById('summary-bar').innerHTML = `
+    <div class="sum-item"><div class="sum-val">${list.length}</div><div class="sum-lbl">Showing</div></div>
+    <div class="sum-item"><div class="sum-val">$${totalSpend.toLocaleString('en-US',{minimumFractionDigits:2})}</div><div class="sum-lbl">Filtered Spend</div></div>
+    ${Object.entries(byStatus).map(([s,c]) => `<div class="sum-item"><div class="sum-val">${c}</div><div class="sum-lbl">${s}</div></div>`).join('')}
+  `;
+
+  // Header stats
+  const allSpend = orders.reduce((s,o) => s + (o.qty||0)*(o.cost||0), 0);
+  document.getElementById('hs-orders').textContent = orders.length;
+  document.getElementById('hs-spend').textContent = '$' + Math.round(allSpend).toLocaleString();
+
+  // Vendor filter dropdown
+  const vf_el = document.getElementById('vendor-filter');
+  const cur = vf_el.value;
+  const vnames = [...new Set(orders.map(o => o.vendor).filter(Boolean))].sort();
+  vf_el.innerHTML = '<option value="">All Vendors</option>' + vnames.map(v => `<option${v===cur?' selected':''}>${v}</option>`).join('');
+}
+
+// ─── ORDER MODAL ─────────────────────────────────────────────────────────────
+function openOrderModal(id) {
+  editingOrderId = id || null;
+  const o = id ? orders.find(x => x.id === id) : null;
+  document.getElementById('order-modal-title').textContent = o ? 'Edit Order' : 'Add Order';
+  document.getElementById('o-date').value      = o?.date       || new Date().toISOString().split('T')[0];
+  document.getElementById('o-brand').value     = o?.brand      || '';
+  document.getElementById('o-vendor').value    = o?.vendor     || '';
+  document.getElementById('o-qty').value       = o?.qty        || '';
+  document.getElementById('o-cost').value      = o?.cost       || '';
+  document.getElementById('o-status').value    = o?.status     || 'Ordered';
+  document.getElementById('o-ordernum').value  = o?.order_num  || '';
+  document.getElementById('o-tracking').value  = o?.tracking   || '';
+  document.getElementById('o-shipping').value  = o?.shipping   || '';
+  document.getElementById('o-tax').value       = o?.tax        || '';
+  document.getElementById('o-customer').value  = o?.customer   || '';
+  // Populate datalist
+  const dl = document.getElementById('vendor-datalist');
+  dl.innerHTML = vendors.map(v => `<option value="${v.name}">`).join('');
+  document.getElementById('modal-order').classList.add('open');
+}
+function closeOrderModal() { document.getElementById('modal-order').classList.remove('open'); }
+function saveOrder() {
+  const entry = {
+    id:        editingOrderId || Date.now(),
+    date:      document.getElementById('o-date').value,
+    brand:     document.getElementById('o-brand').value.trim(),
+    vendor:    document.getElementById('o-vendor').value.trim(),
+    qty:       parseFloat(document.getElementById('o-qty').value) || 0,
+    cost:      parseFloat(document.getElementById('o-cost').value) || 0,
+    status:    document.getElementById('o-status').value,
+    order_num: document.getElementById('o-ordernum').value.trim(),
+    tracking:  document.getElementById('o-tracking').value.trim(),
+    shipping:  parseFloat(document.getElementById('o-shipping').value) || 0,
+    tax:       parseFloat(document.getElementById('o-tax').value) || 0,
+    customer:  document.getElementById('o-customer').value.trim(),
+    source:    'gray', passthrough: false, notes: ''
+  };
+  if (editingOrderId) {
+    orders = orders.map(o => o.id === editingOrderId ? entry : o);
+  } else {
+    orders.push(entry);
+  }
+  syncVendor(entry.vendor);
+  const wasEditing = !!editingOrderId;
+  editingOrderId = null;
+  persist(); renderOrders(); renderVendors(); closeOrderModal();
+  toast(wasEditing ? '✓ Order updated' : '✓ Order added');
+}
+
+// ─── STATUS MODAL ────────────────────────────────────────────────────────────
+function openStatusModal(id) {
+  statusEditId = id;
+  const o = orders.find(x => x.id === id);
+  document.getElementById('s-status').value   = o?.status   || 'Ordered';
+  document.getElementById('s-tracking').value = o?.tracking || '';
+  document.getElementById('modal-status').classList.add('open');
+}
+function closeStatusModal() { document.getElementById('modal-status').classList.remove('open'); }
+function saveStatus() {
+  orders = orders.map(o => o.id === statusEditId
+    ? { ...o, status: document.getElementById('s-status').value, tracking: document.getElementById('s-tracking').value.trim() }
+    : o
+  );
+  persist(); renderOrders(); closeStatusModal();
+  toast('✓ Status updated');
+}
+
+// ─── PLANNING ────────────────────────────────────────────────────────────────
+function togglePlanSort() { planSortAsc = !planSortAsc; renderPlans(); }
+function renderPlans() {
+  const tbody = document.getElementById('plans-tbody');
+  let list = [...plans].sort((a,b) => {
+    let vA = (a.vendor||'').toLowerCase(), vB = (b.vendor||'').toLowerCase();
+    return planSortAsc ? vA.localeCompare(vB) : vB.localeCompare(vA);
+  });
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div><p>No items planned yet.</p></div></td></tr>`;
+  } else {
+    tbody.innerHTML = list.map(p => `
+      <tr>
+        <td><strong>${p.brand}</strong>${p.customer?'<br><span style="font-size:0.7rem;color:#5ce08a;">👤 '+p.customer+'</span>':''}${p.notes?'<br><span style="font-size:0.7rem;color:var(--muted);font-style:italic;">'+p.notes+'</span>':''}</td>
+        <td>${p.vendor}</td>
+        <td>${p.qty}</td>
+        <td style="color:var(--gold-light);">$${(p.qty * p.cost).toFixed(2)}</td>
+        <td>
+          <button class="btn btn-gold btn-sm" onclick="convertOrder(${p.id})">→ Order</button>
+          <button class="btn btn-red btn-sm" onclick="delPlan(${p.id})">✕</button>
+        </td>
+      </tr>`).join('');
+  }
+  document.getElementById('hs-plans').textContent = plans.length;
+}
+function openPlanModal()  {
+  document.getElementById('modal-plan').classList.add('open');
+  ['p-brand','p-vendor','p-qty','p-cost','p-customer','p-notes'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+}
+function closePlanModal() { document.getElementById('modal-plan').classList.remove('open'); }
+function savePlan() {
+  const custEl = document.getElementById('p-customer');
+  const notesEl = document.getElementById('p-notes');
+  const p = { id: Date.now(), brand: document.getElementById('p-brand').value.trim(), vendor: document.getElementById('p-vendor').value.trim(), qty: parseFloat(document.getElementById('p-qty').value)||0, cost: parseFloat(document.getElementById('p-cost').value)||0, customer: custEl?custEl.value.trim():'', notes: notesEl?notesEl.value.trim():'', date: new Date().toISOString().split('T')[0], source:'gray' };
+  if (!p.brand) return;
+  plans.push(p); syncVendor(p.vendor); persist(); renderPlans(); renderVendors(); closePlanModal();
+  ['p-brand','p-vendor','p-qty','p-cost'].forEach(i => document.getElementById(i).value='');
+  toast('✓ Plan added');
+}
+function convertOrder(id) {
+  const p = plans.find(x => x.id === id);
+  orders.push({ ...p, id: Date.now(), status: 'Ordered', date: new Date().toISOString().split('T')[0], tracking:'', order_num:'' });
+  plans = plans.filter(x => x.id !== id);
+  persist(); renderPlans(); renderOrders(); renderVendors();
+  toast('✓ Moved to Order Log');
+}
+
+// ─── VENDORS ─────────────────────────────────────────────────────────────────
+function renderVendors() {
+  const grid = document.getElementById('vendor-grid');
+  const maxSpend = Math.max(...vendors.map(v => {
+    return orders.filter(o => o.vendor?.toLowerCase() === v.name?.toLowerCase()).reduce((s,o) => s+(o.qty||0)*(o.cost||0),0);
+  }), 1);
+
+  const ranked = vendors.map(v => {
+    const vo = orders.filter(o => (o.vendor||'').toLowerCase() === v.name.toLowerCase());
+    const spend    = vo.reduce((s,o) => s+(o.qty||0)*(o.cost||0), 0);
+    const shipping = vo.reduce((s,o) => s+(o.shipping||0), 0);
+    const tax      = vo.reduce((s,o) => s+(o.tax||0), 0);
+    const total    = spend + shipping + tax;
+    const delivered = vo.filter(o => o.status === 'Delivered').length;
+    return { ...v, spend, shipping, tax, total, count: vo.length, delivered };
+  }).filter(v => v.count > 0).sort((a,b) => b.count - a.count);
+  const maxCount = Math.max(...ranked.map(v => v.count), 1);
+
+  if (!ranked.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="icon">🤝</div><p>No vendors yet. Add orders to populate.</p></div>`;
+    return;
+  }
+  grid.innerHTML = ranked.map(v => `
+    <div class="vendor-card">
+      <h3>${v.name}</h3>
+      <div class="v-stat"><span>Orders Logged:</span><span class="v-stat-val">${v.count}</span></div>
+      <div class="v-stat"><span>Delivered:</span><span class="v-stat-val">${v.delivered}</span></div>
+      <div class="v-stat"><span>Product Spend:</span><span class="v-stat-val">$${v.spend.toFixed(2)}</span></div>
+      ${v.shipping>0?'<div class="v-stat"><span>Shipping Paid:</span><span class="v-stat-val" style="color:#8ab4d4;">$'+v.shipping.toFixed(2)+'</span></div>':''}
+      ${v.tax>0?'<div class="v-stat"><span>Tax/Duty Paid:</span><span class="v-stat-val" style="color:#b89de0;">$'+v.tax.toFixed(2)+'</span></div>':''}
+      <div class="v-stat"><span>Total (incl. s/t):</span><span class="v-stat-val" style="color:var(--gold-light);">$${v.total.toFixed(2)}</span></div>
+      <div class="v-bar-wrap"><div class="v-bar" style="width:${Math.round((v.count/maxCount)*100)}%"></div></div>
+    </div>`).join('');
+}
+
+// ─── SHARED UTILS ────────────────────────────────────────────────────────────
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if (!page) { console.warn('Page not found:', id); return; }
+  page.classList.add('active');
+  if(el) el.classList.add('active');
+  if(id==='harry')     { renderHarry(); }
+  if(id==='dashboard') { renderDashboard(); }
+  if(id==='bulk')      { const df=document.getElementById('ai-date'); if(df&&!df.value) df.value=new Date().toISOString().split('T')[0]; }
+}
+function syncVendor(n) {
+  if (n && !vendors.find(v => v.name.toLowerCase() === n.trim().toLowerCase()))
+    vendors.push({ id: Date.now()+Math.random(), name: n.trim() });
+}
+function delOrder(id)  { if(confirm('Remove this order?')) { orders = orders.filter(o => o.id != id); persist(); renderOrders(); renderVendors(); } }
+function delPlan(id)   { plans = plans.filter(p => p.id != id); persist(); renderPlans(); }
+function purgeZeroOrders() { const before = orders.length; orders = orders.filter(o => (o.qty||0)*(o.cost||0) > 0); persist(); renderOrders(); renderVendors(); toast(`✓ Removed ${before-orders.length} $0 orders`); }
+function clearAllOrders() { if(confirm('Wipe entire order log? This cannot be undone.')) { orders=[]; persist(); renderOrders(); renderVendors(); toast('Order log cleared'); } }
+function copyText(t) { navigator.clipboard.writeText(t).then(() => toast('Copied: '+t)); }
+
+// ─── BULK IMPORT ─────────────────────────────────────────────────────────────
+function validateJSON() {
+  const msg = document.getElementById('validate-msg');
+  try {
+    const d = JSON.parse(document.getElementById('bulk-json-input').value);
+    if (!Array.isArray(d)) throw new Error('Must be a JSON array');
+    msg.style.color = 'var(--green)';
+    msg.textContent = `✓ Valid — ${d.length} records found`;
+  } catch(e) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = '✗ ' + e.message;
+  }
+}
+function importBulkData() {
+  const msg = document.getElementById('validate-msg');
+  try {
+    const data = JSON.parse(document.getElementById('bulk-json-input').value);
+    if (!Array.isArray(data)) throw new Error('Expected a JSON array');
+    const before = orders.length;
+    const incoming = data.map(o => ({
+      id:        o.id || Date.now() + Math.random(),
+      date:      o.date      || new Date().toISOString().split('T')[0],
+      brand:     o.brand     || o.description || 'Unknown',
+      vendor:    o.vendor    || 'Unknown',
+      qty:       parseFloat(o.qty)  || 1,
+      cost:      parseFloat(o.cost) || 0,
+      status:    o.status    || 'Ordered',
+      order_num: o.order_num || o.orderNum || '',
+      tracking:  o.tracking  || '',
+    }));
+    // Deduplicate on order_num if present
+    const existingNums = new Set(orders.map(o => o.order_num).filter(Boolean));
+    const fresh = incoming.filter(o => !o.order_num || !existingNums.has(o.order_num));
+    orders = [...orders, ...fresh];
+    fresh.forEach(o => syncVendor(o.vendor));
+    persist(); renderOrders(); renderVendors();
+    document.getElementById('bulk-json-input').value = '';
+    const added = orders.length - before;
+    msg.style.color = 'var(--green)';
+    msg.textContent = `✓ Imported ${added} orders (${incoming.length - fresh.length} duplicates skipped)`;
+    toast(`✓ Imported ${added} orders`);
+    showPage('orders', document.querySelectorAll('.tab')[0]);
+  } catch(e) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = '✗ ' + e.message;
+    toast('✗ Import failed — check JSON format');
+  }
+}
+
+
+// ─── HARRY'S ORDERS ──────────────────────────────────────────────────────────
+const HARRY_KEY = 'ttc_harry_wishlist';
+
+function getHarryWishlist() {
+  return JSON.parse(localStorage.getItem(HARRY_KEY) || '[]');
+}
+
+function renderHarry() {
+  const all = getHarryWishlist();
+  const wishItems    = all.filter(w => w.status === 'wishlist');
+  const submitted    = all.filter(w => w.status === 'submitted');
+  const harryOrders  = orders.filter(o => o.source === 'harry' || (o.brand||'').includes('🔷'));
+  const ptOrders     = orders.filter(o => o.passthrough === true || (o.brand||'').toLowerCase().includes('[passthrough]'));
+
+  // Update header stat
+  document.getElementById('hs-harry').textContent = submitted.length;
+
+  // Summary bar
+  document.getElementById('h-wishlist-count').textContent  = wishItems.length;
+  document.getElementById('h-submitted-count').textContent = submitted.length;
+  document.getElementById('h-ordered-count').textContent   = harryOrders.filter(o => !['Delivered','Cancelled'].includes(o.status)).length;
+  document.getElementById('h-delivered-count').textContent = harryOrders.filter(o => o.status === 'Delivered').length;
+  document.getElementById('h-pt-total').textContent = '$' + ptOrders.reduce((s,o) => s+((o.qty||0)*(o.cost||0)),0).toFixed(2);
+
+  // Wishlist items (not yet submitted)
+  const wb = document.getElementById('h-wish-body');
+  wb.innerHTML = wishItems.length ? wishItems.map(w => `<tr>
+    <td><strong>${w.brand}</strong></td>
+    <td>${w.vendor||'—'}</td>
+    <td>${w.qty}</td>
+    <td style="color:var(--gold-light);">${w.cost ? '$'+(w.qty*w.cost).toFixed(2) : '—'}</td>
+    <td style="color:var(--muted);font-size:0.8rem;">${w.notes||'—'}</td>
+    <td>${w.date||'—'}</td>
+    <td>—</td>
+  </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No wishlist items</td></tr>';
+
+  // Submitted items (Harry sent, waiting for Gray)
+  const sb = document.getElementById('h-submitted-body');
+  sb.innerHTML = submitted.length ? submitted.map(w => `<tr>
+    <td><strong>${w.brand}</strong></td>
+    <td>${w.vendor||'—'}</td>
+    <td>${w.qty}</td>
+    <td style="color:var(--gold-light);">${w.cost ? '$'+(w.qty*w.cost).toFixed(2) : '—'}</td>
+    <td style="color:var(--muted);font-size:0.8rem;">${w.notes||'—'}</td>
+    <td>${w.date||'—'}</td>
+    <td>
+      <button class="btn btn-gold btn-sm" onclick="approveHarryItem(${w.id})">→ Planning</button>
+      <button class="btn btn-red btn-sm" onclick="rejectHarryItem(${w.id})">✕</button>
+    </td>
+  </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">Nothing waiting — Harry is all caught up ✓</td></tr>';
+
+  // Harry's orders in the main order log
+  const ob = document.getElementById('h-orders-body');
+  ob.innerHTML = harryOrders.length ? harryOrders.map(o => {
+    const cleanBrand = (o.brand||'').replace(' 🔷','').replace(/\s*\[Harry:[^\]]*\]/,'');
+    return `<tr>
+      <td><strong>${cleanBrand}</strong></td>
+      <td>${o.vendor||'—'}</td>
+      <td>${o.qty}</td>
+      <td style="color:var(--gold-light);">$${((o.qty||0)*(o.cost||0)).toFixed(2)}</td>
+      <td><span class="badge badge-${(o.status||'').toLowerCase()}">${o.status}</span></td>
+      <td>${o.order_num||'—'}</td>
+      <td>
+        <button class="btn btn-blue btn-sm" onclick="markPassthroughDirect(${o.id})">🔄 PT</button>
+      </td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No active orders from Harry</td></tr>';
+
+  // Passthrough items
+  const pb = document.getElementById('h-pt-body');
+  pb.innerHTML = ptOrders.length ? ptOrders.map(o => {
+    const cleanBrand = (o.brand||'').replace(/\[passthrough\]/gi,'').trim();
+    return `<tr>
+      <td><strong>${cleanBrand}</strong></td>
+      <td>${o.vendor||'—'}</td>
+      <td>${o.qty}</td>
+      <td>$${(o.cost||0).toFixed(2)}</td>
+      <td style="color:var(--gold-light);">$${((o.qty||0)*(o.cost||0)).toFixed(2)}</td>
+      <td><span class="badge badge-${(o.status||'').toLowerCase()}">${o.status}</span></td>
+      <td style="color:var(--gold);font-size:0.7rem;font-weight:700;letter-spacing:0.5px;">✓ PA ACT 57</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No passthrough items yet</td></tr>';
+}
+
+function approveHarryItem(id) {
+  let all = getHarryWishlist();
+  const item = all.find(w => w.id === id);
+  if (!item) return;
+  // Move to Gray's planning tab
+  plans.push({
+    id:     Date.now() + Math.random(),
+    brand:  item.brand + (item.notes ? ` [Harry: ${item.notes}]` : '') + ' 🔷',
+    vendor: item.vendor || "Pappy's Order",
+    qty:    item.qty,
+    cost:   item.cost,
+    source: 'harry',
+    date:   item.date
+  });
+  // Mark as ordered in Harry's list
+  all = all.map(w => w.id === id ? {...w, status:'ordered'} : w);
+  localStorage.setItem(HARRY_KEY, JSON.stringify(all));
+  persist();
+  renderPlans();
+  renderHarry();
+  toast('✓ Moved to Planning — Harry notified');
+}
+
+function approveAllHarry() {
+  let all = getHarryWishlist();
+  const submitted = all.filter(w => w.status === 'submitted');
+  submitted.forEach(item => {
+    plans.push({
+      id:     Date.now() + Math.random(),
+      brand:  item.brand + (item.notes ? ` [Harry: ${item.notes}]` : '') + ' 🔷',
+      vendor: item.vendor || "Pappy's Order",
+      qty:    item.qty,
+      cost:   item.cost,
+      source: 'harry',
+      date:   item.date
+    });
+  });
+  all = all.map(w => w.status === 'submitted' ? {...w, status:'ordered'} : w);
+  localStorage.setItem(HARRY_KEY, JSON.stringify(all));
+  persist();
+  renderPlans();
+  renderHarry();
+  toast(`✓ ${submitted.length} items moved to Planning`);
+}
+
+function rejectHarryItem(id) {
+  if (!confirm('Remove this item from Harry\'s list?')) return;
+  let all = getHarryWishlist();
+  all = all.filter(w => w.id !== id);
+  localStorage.setItem(HARRY_KEY, JSON.stringify(all));
+  renderHarry();
+  toast('Item removed');
+}
+
+function markPassthroughDirect(id) {
+  orders = orders.map(o => o.id === id ? {...o, passthrough: true} : o);
+  persist();
+  renderHarry();
+  renderOrders();
+  toast('✓ Marked as PA Act 57 Passthrough');
+}
+
+function openPassthroughModal() {
+  const sel = document.getElementById('pt-order-select');
+  sel.innerHTML = '<option value="">— Select an order —</option>' +
+    orders.map(o => `<option value="${o.id}">${o.brand} — ${o.vendor} (${o.status})</option>`).join('');
+  document.getElementById('modal-pt').classList.add('open');
+}
+
+function savePassthrough() {
+  const id = parseFloat(document.getElementById('pt-order-select').value);
+  if (!id) { toast('Please select an order'); return; }
+  orders = orders.map(o => o.id === id ? {...o, passthrough: true} : o);
+  persist();
+  document.getElementById('modal-pt').classList.remove('open');
+  renderOrders();
+  renderHarry();
+  toast('✓ Marked as PA Act 57 Passthrough');
+}
+
+// Listen for Harry's portal activity
+window.addEventListener('storage', e => {
+  if (e.key === HARRY_KEY) {
+    renderHarry();
+    document.getElementById('hs-harry').textContent =
+      JSON.parse(e.newValue || '[]').filter(w => w.status === 'submitted').length;
+  }
+});
+
+
+// ─── HARRY'S ORDERS ──────────────────────────────────────────────────────────
+// HARRY_KEY already declared
+
+function getHarryWishlist() {
+  return JSON.parse(localStorage.getItem(HARRY_KEY) || '[]');
+}
+
+function renderHarry() {
+  const all = getHarryWishlist();
+  const wishItems    = all.filter(w => w.status === 'wishlist');
+  const submitted    = all.filter(w => w.status === 'submitted');
+  const harryOrders  = orders.filter(o => o.source === 'harry' || (o.brand||'').includes('🔷'));
+  const ptOrders     = orders.filter(o => o.passthrough === true || (o.brand||'').toLowerCase().includes('[passthrough]'));
+
+  // Update header stat
+  document.getElementById('hs-harry').textContent = submitted.length;
+
+  // Summary bar
+  document.getElementById('h-wishlist-count').textContent  = wishItems.length;
+  document.getElementById('h-submitted-count').textContent = submitted.length;
+  document.getElementById('h-ordered-count').textContent   = harryOrders.filter(o => !['Delivered','Cancelled'].includes(o.status)).length;
+  document.getElementById('h-delivered-count').textContent = harryOrders.filter(o => o.status === 'Delivered').length;
+  document.getElementById('h-pt-total').textContent = '$' + ptOrders.reduce((s,o) => s+((o.qty||0)*(o.cost||0)),0).toFixed(2);
+
+  // Wishlist items (not yet submitted)
+  const wb = document.getElementById('h-wish-body');
+  wb.innerHTML = wishItems.length ? wishItems.map(w => `<tr>
+    <td><strong>${w.brand}</strong></td>
+    <td>${w.vendor||'—'}</td>
+    <td>${w.qty}</td>
+    <td style="color:var(--gold-light);">${w.cost ? '$'+(w.qty*w.cost).toFixed(2) : '—'}</td>
+    <td style="color:var(--muted);font-size:0.8rem;">${w.notes||'—'}</td>
+    <td>${w.date||'—'}</td>
+    <td>—</td>
+  </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No wishlist items</td></tr>';
+
+  // Submitted items (Harry sent, waiting for Gray)
+  const sb = document.getElementById('h-submitted-body');
+  sb.innerHTML = submitted.length ? submitted.map(w => `<tr>
+    <td><strong>${w.brand}</strong></td>
+    <td>${w.vendor||'—'}</td>
+    <td>${w.qty}</td>
+    <td style="color:var(--gold-light);">${w.cost ? '$'+(w.qty*w.cost).toFixed(2) : '—'}</td>
+    <td style="color:var(--muted);font-size:0.8rem;">${w.notes||'—'}</td>
+    <td>${w.date||'—'}</td>
+    <td>
+      <button class="btn btn-gold btn-sm" onclick="approveHarryItem(${w.id})">→ Planning</button>
+      <button class="btn btn-red btn-sm" onclick="rejectHarryItem(${w.id})">✕</button>
+    </td>
+  </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">Nothing waiting — Harry is all caught up ✓</td></tr>';
+
+  // Harry's orders in the main order log
+  const ob = document.getElementById('h-orders-body');
+  ob.innerHTML = harryOrders.length ? harryOrders.map(o => {
+    const cleanBrand = (o.brand||'').replace(' 🔷','').replace(/\s*\[Harry:[^\]]*\]/,'');
+    return `<tr>
+      <td><strong>${cleanBrand}</strong></td>
+      <td>${o.vendor||'—'}</td>
+      <td>${o.qty}</td>
+      <td style="color:var(--gold-light);">$${((o.qty||0)*(o.cost||0)).toFixed(2)}</td>
+      <td><span class="badge badge-${(o.status||'').toLowerCase()}">${o.status}</span></td>
+      <td>${o.order_num||'—'}</td>
+      <td>
+        <button class="btn btn-blue btn-sm" onclick="markPassthroughDirect(${o.id})">🔄 PT</button>
+      </td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No active orders from Harry</td></tr>';
+
+  // Passthrough items
+  const pb = document.getElementById('h-pt-body');
+  pb.innerHTML = ptOrders.length ? ptOrders.map(o => {
+    const cleanBrand = (o.brand||'').replace(/\[passthrough\]/gi,'').trim();
+    return `<tr>
+      <td><strong>${cleanBrand}</strong></td>
+      <td>${o.vendor||'—'}</td>
+      <td>${o.qty}</td>
+      <td>$${(o.cost||0).toFixed(2)}</td>
+      <td style="color:var(--gold-light);">$${((o.qty||0)*(o.cost||0)).toFixed(2)}</td>
+      <td><span class="badge badge-${(o.status||'').toLowerCase()}">${o.status}</span></td>
+      <td style="color:var(--gold);font-size:0.7rem;font-weight:700;letter-spacing:0.5px;">✓ PA ACT 57</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No passthrough items yet</td></tr>';
+}
+
+function approveHarryItem(id) {
+  let all = getHarryWishlist();
+  const item = all.find(w => w.id === id);
+  if (!item) return;
+  // Move to Gray's planning tab
+  plans.push({
+    id:     Date.now() + Math.random(),
+    brand:  item.brand + (item.notes ? ` [Harry: ${item.notes}]` : '') + ' 🔷',
+    vendor: item.vendor || "Pappy's Order",
+    qty:    item.qty,
+    cost:   item.cost,
+    source: 'harry',
+    date:   item.date
+  });
+  // Mark as ordered in Harry's list
+  all = all.map(w => w.id === id ? {...w, status:'ordered'} : w);
+  localStorage.setItem(HARRY_KEY, JSON.stringify(all));
+  persist();
+  renderPlans();
+  renderHarry();
+  toast('✓ Moved to Planning — Harry notified');
+}
+
+function approveAllHarry() {
+  let all = getHarryWishlist();
+  const submitted = all.filter(w => w.status === 'submitted');
+  submitted.forEach(item => {
+    plans.push({
+      id:     Date.now() + Math.random(),
+      brand:  item.brand + (item.notes ? ` [Harry: ${item.notes}]` : '') + ' 🔷',
+      vendor: item.vendor || "Pappy's Order",
+      qty:    item.qty,
+      cost:   item.cost,
+      source: 'harry',
+      date:   item.date
+    });
+  });
+  all = all.map(w => w.status === 'submitted' ? {...w, status:'ordered'} : w);
+  localStorage.setItem(HARRY_KEY, JSON.stringify(all));
+  persist();
+  renderPlans();
+  renderHarry();
+  toast(`✓ ${submitted.length} items moved to Planning`);
+}
+
+function rejectHarryItem(id) {
+  if (!confirm('Remove this item from Harry\'s list?')) return;
+  let all = getHarryWishlist();
+  all = all.filter(w => w.id !== id);
+  localStorage.setItem(HARRY_KEY, JSON.stringify(all));
+  renderHarry();
+  toast('Item removed');
+}
+
+function markPassthroughDirect(id) {
+  orders = orders.map(o => o.id === id ? {...o, passthrough: true} : o);
+  persist();
+  renderHarry();
+  renderOrders();
+  toast('✓ Marked as PA Act 57 Passthrough');
+}
+
+function openPassthroughModal() {
+  const sel = document.getElementById('pt-order-select');
+  sel.innerHTML = '<option value="">— Select an order —</option>' +
+    orders.map(o => `<option value="${o.id}">${o.brand} — ${o.vendor} (${o.status})</option>`).join('');
+  document.getElementById('modal-pt').classList.add('open');
+}
+
+function savePassthrough() {
+  const id = parseFloat(document.getElementById('pt-order-select').value);
+  if (!id) { toast('Please select an order'); return; }
+  orders = orders.map(o => o.id === id ? {...o, passthrough: true} : o);
+  persist();
+  document.getElementById('modal-pt').classList.remove('open');
+  renderOrders();
+  renderHarry();
+  toast('✓ Marked as PA Act 57 Passthrough');
+}
+
+// Listen for Harry's portal activity
+window.addEventListener('storage', e => {
+  if (e.key === HARRY_KEY) {
+    renderHarry();
+    document.getElementById('hs-harry').textContent =
+      JSON.parse(e.newValue || '[]').filter(w => w.status === 'submitted').length;
+  }
+});
+
+
+
+// ── BULK EDIT ────────────────────────────────────────────────────────────────
+let parsedItems = [];
+
+function toggleBulkAll(cb) { document.querySelectorAll('.bulk-check').forEach(c=>c.checked=cb.checked); updateBulkBar(); }
+
+function updateBulkBar() {
+  const ids = Array.from(document.querySelectorAll('.bulk-check:checked')).map(cb=>parseFloat(cb.dataset.id));
+  const bar = document.getElementById('bulk-bar');
+  if(!bar) return;
+  if(ids.length>0){ bar.style.display='flex'; document.getElementById('bulk-count').textContent=ids.length+' selected'; }
+  else bar.style.display='none';
+}
+
+function applyBulkEdit() {
+  const ids = Array.from(document.querySelectorAll('.bulk-check:checked')).map(cb=>parseFloat(cb.dataset.id));
+  if(!ids.length){toast('No orders selected');return;}
+  const st=document.getElementById('bulk-status').value;
+  const tr=document.getElementById('bulk-tracking').value.trim();
+  const vn=document.getElementById('bulk-vendor').value.trim();
+  let n=0;
+  orders=orders.map(o=>{if(!ids.includes(o.id))return o;n++;return{...o,status:st||o.status,tracking:tr||o.tracking,vendor:vn||o.vendor};});
+  if(vn)syncVendor(vn);
+  persist();renderOrders();renderVendors();
+  document.getElementById('bulk-bar').style.display='none';
+  toast('✓ Updated '+n+' orders');
+}
+
+document.addEventListener('change',e=>{if(e.target.classList.contains('bulk-check'))updateBulkBar();});
+
+// ── EXPORT / IMPORT ──────────────────────────────────────────────────────────
+function exportData() {
+  const blob=new Blob([JSON.stringify({exported:new Date().toISOString(),orders,plans,vendors},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='ttc-ops-backup-'+new Date().toISOString().split('T')[0]+'.json'; a.click();
+  toast('✓ Exported '+orders.length+' orders');
+}
+
+function importData(input) {
+  const file=input.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try {
+      const data=JSON.parse(e.target.result);
+      if(!data.orders||!Array.isArray(data.orders)){toast('✗ Invalid file');return;}
+      const existIds=new Set(orders.map(o=>String(o.id)));
+      const newO=data.orders.filter(o=>!existIds.has(String(o.id)));
+      orders=[...orders,...newO];
+      if(data.plans){const ep=new Set(plans.map(p=>String(p.id)));plans=[...plans,...data.plans.filter(p=>!ep.has(String(p.id)))];}
+      const sv=new Set(vendors.map(v=>v.name.toLowerCase()));
+      orders.forEach(o=>{if(o.vendor&&!sv.has(o.vendor.toLowerCase())){sv.add(o.vendor.toLowerCase());vendors.push({id:Date.now()+Math.random(),name:o.vendor});}});
+      persist();renderOrders();renderPlans();renderVendors();
+      toast('✓ Imported '+newO.length+' orders');
+    } catch(err){toast('✗ '+err.message);}
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ── INVOICE PARSER ────────────────────────────────────────────────────────────
+function parseInvoice() {
+  const text=document.getElementById('ai-invoice-text').value.trim();
+  const status=document.getElementById('ai-status');
+  if(!text){toast('Paste invoice text first');return;}
+  status.textContent='⟳ Parsing...';status.style.color='var(--gold)';
+  try {
+    parsedItems=[];
+    const seen=new Set();
+    const lines=text.split(/\n/).map(l=>l.trim()).filter(l=>l.length>0);
+    const skipLabels=new Set(['subtotal','total','discount','order','invoice','date','bill','thank','page','qty','quantity','description','item','payment','method']);
+    function isPriceLine(s){return /^\$[\d,]+\.\d{2}/.test(s)||/^[\d,]+\.\d{2}\s*(USD)?$/.test(s);}
+    function extractPrice(s){const m=s.match(/^\$?([\d,]+\.\d{2})/);return m?parseFloat(m[1].replace(/,/g,'')):null;}
+    let i=0;
+    while(i<lines.length){
+      const line=lines[i];
+      const fw=(line.split(/\s+/)[0]||'').toLowerCase().replace(':','');
+      if(skipLabels.has(fw)||isPriceLine(line)){i++;continue;}
+      let foundPrice=null,foundIdx=null;
+      for(let j=i+1;j<Math.min(i+6,lines.length);j++){
+        if(isPriceLine(lines[j])){
+          const prev=(lines[j-1].split(/\s+/)[0]||'').toLowerCase().replace(':','');
+          if(!skipLabels.has(prev)){foundPrice=extractPrice(lines[j]);foundIdx=j;break;}
+        }
+      }
+      if(!foundPrice||foundPrice<=0){i++;continue;}
+      let qty=1,brand=line;
+      const qm=brand.match(/\s*[\xd7xX]\s*(\d+)\s*$/);
+      if(qm){qty=parseInt(qm[1]);brand=brand.slice(0,qm.index).trim();}
+      const qm2=brand.match(/\bQTY\s*:?\s*(\d+)/i);
+      if(qm2){qty=parseInt(qm2[1]);brand=(brand.slice(0,qm2.index)+brand.slice(qm2.index+qm2[0].length)).trim();}
+      brand=brand.replace(/\s*--\s*Dealer\s*Box.*$/i,'').replace(/\s*-\s*Dealer\s*Box.*$/i,'').trim();
+      brand=brand.replace(/^\$[\d,.]+\s*/,'').replace(/[\s\-–]+$/,'').trim();
+      if(!brand||brand.length<2){i=foundIdx+1;continue;}
+      const unitCost=qty>0?Math.round(foundPrice/qty*100)/100:foundPrice;
+      const key=brand.toLowerCase().slice(0,30);
+      if(!seen.has(key)){seen.add(key);parsedItems.push({sku:'',brand,qty,cost:unitCost,total:foundPrice,harryQty:0});}
+      i=foundIdx+1;
+    }
+    // Detect shipping and tax lines and store on last item
+    lines.forEach((line, idx) => {
+      const fw = (line.split(/\s+/)[0]||'').toLowerCase();
+      if (/^ship/i.test(fw)) {
+        const pm = line.match(/\$?([\d,]+\.\d{2})/);
+        if (pm) detectedShipping = parseFloat(pm[1].replace(/,/g,''));
+      }
+      if (/^(tax|import|duty|vat|gst)/i.test(fw)) {
+        const pm = line.match(/\$?([\d,]+\.\d{2})/);
+        if (pm) detectedTax = parseFloat(pm[1].replace(/,/g,''));
+      }
+    });
+    // Attach shipping/tax to last item if detected
+    if (parsedItems.length > 0 && (detectedShipping > 0 || detectedTax > 0)) {
+      const last = parsedItems[parsedItems.length - 1];
+      if (detectedShipping > 0 && !last.shipping) last.shipping = detectedShipping;
+      if (detectedTax > 0 && !last.tax) last.tax = detectedTax;
+    }
+
+    // Fallback single-line
+    if(!parsedItems.length){
+      for(const line of lines){
+        const fw=(line.split(/\s+/)[0]||'').toLowerCase();
+        if(skipLabels.has(fw))continue;
+        const prices=[];const pr=/\$?([\d,]+\.\d{2})/g;let pm;
+        while((pm=pr.exec(line))!==null)prices.push({idx:pm.index,val:parseFloat(pm[1].replace(/,/g,''))});
+        if(!prices.length)continue;
+        const uc=prices[0].val;if(uc<=0)continue;
+        const lt=prices[prices.length-1].val;
+        let qty=1;const qm=line.match(/\bQTY[\s:]*(\d+)/i);
+        if(qm)qty=parseInt(qm[1])||1;
+        else if(prices.length>=2){const d=Math.round(lt/uc);if(d>0&&d<10000)qty=d;}
+        let brand=line.substring(0,prices[0].idx).replace(/\bQTY[\s:]*\d+/gi,'').replace(/\/\d+\b/g,'').replace(/\s+/g,' ').trim();
+        let sku='';const sm=brand.match(/^([A-Z0-9\-]{2,15})\s+(.+)/i);
+        if(sm&&!/^(the|and|for|with|from|robusto|toro|corona|gran|petit)$/i.test(sm[1])){sku=sm[1];brand=sm[2].trim();}
+        if(!brand||brand.length<2)continue;
+        const key=brand.toLowerCase().slice(0,30)+uc;
+        if(!seen.has(key)){seen.add(key);parsedItems.push({sku,brand,qty,cost:uc,total:lt,harryQty:0});}
+      }
+    }
+    if(!parsedItems.length){status.textContent='⚠ No items found';status.style.color='var(--red)';return;}
+    document.getElementById('ai-preview-body').innerHTML=parsedItems.map((item,i)=>
+      '<tr>'+
+      '<td><input type="checkbox" class="parsed-check" data-i="'+i+'" checked></td>'+
+      '<td><input class="form-input" style="padding:4px 8px;font-size:0.82rem;min-width:140px;" value="'+item.brand.replace(/"/g,'&quot;')+'" oninput="parsedItems['+i+'].brand=this.value"></td>'+
+      '<td style="color:var(--muted);font-size:0.8rem;">'+(item.sku||'—')+'</td>'+
+      '<td><input class="form-input" style="padding:4px 8px;font-size:0.82rem;width:50px;" type="number" value="'+item.qty+'" oninput="parsedItems['+i+'].qty=parseFloat(this.value)||0"></td>'+
+      '<td><input class="form-input" style="padding:4px 8px;font-size:0.82rem;width:50px;border-color:rgba(160,123,224,0.5);" type="number" min="0" value="0" title="Units for Harry passthrough" oninput="parsedItems['+i+'].harryQty=Math.min(parseFloat(this.value)||0,parsedItems['+i+'].qty)"></td>'+
+      '<td><input class="form-input" style="padding:4px 8px;font-size:0.82rem;width:70px;" type="number" step="0.01" value="'+item.cost.toFixed(2)+'" oninput="parsedItems['+i+'].cost=parseFloat(this.value)||0"></td>'+
+      '<td style="color:var(--gold-light);font-weight:700;">$'+((item.qty||0)*(item.cost||0)).toFixed(2)+'</td>'+
+      '</tr>'+
+      ((item.shipping||0)>0?'<tr style="background:rgba(0,0,0,0.1);"><td colspan="3" style="padding-left:1.5rem;font-size:0.75rem;color:var(--muted);font-style:italic;">↳ Shipping</td><td colspan="3" style="font-size:0.78rem;color:#8ab4d4;">$'+(item.shipping||0).toFixed(2)+'</td></tr>':'')+
+      ((item.tax||0)>0?'<tr style="background:rgba(0,0,0,0.1);"><td colspan="3" style="padding-left:1.5rem;font-size:0.75rem;color:var(--muted);font-style:italic;">↳ Tax/Duty</td><td colspan="3" style="font-size:0.75rem;color:#b89de0;">$'+(item.tax||0).toFixed(2)+'</td></tr>':'')
+    ).join('');
+    document.getElementById('ai-preview').style.display='block';
+    status.textContent='✓ Found '+parsedItems.length+' items';
+    status.style.color='var(--green)';
+  } catch(e){status.textContent='✗ '+e.message;status.style.color='var(--red)';}
+}
+
+function toggleAllParsed(cb){document.querySelectorAll('.parsed-check').forEach(c=>c.checked=cb.checked);}
+function getCheckedParsed(){return Array.from(document.querySelectorAll('.parsed-check:checked')).map(cb=>parsedItems[parseInt(cb.dataset.i)]).filter(Boolean);}
+
+function addParsedToLog(){
+  const vendor=document.getElementById('ai-vendor').value.trim()||'Unknown';
+  const date=document.getElementById('ai-date').value||new Date().toISOString().split('T')[0];
+  const items=getCheckedParsed();if(!items.length){toast('No items selected');return;}
+  let added=0,harryAdded=0;
+  items.forEach(item=>{
+    const hq=Math.min(parseFloat(item.harryQty)||0,item.qty);
+    const mq=item.qty-hq;
+    const bc=item.brand+(item.sku?' ['+item.sku+']':'');
+    if(mq>0){orders.push({id:Date.now()+Math.random(),brand:bc,vendor,qty:mq,cost:item.cost,status:'Ordered',date,order_num:'',tracking:'',source:'gray',passthrough:false,notes:'',shipping:item.shipping||0,tax:item.tax||0});added++;}
+    if(hq>0){orders.push({id:Date.now()+Math.random(),brand:bc+' 🔷',vendor,qty:hq,cost:item.cost,status:'Ordered',date,order_num:'',tracking:'',source:'harry',passthrough:true,notes:'PA Act 57 Pass-Through'});harryAdded++;}
+    syncVendor(vendor);
+  });
+  persist();renderOrders();renderVendors();clearInvoiceParser();
+  showPage('orders',document.querySelectorAll('.tab')[0]);
+  let msg='✓ '+added+' order'+(added!==1?'s':'')+' added';
+  if(harryAdded)msg+=' + '+harryAdded+' Harry PT';
+  toast(msg);
+}
+
+function addParsedToPlanning(){
+  const vendor=document.getElementById('ai-vendor').value.trim()||'Unknown';
+  const date=document.getElementById('ai-date').value||new Date().toISOString().split('T')[0];
+  const items=getCheckedParsed();if(!items.length){toast('No items selected');return;}
+  items.forEach(item=>{plans.push({id:Date.now()+Math.random(),brand:item.brand+(item.sku?' ['+item.sku+']':''),vendor,qty:item.qty,cost:item.cost,date,source:'gray',notes:''});syncVendor(vendor);});
+  persist();renderPlans();clearInvoiceParser();
+  showPage('planning',document.querySelectorAll('.tab')[1]);
+  toast('✓ '+items.length+' items added to Planning');
+}
+
+function clearInvoiceParser(){
+  parsedItems=[];
+  document.getElementById('ai-preview').style.display='none';
+  document.getElementById('ai-invoice-text').value='';
+  document.getElementById('ai-vendor').value='';
+  document.getElementById('ai-status').textContent='';
+}
+
+async function parsePDF(input){
+  const file=input.files[0];if(!file)return;
+  const status=document.getElementById('ai-status');
+  status.textContent='⟳ Reading PDF...';status.style.color='var(--gold)';
+  try{
+    if(!window.pdfjsLib){
+      await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s);});
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+    const buf=await file.arrayBuffer();
+    const pdf=await window.pdfjsLib.getDocument({data:buf}).promise;
+    let fullText='';
+    for(let p=1;p<=pdf.numPages;p++){
+      const page=await pdf.getPage(p);
+      const content=await page.getTextContent();
+      const lm=new Map();
+      content.items.forEach(item=>{const y=Math.round(item.transform[5]);if(!lm.has(y))lm.set(y,[]);lm.get(y).push(item.str);});
+      [...lm.keys()].sort((a,b)=>b-a).forEach(y=>{fullText+=lm.get(y).join(' ')+'\n';});
+      fullText+='\n';
+    }
+    document.getElementById('ai-invoice-text').value=fullText.trim();
+    status.textContent='✓ PDF extracted — parsing...';status.style.color='var(--green)';
+    setTimeout(()=>parseInvoice(),300);
+  }catch(e){status.textContent='✗ '+e.message;status.style.color='var(--red)';}
+  input.value='';
+}
+
+
+// ── DASHBOARD ────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const pending = orders.filter(o => !['Delivered','Cancelled'].includes(o.status));
+  const harryPending = JSON.parse(localStorage.getItem('ttc_harry_wishlist')||'[]').filter(w=>w.status==='submitted');
+  const totalSpend = orders.reduce((s,o)=>s+(o.qty||0)*(o.cost||0)+(o.shipping||0)+(o.tax||0),0);
+
+  document.getElementById('db-orders').textContent  = orders.length;
+  document.getElementById('db-spend').textContent   = '$'+totalSpend.toFixed(0);
+  document.getElementById('db-pending').textContent = pending.length;
+  document.getElementById('db-harry').textContent   = harryPending.length;
+  document.getElementById('db-plans').textContent   = plans.length;
+
+  // Recent orders
+  const recent = [...orders].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,8);
+  const rb = document.getElementById('db-recent-orders');
+  rb.innerHTML = recent.map(o => {
+    const t = ((o.qty||0)*(o.cost||0)+(o.shipping||0)+(o.tax||0)).toFixed(2);
+    return '<tr><td style="font-size:0.8rem;color:var(--muted);">'+(o.date||'—')+'</td>'+
+      '<td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><strong>'+(o.brand||'—')+'</strong></td>'+
+      '<td>'+badge(o.status)+'</td>'+
+      '<td style="color:var(--gold-light);">$'+t+'</td></tr>';
+  }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">No orders yet</td></tr>';
+
+  // Outstanding orders
+  const ob = document.getElementById('db-outstanding');
+  ob.innerHTML = pending.sort((a,b)=>new Date(a.date)-new Date(b.date)).map(o =>
+    '<tr><td style="font-size:0.8rem;color:var(--muted);">'+(o.date||'—')+'</td>'+
+    '<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><strong>'+(o.brand||'—')+'</strong></td>'+
+    '<td style="font-size:0.8rem;">'+(o.vendor||'—')+'</td>'+
+    '<td>'+badge(o.status)+'</td></tr>'
+  ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">All orders delivered ✓</td></tr>';
+
+  // Top vendors
+  const vSpend = {};
+  orders.forEach(o => {
+    if (!o.vendor) return;
+    vSpend[o.vendor] = (vSpend[o.vendor]||0) + (o.qty||0)*(o.cost||0)+(o.shipping||0)+(o.tax||0);
+  });
+  const topV = Object.entries(vSpend).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxV = topV[0]?.[1] || 1;
+  document.getElementById('db-vendors-list').innerHTML = topV.map(([name,spend]) =>
+    '<div style="margin-bottom:14px;">'+
+    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'+
+    '<span style="font-size:0.88rem;">'+ name +'</span>'+
+    '<span style="color:var(--gold-light);font-size:0.82rem;font-weight:700;">$'+spend.toFixed(2)+'</span></div>'+
+    '<div style="background:var(--dark4);border-radius:4px;height:5px;overflow:hidden;">'+
+    '<div style="width:'+Math.round(spend/maxV*100)+'%;height:100%;background:linear-gradient(90deg,var(--teal),var(--mint));border-radius:4px;"></div>'+
+    '</div></div>'
+  ).join('') || '<div style="color:var(--muted);font-size:0.85rem;">No vendor data yet</div>';
+
+  // Monthly spend chart
+  renderSpendChart();
+}
+
+function renderSpendChart() {
+  try {
+  const canvas = document.getElementById('spend-chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  // Build monthly data for last 6 months
+  const months = [];
+  const now = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    months.push({
+      label: d.toLocaleString('default',{month:'short'})+' '+d.getFullYear().toString().slice(2),
+      year: d.getFullYear(), month: d.getMonth(),
+      spend: 0
+    });
+  }
+  orders.forEach(o => {
+    if (!o.date) return;
+    const d = new Date(o.date);
+    const m = months.find(m => m.year===d.getFullYear() && m.month===d.getMonth());
+    if (m) m.spend += (o.qty||0)*(o.cost||0)+(o.shipping||0)+(o.tax||0);
+  });
+
+  const W = canvas.parentElement.offsetWidth - 48;
+  const H = 200;
+  canvas.width = W; canvas.height = H;
+
+  const maxSpend = Math.max(...months.map(m=>m.spend), 1);
+  const barW = Math.floor((W - 60) / months.length) - 8;
+  const chartH = H - 50;
+
+  ctx.clearRect(0, 0, W, H);
+
+  months.forEach((m, i) => {
+    const x = 30 + i * (barW + 8);
+    const barH = Math.max(2, Math.round((m.spend / maxSpend) * chartH));
+    const y = H - 30 - barH;
+
+    // Bar
+    const grad = ctx.createLinearGradient(0, y, 0, y+barH);
+    grad.addColorStop(0, '#259f8a');
+    grad.addColorStop(1, '#0d6354');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x, y, barW, barH);
+
+    // Amount label
+    if (m.spend > 0) {
+      ctx.fillStyle = '#e0fef8';
+      ctx.font = '500 10px Josefin Sans, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('$'+Math.round(m.spend), x+barW/2, y-5);
+    }
+
+    // Month label
+    ctx.fillStyle = '#4a8a7a';
+    ctx.font = '10px Josefin Sans, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(m.label, x+barW/2, H-10);
+  });
+  } catch(e) { console.warn('Chart error:', e); }
+}
+
+// ── ORDER SEARCH ─────────────────────────────────────────────────────────────
+// Already handled by order-search input calling renderOrders() — ensure it filters
+// Update renderOrders to use the search field
+
+// ── ORDER STATUS TIMELINE ────────────────────────────────────────────────────
+const STATUS_ORDER = ['Ordered','Confirmed','Invoiced','Shipped','Delivered'];
+
+function openTimeline(id) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  const curIdx = STATUS_ORDER.indexOf(o.status);
+  const steps = STATUS_ORDER.map((s, i) => {
+    const done = i <= curIdx;
+    const current = i === curIdx;
+    return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">'+
+      '<div style="width:28px;height:28px;border-radius:50%;background:'+(done?'var(--mint)':current?'var(--gold)':'var(--dark4)')+
+      ';display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:'+(done?'var(--black)':'var(--muted)')+';flex-shrink:0;">'+
+      (done&&!current?'✓':(i+1))+
+      '</div>'+
+      '<div>'+
+      '<div style="font-size:0.88rem;color:'+(done?'var(--cream)':'var(--muted)')+';">'+s+'</div>'+
+      (current?'<div style="font-size:0.7rem;color:var(--mint);margin-top:2px;">← Current status</div>':'')+
+      '</div>'+
+      '<div style="margin-left:auto;">'+
+        (i < curIdx ? '<button class="btn btn-red btn-sm" onclick="setOrderStatus('+id+',\''+s+'\')" style="font-size:0.6rem;">Set</button>' :
+         i === curIdx+1 ? '<button class="btn btn-mint btn-sm" onclick="setOrderStatus('+id+',\''+s+'\');closeTimeline();" style="font-size:0.6rem;">Advance \u2192</button>' : '')
+      +'</div>'+
+      '</div>';
+  }).join('');
+
+  document.getElementById('timeline-title').textContent = o.brand || 'Order';
+  document.getElementById('timeline-body').innerHTML = steps;
+  document.getElementById('modal-timeline').classList.add('open');
+}
+
+function closeTimeline() { document.getElementById('modal-timeline').classList.remove('open'); }
+
+function setOrderStatus(id, status) {
+  orders = orders.map(o => o.id === id ? {...o, status} : o);
+  persist(); renderOrders();
+  toast('✓ Status → '+status);
+}
+
+// ── REORDER WISHLIST (Gray's own reorder list) ───────────────────────────────
+const REORDER_KEY = 'ttc_reorder_list';
+let reorderList = JSON.parse(localStorage.getItem(REORDER_KEY) || '[]');
+
+function renderReorderList() {
+  const tbody = document.getElementById('reorder-body');
+  if (!tbody) return;
+  tbody.innerHTML = reorderList.length ? reorderList.map((item,i) => `
+    <tr>
+      <td><strong>${item.brand||'—'}</strong></td>
+      <td>${item.vendor||'—'}</td>
+      <td style="font-size:0.8rem;color:var(--muted);">${item.notes||'—'}</td>
+      <td>
+        <button class="btn btn-mint btn-sm" onclick="reorderToOrder(${i})">→ Order</button>
+        <button class="btn btn-red btn-sm" onclick="removeReorder(${i})">✕</button>
+      </td>
+    </tr>`).join('')
+    : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">No reorder items</td></tr>';
+}
+
+function addReorderItem() {
+  const brand = document.getElementById('reorder-brand').value.trim();
+  if (!brand) { toast('Enter a brand name'); return; }
+  reorderList.push({
+    brand,
+    vendor: document.getElementById('reorder-vendor').value.trim(),
+    notes:  document.getElementById('reorder-notes').value.trim(),
+    added:  new Date().toISOString().split('T')[0]
+  });
+  localStorage.setItem(REORDER_KEY, JSON.stringify(reorderList));
+  document.getElementById('reorder-brand').value = '';
+  document.getElementById('reorder-vendor').value = '';
+  document.getElementById('reorder-notes').value = '';
+  renderReorderList();
+  toast('✓ Added to reorder list');
+}
+
+function removeReorder(i) {
+  reorderList.splice(i, 1);
+  localStorage.setItem(REORDER_KEY, JSON.stringify(reorderList));
+  renderReorderList();
+}
+
+function reorderToOrder(i) {
+  const item = reorderList[i];
+  // Pre-fill the order modal with this item
+  openOrderModal();
+  document.getElementById('o-brand').value  = item.brand || '';
+  document.getElementById('o-vendor').value = item.vendor || '';
+  document.getElementById('o-date').value   = new Date().toISOString().split('T')[0];
+  closeReorderModal();
+  toast('Pre-filled from reorder list — adjust qty/cost and save');
+}
+
+function openReorderModal()  { document.getElementById('modal-reorder').classList.add('open'); renderReorderList(); }
+function closeReorderModal() { document.getElementById('modal-reorder').classList.remove('open'); }
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  renderOrders();
+  renderPlans();
+  renderVendors();
+  renderHarry();
+  renderDashboard();
+  setTimeout(()=>loadFromKV(),800);
+});
+</script>
+
+  <!-- HARRY PAGE -->
+  <div class="page" id="page-harry">
+    <div class="section">
+      <div class="section-header"><h2 style="color:#e09a3c;">📬 Submitted by Harry</h2></div>
+      <div class="table-wrap"><table><thead><tr><th>Product</th><th>Vendor</th><th>Qty</th><th>Est. Cost</th><th>Notes</th><th>Actions</th></tr></thead>
+      <tbody id="h-submitted-body"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Nothing waiting ✓</td></tr></tbody></table></div>
+    </div>
+    <div class="section">
+      <div class="section-header"><h2 style="color:#5c9ce0;">📦 Harry's Orders</h2></div>
+      <div class="table-wrap"><table><thead><tr><th>Product</th><th>Vendor</th><th>Qty</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="h-orders-body"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">No orders</td></tr></tbody></table></div>
+    </div>
+    <div class="section">
+      <div class="section-header"><h2>🔄 PA Act 57 Passthrough</h2><span style="color:var(--gold-light);">Total: <strong id="h-pt-total">$0</strong></span></div>
+      <div style="background:rgba(200,134,10,0.06);padding:10px 20px;font-size:0.78rem;color:var(--muted);border-bottom:1px solid var(--border);">All items pass through at vendor invoice cost — no markup. PA Act 57 compliant.</div>
+      <div class="table-wrap"><table><thead><tr><th>Product</th><th>Vendor</th><th>Qty</th><th>Unit Cost</th><th>Total</th><th>Status</th><th>PA Act 57</th></tr></thead>
+      <tbody id="h-pt-body"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No passthrough items</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+<!-- TIMELINE MODAL -->
+<div class="modal-overlay" id="modal-timeline">
+  <div class="modal" style="max-width:420px;">
+    <h3 id="timeline-title">Order Timeline</h3>
+    <div id="timeline-body"></div>
+    <div style="margin-top:20px;text-align:right;">
+      <button class="btn btn-blue" onclick="closeTimeline()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- REORDER MODAL -->
+<div class="modal-overlay" id="modal-reorder">
+  <div class="modal" style="max-width:500px;">
+    <h3>🔄 Reorder List</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div><label class="form-label">Brand</label><input class="form-input" id="reorder-brand" placeholder="e.g. Warped Chinchalle"></div>
+      <div><label class="form-label">Vendor</label><input class="form-input" id="reorder-vendor" placeholder="e.g. Warped"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <input class="form-input" id="reorder-notes" placeholder="Optional — qty needed, priority, etc.">
+    </div>
+    <button class="btn btn-mint" onclick="addReorderItem()" style="margin-bottom:20px;">+ Add to List</button>
+    <div class="table-wrap" style="max-height:260px;">
+      <table><thead><tr><th>Brand</th><th>Vendor</th><th>Notes</th><th>Actions</th></tr></thead>
+      <tbody id="reorder-body"></tbody></table>
+    </div>
+    <div style="margin-top:16px;text-align:right;">
+      <button class="btn btn-blue" onclick="closeReorderModal()">Close</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

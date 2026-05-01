@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pappy's Portal — Harry Entz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:  #001b16;
+    --forest: #033d33;
+    --jungle: #022e27;
+    --teal:   #0d6354;
+    --mint:   #259f8a;
+    --mint-pale: #e0fef8;
+    --gold:   #c9a84c;
+    --gold-light: #e8c76a;
+    --cream:  #f0fdf8;
+    --muted:  #4a8a7a;
+    --border: #0d4a3a;
+    --green:  #5ce08a;
+    --red:    #e05c5c;
+    --blue:   #5c9ce0;
+    --orange: #e09a3c;
+    --purple: #a07be0;
+    --dark:   #001b16;
+    --dark2:  #012318;
+    --dark3:  #022e27;
+    --dark4:  #033d33;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Josefin Sans', sans-serif; background: var(--black); color: var(--cream); line-height: 1.6; min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: linear-gradient(135deg, #001b16 0%, #022e27 100%); border-bottom: 2px solid var(--mint); padding: 18px 24px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.5); }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--mint-pale); font-style: italic; }
+  .header p { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .pa-badge { background: rgba(37,159,138,0.15); border: 1px solid rgba(37,159,138,0.4); color: var(--mint); font-size: 0.65rem; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; white-space: nowrap; }
+
+  /* TABS */
+  .tabs { display: flex; background: var(--dark2); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .tab { flex: 1; padding: 14px 10px; font-size: 0.8rem; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; text-transform: uppercase; font-weight: 700; transition: 0.2s; white-space: nowrap; text-align: center; }
+  .tab.active { color: var(--mint); border-bottom-color: var(--mint); background: rgba(37,159,138,0.08); }
+  .tab:hover:not(.active) { color: var(--cream); }
+
+  /* MAIN */
+  .main { padding: 20px; max-width: 700px; margin: 0 auto; }
+  .page { display: none; } .page.active { display: block; }
+
+  /* SECTION */
+  .section { background: var(--dark2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+  .section-header { padding: 16px 20px; background: linear-gradient(135deg, var(--dark3) 0%, var(--dark2) 100%); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--mint-pale); font-style: italic; }
+
+  /* CARDS (mobile-friendly order items) */
+  .item-card { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
+  .item-card:last-child { border-bottom: none; }
+  .item-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .item-name { font-weight: 700; font-size: 0.95rem; color: var(--cream); }
+  .item-meta { font-size: 0.78rem; color: var(--muted); }
+  .item-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .badge-wishlist   { background: rgba(160,123,224,0.15); color: var(--purple); border: 1px solid rgba(160,123,224,0.3); }
+  .badge-submitted  { background: rgba(200,134,10,0.15);  color: var(--gold);   border: 1px solid rgba(200,134,10,0.3); }
+  .badge-ordered    { background: rgba(92,156,224,0.15);  color: var(--blue);   border: 1px solid rgba(92,156,224,0.3); }
+  .badge-passthrough{ background: rgba(224,154,60,0.15);  color: var(--orange); border: 1px solid rgba(224,154,60,0.3); }
+  .badge-delivered  { background: rgba(92,224,138,0.15);  color: var(--green);  border: 1px solid rgba(92,224,138,0.3); }
+  .badge-cancelled  { background: rgba(224,92,92,0.15);   color: var(--red);    border: 1px solid rgba(224,92,92,0.3); }
+
+  /* BUTTONS */
+  .btn { padding: 8px 14px; border: none; border-radius: 6px; font-family: 'Josefin Sans', sans-serif; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 0.68rem; transition: 0.2s; letter-spacing: 0.08em; }
+  .btn-gold { background: var(--gold); color: var(--black); }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-red { background: transparent; border: 1px solid var(--red); color: var(--red); }
+  .btn-red:hover { background: rgba(224,92,92,0.1); }
+  .btn-green { background: var(--green); color: var(--dark); }
+  .btn-green:hover { opacity: 0.85; }
+  .btn-full { width: 100%; padding: 14px; font-size: 0.85rem; border-radius: 10px; margin-top: 8px; }
+
+  /* FORM */
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 0.68rem; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; letter-spacing: 0.5px; }
+  .form-input, .form-select, .form-textarea { width: 100%; background: var(--dark3); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--cream); font-family: 'Josefin Sans', sans-serif; font-size: 0.9rem; outline: none; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  select option { background: var(--dark3); }
+
+  /* STATS ROW */
+  .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-box { background: var(--dark2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+  .stat-val { font-size: 1.6rem; font-weight: 700; color: var(--gold-light); }
+  .stat-lbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  /* PASSTHROUGH INFO BOX */
+  .info-box { background: rgba(200,134,10,0.08); border: 1px solid rgba(200,134,10,0.25); border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+  .info-box strong { color: var(--gold-light); }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty .icon { font-size: 2.5rem; margin-bottom: 10px; }
+  .empty p { font-size: 0.85rem; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark3); border: 1px solid var(--mint); border-radius: 8px; padding: 12px 20px; color: var(--cream); font-size: 0.82rem; z-index: 999; opacity: 0; transition: 0.3s; pointer-events: none; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 200; align-items: flex-end; justify-content: center; padding: 0; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--dark2); border: 1px solid var(--mint); border-radius: 20px 20px 0 0; padding: 28px 24px 40px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+  .modal h3 { font-family: 'Playfair Display', serif; color: var(--mint-pale); font-style: italic; margin-bottom: 20px; font-size: 1.2rem; }
+  .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+
+  @media (min-width: 600px) {
+    .modal-overlay { align-items: center; padding: 20px; }
+    .modal { border-radius: 16px; max-height: 85vh; }
+    .modal-handle { display: none; }
+    .main { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+<script>
+(function() {
+  var stored = sessionStorage.getItem('ttc-harry-auth');
+  if (stored === 'yes') return;
+  var pw = prompt("Pappy's Portal — The Tobacco Center\nEnter access code:");
+  if (pw !== 'HatforPappy') {
+    document.body.innerHTML = '<div style="background:#0a0805;color:#9c8e7b;font-family:monospace;display:flex;align-items:center;justify-content:center;height:100vh;font-size:1rem;">Access denied.</div>';
+    return;
+  }
+  sessionStorage.setItem('ttc-harry-auth', 'yes');
+})();
+</script>
+
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>📦 Pappy's Portal</h1>
+      <p>Harry Entz &nbsp;·&nbsp; Pappy's Cigar Box LLC &nbsp;<span id="harry-sync" style="color:#5ce08a;font-size:0.7rem;"></span></p>
+    </div>
+    <span class="pa-badge">PA Act 57</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('wishlist',this)">⭐ Wishlist</div>
+  <div class="tab" onclick="showTab('orders',this)">📦 My Orders</div>
+  <div class="tab" onclick="showTab('passthrough',this)">🔄 Passthrough</div>
+</div>
+
+<div class="main">
+
+  <!-- ══ WISHLIST TAB ══ -->
+  <div class="page active" id="tab-wishlist">
+
+    <div class="info-box">
+      <strong>How this works:</strong> Add cigars to your wishlist below. When you're ready to order, hit <strong>Submit to Gray</strong> — it goes straight to Gray's order screen. He'll confirm and process it under the Joint Purchasing Agreement.
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>⭐ My Wishlist</h2>
+        <button class="btn btn-gold" onclick="openWishModal()">+ Add Item</button>
+      </div>
+      <div id="wishlist-body">
+        <div class="empty"><div class="icon">⭐</div><p>Your wishlist is empty.<br>Tap "+ Add Item" to get started.</p></div>
+      </div>
+    </div>
+
+    <div id="wishlist-submit-wrap" style="display:none;">
+      <button class="btn btn-green btn-full" onclick="submitWishlist()">🚀 Submit Wishlist to Gray</button>
+    </div>
+
+  </div>
+
+  <!-- ══ ORDERS TAB ══ -->
+  <div class="page" id="tab-orders">
+
+    <div class="stats-row" id="order-stats">
+      <div class="stat-box"><div class="stat-val" id="s-submitted">0</div><div class="stat-lbl">Submitted</div></div>
+      <div class="stat-box"><div class="stat-val" id="s-ordered">0</div><div class="stat-lbl">On Order</div></div>
+      <div class="stat-box"><div class="stat-val" id="s-delivered">0</div><div class="stat-lbl">Delivered</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>📦 My Order History</h2>
+      </div>
+      <div id="orders-body">
+        <div class="empty"><div class="icon">📦</div><p>No orders yet.<br>Submit items from your wishlist to get started.</p></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ PASSTHROUGH TAB ══ -->
+  <div class="page" id="tab-passthrough">
+
+    <div class="info-box">
+      <strong>PA Act 57 Pass-Through:</strong> These items were ordered by The Tobacco Center on your behalf under the Joint Purchasing Agreement. All transactions pass through at <strong>vendor invoice cost — no markup</strong>. Each item is labeled for PA Act 57 compliance.
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>🔄 Passthrough Items</h2>
+      </div>
+      <div id="passthrough-body">
+        <div class="empty"><div class="icon">🔄</div><p>No passthrough items yet.</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>📊 Passthrough Summary</h2>
+      </div>
+      <div style="padding:20px;" id="passthrough-summary">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.85rem;">
+          <span style="color:var(--muted);">Total Pass-Through Value</span>
+          <span style="font-weight:700;color:var(--gold-light);" id="pt-total">$0.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.85rem;">
+          <span style="color:var(--muted);">Items Delivered</span>
+          <span style="font-weight:700;color:var(--green);" id="pt-delivered">0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:0.85rem;">
+          <span style="color:var(--muted);">Items Pending</span>
+          <span style="font-weight:700;color:var(--orange);" id="pt-pending">0</span>
+        </div>
+        <div style="margin-top:16px;padding:12px;background:var(--dark3);border-radius:8px;font-size:0.75rem;color:var(--muted);line-height:1.7;">
+          All passthrough transactions comply with Pennsylvania Act 57. Records maintained by The Tobacco Center LLC for audit purposes.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- end main -->
+
+<!-- ══ WISHLIST ITEM MODAL ══ -->
+<div class="modal-overlay" id="modal-wish">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>Add to Wishlist</h3>
+    <div class="form-group">
+      <label class="form-label">Cigar / Product Name *</label>
+      <input class="form-input" id="w-brand" placeholder="e.g. Foundation El Güegüense Toro">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Brand / Vendor</label>
+      <input class="form-input" id="w-vendor" placeholder="e.g. Foundation Cigar Co.">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Quantity</label>
+        <input class="form-input" id="w-qty" type="number" min="1" value="1" placeholder="1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Est. Cost Each ($)</label>
+        <input class="form-input" id="w-cost" type="number" min="0" step="0.01" placeholder="0.00">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes for Gray</label>
+      <textarea class="form-textarea" id="w-notes" placeholder="Any specifics, vitola preferences, urgency, etc."></textarea>
+    </div>
+    <button class="btn btn-gold btn-full" onclick="saveWish()">Add to Wishlist</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeWishModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STORAGE KEYS (shared with ops hub) ───────────────────────────────────────
+const HARRY_KEY   = 'ttc_harry_wishlist';
+const ORDERS_KEY  = 'tc_orders';    // Gray's order log
+const PLANS_KEY   = 'tc_plans';     // Gray's planning tab
+
+// ─── LOAD DATA ───────────────────────────────────────────────────────────────
+let wishlist = JSON.parse(localStorage.getItem(HARRY_KEY) || '[]');
+
+function getGrayOrders() {
+  return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+}
+
+function persist() {
+  localStorage.setItem(HARRY_KEY, JSON.stringify(wishlist));
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function showTab(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (id === 'orders') renderOrders();
+  if (id === 'passthrough') renderPassthrough();
+}
+
+// ─── WISHLIST ─────────────────────────────────────────────────────────────────
+function renderWishlist() {
+  const body = document.getElementById('wishlist-body');
+  const wrap = document.getElementById('wishlist-submit-wrap');
+  const pending = wishlist.filter(w => w.status === 'wishlist');
+
+  if (!wishlist.length) {
+    body.innerHTML = `<div class="empty"><div class="icon">⭐</div><p>Your wishlist is empty.<br>Tap "+ Add Item" to get started.</p></div>`;
+    wrap.style.display = 'none';
+    return;
+  }
+
+  body.innerHTML = wishlist.map(w => `
+    <div class="item-card">
+      <div class="item-card-top">
+        <div>
+          <div class="item-name">${w.brand}</div>
+          <div class="item-meta">${w.vendor ? w.vendor + ' &nbsp;·&nbsp; ' : ''}Qty: ${w.qty}${w.cost ? ' &nbsp;·&nbsp; Est. $'+(w.qty*w.cost).toFixed(2) : ''}</div>
+          ${w.notes ? `<div class="item-meta" style="margin-top:4px;color:var(--muted);font-style:italic;">"${w.notes}"</div>` : ''}
+        </div>
+        <span class="badge badge-${w.status}">${w.status}</span>
+      </div>
+      <div class="item-actions">
+        ${w.status === 'wishlist' ? `<button class="btn btn-ghost" onclick="removeWish(${w.id})">✕ Remove</button>` : ''}
+        ${w.status === 'submitted' ? `<span style="font-size:0.75rem;color:var(--muted);">Sent to Gray ✓</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  wrap.style.display = pending.length ? 'block' : 'none';
+}
+
+function openWishModal() { document.getElementById('modal-wish').classList.add('open'); }
+function closeWishModal() { document.getElementById('modal-wish').classList.remove('open'); }
+
+function saveWish() {
+  const brand = document.getElementById('w-brand').value.trim();
+  if (!brand) { toast('Please enter a product name'); return; }
+  const item = {
+    id:      Date.now(),
+    brand,
+    vendor:  document.getElementById('w-vendor').value.trim(),
+    qty:     parseFloat(document.getElementById('w-qty').value) || 1,
+    cost:    parseFloat(document.getElementById('w-cost').value) || 0,
+    notes:   document.getElementById('w-notes').value.trim(),
+    status:  'wishlist',
+    date:    new Date().toISOString().split('T')[0],
+    source:  'harry'
+  };
+  wishlist.push(item);
+  persist();
+  renderWishlist();
+  closeWishModal();
+  ['w-brand','w-vendor','w-qty','w-cost','w-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = id === 'w-qty' ? '1' : '';
+  });
+  toast('✓ Added to wishlist');
+}
+
+function removeWish(id) {
+  wishlist = wishlist.filter(w => w.id !== id);
+  persist();
+  renderWishlist();
+  toast('Removed from wishlist');
+}
+
+function submitWishlist() {
+  const pending = wishlist.filter(w => w.status === 'wishlist');
+  if (!pending.length) return;
+
+  // Mark as submitted
+  pending.forEach(w => {
+    w.status = 'submitted';
+    w.submitted_at = new Date().toISOString();
+  });
+
+  // Update Harry wishlist in Airtable + Gray Plans in Airtable
+  persistWishToCloud();
+  submitToGrayCloud(pending).then(() => {
+    toast(`✓ ${pending.length} item${pending.length>1?'s':''} sent to Gray!`);
+  }).catch(() => {
+    // Fallback: write to localStorage Plans
+    let plans = JSON.parse(localStorage.getItem(PLANS_KEY) || '[]');
+    pending.forEach(w => {
+      plans.push({ id: Date.now()+Math.random(), brand: w.brand+' 🔷', vendor: w.vendor||"Pappy's Order", qty: w.qty, cost: w.cost, source:'harry', date: w.date });
+    });
+    localStorage.setItem(PLANS_KEY, JSON.stringify(plans));
+    toast(`✓ ${pending.length} item(s) sent to Gray (local)`);
+  });
+
+  renderWishlist();
+}
+
+// ─── ORDERS (Harry's submitted items that Gray moved to order log) ─────────────
+function renderOrders() {
+  const body = document.getElementById('orders-body');
+  const allOrders = getGrayOrders();
+
+  // Harry's orders = anything with source:'harry' OR brand includes 🔷
+  const harryOrders = allOrders.filter(o =>
+    o.source === 'harry' || (o.brand && o.brand.includes('🔷'))
+  );
+
+  // Also show submitted wishlist items not yet moved to orders
+  const submitted = wishlist.filter(w => w.status === 'submitted');
+
+  document.getElementById('s-submitted').textContent = submitted.length;
+  document.getElementById('s-ordered').textContent = harryOrders.filter(o => ['Ordered','Shipped','Confirmed','Invoiced'].includes(o.status)).length;
+  document.getElementById('s-delivered').textContent = harryOrders.filter(o => o.status === 'Delivered').length;
+
+  const allItems = [
+    ...submitted.map(w => ({ ...w, _type: 'submitted' })),
+    ...harryOrders.map(o => ({ ...o, _type: 'order' }))
+  ];
+
+  if (!allItems.length) {
+    body.innerHTML = `<div class="empty"><div class="icon">📦</div><p>No orders yet.<br>Submit items from your wishlist to get started.</p></div>`;
+    return;
+  }
+
+  body.innerHTML = allItems.map(item => {
+    const statusMap = {
+      'submitted':  'badge-submitted',
+      'Ordered':    'badge-ordered',
+      'Shipped':    'badge-ordered',
+      'Confirmed':  'badge-ordered',
+      'Invoiced':   'badge-ordered',
+      'Delivered':  'badge-delivered',
+      'Cancelled':  'badge-cancelled',
+    };
+    const displayStatus = item._type === 'submitted' ? 'Submitted to Gray' : item.status;
+    const badgeClass = item._type === 'submitted' ? 'badge-submitted' : (statusMap[item.status] || 'badge-submitted');
+    const cleanBrand = (item.brand || '').replace(' 🔷','').replace(/\s*\[Harry:[^\]]*\]/,'');
+    const total = ((item.qty||0) * (item.cost||0)).toFixed(2);
+
+    return `
+    <div class="item-card">
+      <div class="item-card-top">
+        <div>
+          <div class="item-name">${cleanBrand}</div>
+          <div class="item-meta">
+            ${item.vendor ? item.vendor + ' &nbsp;·&nbsp; ' : ''}
+            Qty: ${item.qty||'-'}
+            ${item.cost ? ` &nbsp;·&nbsp; $${total} est.` : ''}
+            ${item.date ? ` &nbsp;·&nbsp; ${item.date}` : ''}
+          </div>
+          ${item.notes ? `<div class="item-meta" style="margin-top:4px;font-style:italic;color:var(--muted);">"${item.notes}"</div>` : ''}
+          ${item.tracking ? `<div class="item-meta" style="margin-top:4px;color:var(--blue);">📦 ${item.tracking}</div>` : ''}
+        </div>
+        <span class="badge ${badgeClass}">${displayStatus}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── PASSTHROUGH ──────────────────────────────────────────────────────────────
+function renderPassthrough() {
+  const body = document.getElementById('passthrough-body');
+  const allOrders = getGrayOrders();
+
+  // Passthrough = orders tagged as passthrough for Harry
+  const ptItems = allOrders.filter(o =>
+    o.passthrough === true ||
+    o.passthrough_harry === true ||
+    (o.brand && o.brand.toLowerCase().includes('[passthrough]'))
+  );
+
+  const total = ptItems.reduce((s,o) => s + ((o.qty||0)*(o.cost||0)), 0);
+  const delivered = ptItems.filter(o => o.status === 'Delivered').length;
+  const pending = ptItems.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled').length;
+
+  document.getElementById('pt-total').textContent = '$' + total.toFixed(2);
+  document.getElementById('pt-delivered').textContent = delivered;
+  document.getElementById('pt-pending').textContent = pending;
+
+  if (!ptItems.length) {
+    body.innerHTML = `<div class="empty"><div class="icon">🔄</div><p>No passthrough items yet.</p></div>`;
+    return;
+  }
+
+  body.innerHTML = ptItems.map(o => {
+    const statusClass = o.status === 'Delivered' ? 'badge-delivered' : 'badge-passthrough';
+    const cleanBrand = (o.brand||'').replace(/\[passthrough\]/gi,'').trim();
+    return `
+    <div class="item-card">
+      <div class="item-card-top">
+        <div>
+          <div class="item-name">${cleanBrand}</div>
+          <div class="item-meta">
+            ${o.vendor ? o.vendor + ' &nbsp;·&nbsp; ' : ''}
+            Qty: ${o.qty||'-'} &nbsp;·&nbsp;
+            Invoice cost: $${((o.qty||0)*(o.cost||0)).toFixed(2)}
+            ${o.date ? ` &nbsp;·&nbsp; ${o.date}` : ''}
+          </div>
+          ${o.order_num ? `<div class="item-meta" style="color:var(--muted);">Order # ${o.order_num}</div>` : ''}
+          ${o.tracking ? `<div class="item-meta" style="color:var(--blue);">📦 ${o.tracking}</div>` : ''}
+        </div>
+        <div style="text-align:right;">
+          <span class="badge ${statusClass}">${o.status}</span>
+          <div style="font-size:0.6rem;color:var(--gold);margin-top:4px;letter-spacing:0.5px;">PA ACT 57</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+
+// ═══════════════════════════════════════════════════════
+// AIRTABLE CLOUD SYNC — HARRY'S PORTAL
+// ═══════════════════════════════════════════════════════
+// ─── AIRTABLE CONFIG ──────────────────────────────────────────────────────────
+const AT_TOKEN   = 'patqA1Xiy4trAbNl9.5980ce424a425acfa8b4a37c9568a5aa1b4a66ac742752c7b7d893a7dba8495a';
+const AT_BASE    = 'appQLUOMpbj4BU2B4';
+const AT_URL     = `https://api.airtable.com/v0/${AT_BASE}`;
+
+const AT_HEADERS = {
+  'Authorization': `Bearer ${AT_TOKEN}`,
+  'Content-Type': 'application/json'
+};
+
+// ─── AIRTABLE HELPERS ─────────────────────────────────────────────────────────
+async function atGet(table) {
+  let all = [], offset = null;
+  do {
+    const url = `${AT_URL}/${encodeURIComponent(table)}?pageSize=100${offset ? '&offset='+offset : ''}`;
+    const r = await fetch(url, { headers: AT_HEADERS });
+    if (!r.ok) throw new Error(`Airtable GET failed: ${r.status}`);
+    const d = await r.json();
+    all = all.concat(d.records || []);
+    offset = d.offset || null;
+  } while (offset);
+  return all;
+}
+
+async function atCreate(table, fields) {
+  const r = await fetch(`${AT_URL}/${encodeURIComponent(table)}`, {
+    method: 'POST',
+    headers: AT_HEADERS,
+    body: JSON.stringify({ records: [{ fields }] })
+  });
+  if (!r.ok) throw new Error(`Airtable POST failed: ${r.status}`);
+  const d = await r.json();
+  return d.records[0];
+}
+
+async function atUpdate(table, atId, fields) {
+  const r = await fetch(`${AT_URL}/${encodeURIComponent(table)}/${atId}`, {
+    method: 'PATCH',
+    headers: AT_HEADERS,
+    body: JSON.stringify({ fields })
+  });
+  if (!r.ok) throw new Error(`Airtable PATCH failed: ${r.status}`);
+  return r.json();
+}
+
+async function atDelete(table, atId) {
+  const r = await fetch(`${AT_URL}/${encodeURIComponent(table)}/${atId}`, {
+    method: 'DELETE',
+    headers: AT_HEADERS
+  });
+  if (!r.ok) throw new Error(`Airtable DELETE failed: ${r.status}`);
+  return r.json();
+}
+
+async function atUpsertAll(table, records, toFields) {
+  // Upsert in batches of 10 (Airtable limit)
+  const existing = await atGet(table);
+  const existingIds = new Set(existing.map(r => String(r.fields.local_id)));
+
+  const toCreate = records.filter(r => !existingIds.has(String(r.id)));
+  const toUpdate = records.filter(r =>  existingIds.has(String(r.id)));
+
+  // Create new records in batches of 10
+  for (let i = 0; i < toCreate.length; i += 10) {
+    const batch = toCreate.slice(i, i+10);
+    const body = { records: batch.map(r => ({ fields: toFields(r) })) };
+    const res = await fetch(`${AT_URL}/${encodeURIComponent(table)}`, {
+      method: 'POST', headers: AT_HEADERS, body: JSON.stringify(body)
+    });
+    if (!res.ok) console.error('Batch create failed', await res.text());
+  }
+
+  // Update existing records
+  for (const rec of toUpdate) {
+    const atRec = existing.find(r => String(r.fields.local_id) === String(rec.id));
+    if (atRec) await atUpdate(table, atRec.id, toFields(rec));
+  }
+}
+
+
+// ─── FIELD MAPPINGS ──────────────────────────────────────────────────────────
+
+// ── KV SYNC ──────────────────────────────────────────────────────────────────
+const _KV_URL  = 'https://ttc-ops-api.williamsportcigars.workers.dev';
+const _KV_AUTH = 'e68a8c440b39487ba55bdf9e7ef5310a';
+
+async function kvGet(key) {
+  try {
+    const r = await fetch(_KV_URL + '/' + key, { headers: { 'X-TTC-Auth': _KV_AUTH } });
+    if (!r.ok) throw new Error('KV GET ' + r.status);
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+async function kvSet(key, data) {
+  try {
+    await fetch(_KV_URL + '/' + key, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-TTC-Auth': _KV_AUTH },
+      body: JSON.stringify(data)
+    });
+  } catch(e) { console.warn('KV write:', e.message); }
+}
+// ─── INIT ────────────────────────────────────────────────────────────────────
+loadFromCloud();
+
+
+// Auto-refresh orders/passthrough when storage changes (cross-tab sync)
+window.addEventListener('storage', e => {
+  if (e.key === HARRY_KEY) {
+    wishlist = JSON.parse(e.newValue || '[]');
+    renderWishlist();
+  }
+  if (e.key === ORDERS_KEY) {
+    renderOrders();
+    renderPassthrough();
+  }
+});
+</script>
+</body>
+</html>

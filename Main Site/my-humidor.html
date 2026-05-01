@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Customer Humidor</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: #111;
+      color: #eee;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 250px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .item {
+      margin-top: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #444;
+    }
+
+    img {
+      max-width: 120px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>Your Humidor</h2>
+
+<input id="phone" placeholder="(XXX) XXX-XXXX" />
+<button onclick="lookup()">Lookup</button>
+
+<div id="results"></div>
+
+<script>
+const API_URL = "/api";
+
+// Auto-format phone input
+document.getElementById("phone").addEventListener("input", function (e) {
+  let x = e.target.value.replace(/\D/g, "").slice(0, 10);
+  let formatted = x;
+
+  if (x.length > 6)
+    formatted = `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}`;
+  else if (x.length > 3)
+    formatted = `(${x.slice(0,3)}) ${x.slice(3)}`;
+
+  e.target.value = formatted;
+});
+
+async function lookup() {
+  const raw = document.getElementById("phone").value;
+
+  // 🔥 CLEAN BEFORE SEND
+  const phone = raw.replace(/\D/g, "").slice(-10);
+
+  if (phone.length !== 10) {
+    alert("Enter a valid phone number");
+    return;
+  }
+
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ phone }),
+  });
+
+  const data = await res.json();
+  console.log("API response:", data);
+
+  const container = document.getElementById("results");
+  container.innerHTML = "";
+
+  if (!data.items) {
+    container.innerHTML = "No results found";
+    return;
+  }
+
+  data.items.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "item";
+
+    div.innerHTML = `
+      <strong>${item.name}</strong><br/>
+      $${item.price.toFixed(2)} x ${item.quantity}<br/>
+      ${item.meta?.image ? `<img src="${item.meta.image}" />` : ""}
+      <div>${item.meta?.description || ""}</div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+</script>
+
+</body>
+</html>
