@@ -1,0 +1,5 @@
+# Map subdomains to their specific HTML files
+https://harry.thetobaccocenter.com/* /harry.html 200
+https://ops.thetobaccocenter.com/* /ops.html 200
+https://humidor.thetobaccocenter.com/* /my-humidor.html 200
+https://virtual.thetobaccocenter.com/* /virtual_humidor.html 200
