@@ -11,41 +11,25 @@
         header { padding: 40px 20px; text-align: center; }
         h1 { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); margin: 0; }
         .motto { font-style: italic; color: var(--mint); margin-top: 5px; }
-
-        .legend { 
-            display: flex; justify-content: center; gap: 20px; 
-            margin: 10px auto 30px; flex-wrap: wrap; 
-            max-width: 900px; padding: 0 20px;
-        }
+        .legend { display: flex; justify-content: center; gap: 20px; margin: 10px auto 30px; flex-wrap: wrap; max-width: 900px; padding: 0 20px; }
         .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--mint); font-weight: 600; }
         .dot-key { width: 10px; height: 10px; border-radius: 50%; }
-
         .controls { max-width: 900px; margin: 0 auto 20px; padding: 0 20px; display: flex; gap: 15px; flex-wrap: wrap; }
         .search-box { flex: 2; min-width: 250px; }
         .filter-box { flex: 1; min-width: 150px; }
-        
-        input, select { 
-            width: 100%; padding: 15px 25px; border-radius: 50px; 
-            border: 1px solid var(--forest); background: #052621; 
-            color: white; outline: none; font-family: inherit; font-size: 1rem;
-        }
+        input, select { width: 100%; padding: 15px 25px; border-radius: 50px; border: 1px solid var(--forest); background: #052621; color: white; outline: none; font-family: inherit; font-size: 1rem; }
         select { appearance: none; cursor: pointer; }
-
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; padding: 40px; max-width: 1400px; margin: auto; }
-        
         .card { background: var(--forest); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid transparent; position: relative; }
         .card:hover { transform: translateY(-5px); border-color: var(--gold); }
         .card img { width: 100%; height: 250px; object-fit: contain; background: white; padding: 10px; box-sizing: border-box; }
         .card-info { padding: 15px; }
-        
         .name-wrapper { display: flex; align-items: flex-start; gap: 10px; min-height: 3.5rem; }
         .card-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
         .cigar-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--white); line-height: 1.2; }
         .cigar-price { color: var(--gold); font-weight: 600; margin-top: 5px; font-size: 1.1rem; }
-
         .card.house-blend { border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(201, 168, 76, 0.4); background: linear-gradient(145deg, #033d33, #052621); }
         .house-badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: var(--jungle); padding: 5px 12px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; border-radius: 4px; z-index: 10; }
-
         .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 99; backdrop-filter: blur(5px); }
         .drawer { position: fixed; top: 0; right: -100%; width: 100%; max-width: 450px; height: 100%; background: var(--jungle); z-index: 100; transition: 0.4s; padding: 40px; box-sizing: border-box; overflow-y: auto; border-left: 1px solid var(--gold); }
         .drawer.active { right: 0; }
@@ -133,19 +117,25 @@
 
     async function load() {
         try {
-            // Pointing to your new Worker without the /public-humidor path
             const r = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
-            inventory = await r.json();
-            
-            inventory.sort((a, b) => {
-                if (a.name.toLowerCase().includes('3rd rule')) return -1;
-                if (b.name.toLowerCase().includes('3rd rule')) return 1;
-                return a.name.localeCompare(b.name);
-            });
-            render(inventory);
+            const data = await r.json();
+
+            // 🔥 SAFETY CHECK: Only sort if data is actually an array
+            if (Array.isArray(data) && data.length > 0) {
+                inventory = data;
+                inventory.sort((a, b) => {
+                    if (a.name.toLowerCase().includes('3rd rule')) return -1;
+                    if (b.name.toLowerCase().includes('3rd rule')) return 1;
+                    return a.name.localeCompare(b.name);
+                });
+                render(inventory);
+            } else {
+                console.warn("Inventory is empty or not an array.");
+                document.getElementById('humidorGrid').innerHTML = '<p style="text-align:center; color:var(--gold); padding:50px;">Our virtual humidor is being restocked. Check back in a few minutes!</p>';
+            }
         } catch (err) {
             console.error("Load failed:", err);
-            document.getElementById('humidorGrid').innerHTML = '<p style="text-align:center; color:var(--gold); padding: 50px;">The humidor is currently being stocked. Please refresh in a moment.</p>';
+            document.getElementById('humidorGrid').innerHTML = '<p style="text-align:center; color:var(--gold); padding:50px;">Connectivity issue. Please refresh.</p>';
         }
     }
 
@@ -166,7 +156,7 @@
                         <span class="card-dot" style="background-color: ${ui.color}"></span>
                         <div class="cigar-name">${item.name}</div>
                     </div>
-                    <div class="cigar-price">$${item.price.toFixed(2)}</div>
+                    <div class="cigar-price">$${(item.price || 0).toFixed(2)}</div>
                 </div>
             </div>`;
         }).join('');
@@ -196,7 +186,7 @@
         document.getElementById('dName').innerText = item.name;
         document.getElementById('dDot').style.backgroundColor = ui.color;
         document.getElementById('dStrengthText').innerText = ui.label;
-        document.getElementById('dPrice').innerText = `$${item.price.toFixed(2)}`;
+        document.getElementById('dPrice').innerText = `$${(item.price || 0).toFixed(2)}`;
         document.getElementById('dVitola').innerText = det.vitola || "Classic";
         document.getElementById('dWrapper').innerText = det.wrapper || "Hand-selected";
         document.getElementById('dBinder').innerText = (det.binder || "Premium") + " / " + (det.filler || "Long-filler");
