@@ -1,120 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Virtual Humidor | The Tobacco Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Virtual Humidor | The Tobacco Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Josefin+Sans:wght@300;600&display=swap" rel="stylesheet">
     <style>
-        :root { --jungle: #001b16; --forest: #033d33; --mint: #259f8a; --gold: #c9a84c; --white: #ffffff; }
-        body { background-color: var(--jungle); color: var(--white); font-family: 'Josefin Sans', sans-serif; margin: 0; padding: 0; }
-        header { padding: 40px 20px; text-align: center; }
-        h1 { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); margin: 0; }
-        .motto { font-style: italic; color: var(--mint); margin-top: 5px; text-align: center; display: block; }
-        .legend { display: flex; justify-content: center; gap: 20px; margin: 10px auto 30px; flex-wrap: wrap; max-width: 900px; padding: 0 20px; }
-        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--mint); font-weight: 600; }
-        .dot-key { width: 12px; height: 12px; border-radius: 50%; }
-        .controls { max-width: 900px; margin: 0 auto 20px; padding: 0 20px; }
-        input { width: 100%; padding: 15px 25px; border-radius: 50px; border: 1px solid var(--forest); background: #052621; color: white; outline: none; font-family: inherit; font-size: 1rem; box-sizing: border-box; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; padding: 40px; max-width: 1400px; margin: auto; }
-        .card { background: var(--forest); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid transparent; position: relative; }
-        .card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .card img { width: 100%; height: 250px; object-fit: contain; background: white; padding: 15px; box-sizing: border-box; }
-        .card-info { padding: 15px; }
-        .name-wrapper { display: flex; align-items: flex-start; gap: 10px; min-height: 3.5rem; }
-        .card-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
-        .cigar-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--white); line-height: 1.2; }
-        .cigar-price { color: var(--gold); font-weight: 600; margin-top: 5px; font-size: 1.1rem; }
-        .card.house-blend { border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(201, 168, 76, 0.4); }
-        .house-badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: var(--jungle); padding: 5px 12px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; border-radius: 4px; }
-        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 99; backdrop-filter: blur(5px); }
-        .drawer { position: fixed; top: 0; right: -100%; width: 100%; max-width: 450px; height: 100%; background: var(--jungle); z-index: 100; transition: 0.4s; padding: 40px; box-sizing: border-box; overflow-y: auto; border-left: 1px solid var(--gold); }
-        .drawer.active { right: 0; }
-        .drawer-overlay.active { display: block; }
-        .strength-container { display: flex; align-items: center; gap: 10px; margin: 20px 0; }
-        .dot-large { width: 14px; height: 14px; border-radius: 50%; }
-        .spec-box { margin-top: 25px; border-top: 1px solid rgba(201,168,76,0.2); padding-top: 20px; }
-        .spec-label { color: var(--mint); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
-        .spec-val { font-size: 1.1rem; margin-bottom: 15px; color: #e0e0e0; }
-        .profile { font-family: 'Playfair Display', serif; font-style: italic; line-height: 1.6; border-left: 2px solid var(--gold); padding-left: 15px; margin-top: 20px; }
+        :root { --gold: #c9a84c; --jungle: #001b16; --forest: #033d33; }
+        body { font-family: 'Josefin Sans', sans-serif; background: var(--jungle); color: #eee; padding: 20px; text-align: center; }
+        h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2.5rem; margin-top: 40px; }
+        
+        input { padding: 15px; font-size: 18px; width: 100%; max-width: 320px; border-radius: 50px; border: 1px solid var(--gold); background: #052621; color: white; text-align: center; outline: none; box-sizing: border-box; }
+        button { padding: 15px; border-radius: 50px; border: none; background: var(--gold); color: var(--jungle); font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 320px; transition: 0.3s; }
+        
+        /* 🛑 THE SHAKE-KILLER: CSS GRID LOCK */
+        #results { max-width: 650px; margin: 40px auto; text-align: left; }
+        
+        .item { 
+            background: var(--forest); 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 15px; 
+            border-left: 5px solid var(--gold); 
+            display: grid;
+            /* Column 1 is EXACTLY 85px. Column 2 takes the rest. */
+            grid-template-columns: 85px 1fr; 
+            gap: 20px; 
+            align-items: start;
+            min-height: 100px; /* Pre-reserves vertical space */
+            overflow: hidden;
+        }
+
+        .img-box { 
+            width: 85px; 
+            height: 85px; 
+            background: white; 
+            border-radius: 8px; 
+            display: block; 
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .img-box img { 
+            width: 85px; 
+            height: 85px; 
+            object-fit: contain; 
+            display: block;
+        }
+
+        .details { display: block; }
     </style>
 </head>
 <body>
-    <header><h1>The Virtual Humidor</h1><div class="motto">tabacarius qui curat</div></header>
-    <div class="legend">
-        <div class="legend-item"><span class="dot-key" style="background-color: #ffcc00;"></span> Mild</div>
-        <div class="legend-item"><span class="dot-key" style="background-color: #28a745;"></span> Medium</div>
-        <div class="legend-item"><span class="dot-key" style="background-color: #dc3545;"></span> Full</div>
-        <div class="legend-item"><span class="dot-key" style="background-color: #007bff;"></span> Flavored</div>
-    </div>
-    <div class="controls"><input type="text" id="searchBar" placeholder="Search brands, wrappers, or flavors..." onkeyup="processFilters()"></div>
-    <div class="grid" id="humidorGrid"></div>
-    <div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
-    <div id="sideDrawer" class="drawer">
-        <span onclick="closeDrawer()" style="color:var(--gold); font-size:2rem; cursor:pointer; float:right;">&times;</span>
-        <img id="dImg" src="" style="width:100%; height:250px; object-fit:contain; background:white; border-radius:10px;">
-        <h2 id="dName" style="color:var(--gold); font-family:'Playfair Display'; margin-top:20px;"></h2>
-        <div class="strength-container"><span id="dDot" class="dot-large"></span><span id="dStrengthText" style="text-transform:uppercase; letter-spacing:1px; font-size:0.8rem;"></span></div>
-        <div id="dPrice" style="font-size:1.3rem; margin-bottom:20px;"></div>
-        <div class="spec-box">
-            <div class="spec-label">Vitola</div><div id="dVitola" class="spec-val"></div>
-            <div class="spec-label">Wrapper</div><div id="dWrapper" class="spec-val"></div>
-            <div class="spec-label">Binder / Filler</div><div id="dBinder" class="spec-val"></div>
-            <div class="profile" id="dProfile"></div>
-        </div>
-    </div>
+    <h2>Virtual Humidor</h2>
+    <p style="margin-bottom:25px; font-weight:300;">Enter your phone number to view your smoking history.</p>
+    
+    <input id="phone" type="tel" placeholder="(XXX) XXX-XXXX" /> <br>
+    <button onclick="lookup()">Unlock Vault</button>
+
+    <div id="results"></div>
 
     <script>
-        let inventory = [];
-        function getUI(strength, name) {
-            const s = (strength || "").toLowerCase();
-            const n = (name || "").toLowerCase();
-            if (s.includes('mild')) return { c: '#ffcc00', l: 'Mild' };
-            if (s.includes('full')) return { c: '#dc3545', l: 'Full Bodied' };
-            if (s.includes('flavored') || n.includes('latte')) return { c: '#007bff', l: 'Flavored' };
-            return { c: '#28a745', l: 'Medium' };
+        const API_URL = "https://ttc-inv-api.williamsportcigars.workers.dev/customer-lookup";
+
+        // Auto-format phone input
+        document.getElementById("phone").addEventListener("input", e => {
+            let x = e.target.value.replace(/\D/g, "").slice(0, 10);
+            e.target.value = x.length > 6 ? `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}` : x.length > 3 ? `(${x.slice(0,3)}) ${x.slice(3)}` : x;
+        });
+
+        async function lookup() {
+            const phone = document.getElementById("phone").value.replace(/\D/g, "").slice(-10);
+            const container = document.getElementById("results");
+            if(phone.length < 10) return alert("Please enter a full phone number.");
+
+            container.innerHTML = "<p style='text-align:center; color:var(--gold);'>Opening your private vault...</p>";
+
+            try {
+                const res = await fetch(API_URL, { 
+                    method: "POST", 
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phone }) 
+                });
+                const data = await res.json();
+
+                if (!data.items || data.items.length === 0) {
+                    container.innerHTML = "<p style='text-align:center;'>No history found. Ensure you use this phone number at the register!</p>";
+                    return;
+                }
+
+                container.innerHTML = "";
+                data.items.forEach(item => {
+                    // Use a placeholder if no image exists
+                    const imgSrc = item.meta?.image || 'https://thetobaccocenter.com/logo-placeholder.png';
+                    
+                    container.innerHTML += `
+                        <div class="item">
+                            <div class="img-box">
+                                <img src="${imgSrc}" alt="Cigar Image">
+                            </div>
+                            <div class="details">
+                                <div style="font-family:'Playfair Display'; color:var(--gold); font-size:1.3rem; font-weight:bold;">${item.name}</div>
+                                <div style="font-size:0.8rem; color:#259f8a; margin-bottom:8px;">Purchased: ${item.date}</div>
+                                <div style="font-size:0.9rem; line-height:1.4; color:#ccc;">${item.meta?.profile || "Classic TTC selection."}</div>
+                            </div>
+                        </div>`;
+                });
+            } catch (e) {
+                container.innerHTML = "<p style='text-align:center; color:red;'>Vault connection error. Please try again.</p>";
+            }
         }
-        async function load() {
-            const r = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
-            inventory = await r.json();
-            render(inventory);
-        }
-        function render(items) {
-            document.getElementById('humidorGrid').innerHTML = items.map(i => {
-                const ui = getUI(i.details?.strength, i.name);
-                const isH = i.name.toLowerCase().includes('3rd rule');
-                return `
-                <div class="card ${isH ? 'house-blend' : ''}" onclick="openDrawer('${i.id}')">
-                    ${isH ? '<div class="house-badge">House Blend</div>' : ''}
-                    <img src="${i.details?.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
-                    <div class="card-info">
-                        <div class="name-wrapper"><span class="card-dot" style="background-color:${ui.c}"></span><div class="cigar-name">${i.name}</div></div>
-                        <div class="cigar-price">$${(i.price || 0).toFixed(2)}</div>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-        function processFilters() {
-            const q = document.getElementById('searchBar').value.toLowerCase();
-            render(inventory.filter(i => i.name.toLowerCase().includes(q)));
-        }
-        function openDrawer(id) {
-            const i = inventory.find(x => x.id === id); if(!i) return;
-            const ui = getUI(i.details?.strength, i.name);
-            document.getElementById('dImg').src = i.details?.image || 'https://thetobaccocenter.com/logo-placeholder.png';
-            document.getElementById('dName').innerText = i.name;
-            document.getElementById('dDot').style.backgroundColor = ui.c;
-            document.getElementById('dStrengthText').innerText = ui.l;
-            document.getElementById('dPrice').innerText = `$${(i.price || 0).toFixed(2)}`;
-            document.getElementById('dVitola').innerText = i.details?.vitola || "Standard";
-            document.getElementById('dWrapper').innerText = i.details?.wrapper || "Premium Leaf";
-            document.getElementById('dBinder').innerText = (i.details?.binder || "Select") + " / " + (i.details?.filler || "Long-filler");
-            document.getElementById('dProfile').innerText = i.details?.profile || "Tasting notes available in-lounge.";
-            document.getElementById('sideDrawer').classList.add('active');
-            document.getElementById('overlay').classList.add('active');
-        }
-        function closeDrawer() { document.getElementById('sideDrawer').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
-        load();
     </script>
 </body>
 </html>
