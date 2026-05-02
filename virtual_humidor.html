@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Humidor | The Tobacco Center | Williamsport, PA</title>
+    <title>Virtual Humidor | The Tobacco Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -21,7 +21,7 @@
 
         body { font-family: var(--font-body); background: var(--warm-white); color: var(--text); line-height: 1.7; }
 
-        /* NAV MATCH */
+        /* NAV */
         .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--black); border-bottom: 1px solid rgba(77,191,138,0.2); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; }
         .nav-logo { font-family: var(--font-display); color: var(--mint); font-size: 15px; letter-spacing: 0.06em; text-decoration: none; font-weight: 700; text-transform: uppercase; }
         .nav-logo span { font-style: italic; font-weight: 400; color: rgba(168,230,200,0.55); font-size: 11px; display: block; letter-spacing: 0.12em; }
@@ -32,24 +32,27 @@
         .inv-hero h1 em { color: var(--mint); font-style: italic; }
         .eyebrow { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mint); display: block; margin-bottom: 1rem; }
 
-        /* FILTER DROPDOWN - FIXED VISIBILITY */
+        /* FILTER DROPDOWN - FIXED WHITE ON WHITE */
         .filter-wrap { background: var(--forest); padding: 2rem 4rem; border-top: 1px solid rgba(77,191,138,0.12); display: flex; align-items: center; gap: 20px; }
         .filter-wrap label { font-family: var(--font-sans); font-size: 10px; color: var(--mint-pale); text-transform: uppercase; letter-spacing: 0.1em; }
         
         select { 
-            background: var(--jungle); 
-            color: var(--mint); /* Text color inside the box */
-            border: 1px solid var(--mint); 
-            padding: 8px 15px; 
+            background: white !important; /* Force white background */
+            color: black !important;      /* Force black text */
+            border: 2px solid var(--mint); 
+            padding: 10px 20px; 
             font-family: var(--font-sans); 
             text-transform: uppercase; 
-            font-size: 11px; 
+            font-size: 12px; 
+            font-weight: 600;
             outline: none; 
-            cursor: pointer; 
+            cursor: pointer;
+            border-radius: 4px;
+            appearance: auto; /* Uses standard browser arrow for better compatibility */
         }
         select option {
-            background: white; /* Background of the options list */
-            color: black;      /* Text color of the options list */
+            background: white;
+            color: black;
         }
 
         /* INVENTORY GRID */
@@ -76,7 +79,6 @@
         .cigar-meta { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem; }
         .cigar-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.8; }
 
-        /* STATUS MESSAGES - FIXED TO TEAL */
         .status-msg { font-family: var(--font-display); font-style: italic; color: var(--teal); text-align: center; grid-column: 1/-1; padding: 4rem; }
 
         /* FOOTER */
@@ -88,6 +90,7 @@
             .cigar-card { grid-template-columns: 1fr; text-align: center; }
             .img-box { margin: 0 auto; }
             .cigar-card::before { left: 50%; transform: translateX(-50%); }
+            .filter-wrap { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
