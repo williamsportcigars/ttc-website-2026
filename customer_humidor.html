@@ -4,12 +4,15 @@
     <title>My Humidor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { font-family: sans-serif; background: #001b16; color: #eee; padding: 20px; text-align: center; }
-        h2 { color: #c9a84c; font-size: 2.2rem; }
-        input { padding: 15px; font-size: 18px; width: 100%; max-width: 320px; border-radius: 50px; border: 1px solid #c9a84c; background: #052621; color: white; text-align: center; outline: none; }
-        button { padding: 15px; border-radius: 50px; border: none; background: #c9a84c; color: #001b16; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 320px; }
-        .item { background: #033d33; padding: 20px; border-radius: 12px; margin: 15px auto; border-left: 5px solid #c9a84c; display: flex; gap: 20px; align-items: center; text-align: left; max-width: 600px; }
-        .item img { width: 80px; height: 80px; object-fit: contain; background: white; border-radius: 8px; }
+        :root { --gold: #c9a84c; --jungle: #001b16; }
+        body { font-family: sans-serif; background: var(--jungle); color: #eee; padding: 20px; text-align: center; }
+        h2 { color: var(--gold); font-size: 2.2rem; }
+        input { padding: 15px; font-size: 18px; width: 100%; max-width: 320px; border-radius: 50px; border: 1px solid var(--gold); background: #052621; color: white; text-align: center; outline: none; }
+        button { padding: 15px; border-radius: 50px; border: none; background: var(--gold); color: var(--jungle); font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 320px; }
+        .item { background: #033d33; padding: 20px; border-radius: 12px; margin: 15px auto; border-left: 5px solid var(--gold); display: flex; gap: 20px; align-items: center; text-align: left; max-width: 600px; }
+        /* STABILIZED IMAGE BOX */
+        .img-box { width: 80px; height: 80px; min-width: 80px; background: white; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .item img { width: 100%; height: 100%; object-fit: contain; }
     </style>
 </head>
 <body>
@@ -30,19 +33,19 @@
             try {
                 const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ phone }) });
                 const data = await res.json();
-                container.innerHTML = data.items.length ? "" : "Found your profile! Purchase history updates soon.";
+                container.innerHTML = data.items.length ? "" : "Found profile! Adding history...";
                 data.items.forEach(item => {
                     container.innerHTML += `
                         <div class="item">
-                            <img src="${item.meta?.image || 'https://thetobaccocenter.com/logo-placeholder.png'}">
+                            <div class="img-box"><img src="${item.meta?.image || 'https://thetobaccocenter.com/logo-placeholder.png'}"></div>
                             <div>
-                                <div style="color:#c9a84c; font-size:1.2rem; font-weight:bold;">${item.name}</div>
+                                <div style="color:var(--gold); font-size:1.2rem; font-weight:bold;">${item.name}</div>
                                 <div style="font-size:0.8rem; color:#259f8a">Purchased: ${item.date}</div>
                                 <div style="font-size:0.9rem; margin-top:5px;">${item.meta?.profile || item.note || ""}</div>
                             </div>
                         </div>`;
                 });
-            } catch (e) { container.innerHTML = "Error connecting."; }
+            } catch (e) { container.innerHTML = "Error."; }
         }
     </script>
 </body>
