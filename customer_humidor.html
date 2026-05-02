@@ -9,10 +9,9 @@
         h2 { color: var(--gold); font-size: 2.2rem; }
         input { padding: 15px; font-size: 18px; width: 100%; max-width: 320px; border-radius: 50px; border: 1px solid var(--gold); background: #052621; color: white; text-align: center; outline: none; }
         button { padding: 15px; border-radius: 50px; border: none; background: var(--gold); color: var(--jungle); font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 320px; }
-        .item { background: #033d33; padding: 20px; border-radius: 12px; margin: 15px auto; border-left: 5px solid var(--gold); display: flex; gap: 20px; align-items: center; text-align: left; max-width: 600px; }
-        /* STABILIZED IMAGE BOX */
-        .img-box { width: 80px; height: 80px; min-width: 80px; background: white; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .item img { width: 100%; height: 100%; object-fit: contain; }
+        .item { background: #033d33; padding: 20px; border-radius: 12px; margin: 15px auto; border-left: 5px solid var(--gold); display: flex; gap: 20px; align-items: center; text-align: left; max-width: 600px; min-height: 120px; }
+        .img-box { width: 80px; height: 80px; min-width: 80px; flex-shrink: 0; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; aspect-ratio: 1 / 1; }
+        .img-box img { width: 100%; height: 100%; object-fit: contain; }
     </style>
 </head>
 <body>
@@ -33,7 +32,7 @@
             try {
                 const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ phone }) });
                 const data = await res.json();
-                container.innerHTML = data.items.length ? "" : "Found profile! Adding history...";
+                container.innerHTML = data.items.length ? "" : "Access granted! Syncing history.";
                 data.items.forEach(item => {
                     container.innerHTML += `
                         <div class="item">
@@ -45,7 +44,7 @@
                             </div>
                         </div>`;
                 });
-            } catch (e) { container.innerHTML = "Error."; }
+            } catch (e) { container.innerHTML = "Error connecting."; }
         }
     </script>
 </body>
