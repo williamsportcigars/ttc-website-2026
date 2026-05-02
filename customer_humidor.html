@@ -30,7 +30,7 @@
             try {
                 const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ phone }) });
                 const data = await res.json();
-                container.innerHTML = data.items.length ? "" : "History syncing soon!";
+                container.innerHTML = data.items.length ? "" : "Found your profile! History sync in progress.";
                 data.items.forEach(item => {
                     container.innerHTML += `
                         <div class="item">
@@ -42,7 +42,7 @@
                             </div>
                         </div>`;
                 });
-            } catch (e) { container.innerHTML = "Error."; }
+            } catch (e) { container.innerHTML = "Error connecting."; }
         }
     </script>
 </body>
