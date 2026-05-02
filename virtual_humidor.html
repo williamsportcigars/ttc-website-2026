@@ -133,9 +133,10 @@
 
     async function load() {
         try {
-            // UPDATED: Pointing to your recreated Worker API
-            const r = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/public-humidor');
+            // Pointing to your new Worker without the /public-humidor path
+            const r = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
             inventory = await r.json();
+            
             inventory.sort((a, b) => {
                 if (a.name.toLowerCase().includes('3rd rule')) return -1;
                 if (b.name.toLowerCase().includes('3rd rule')) return 1;
@@ -143,8 +144,8 @@
             });
             render(inventory);
         } catch (err) {
-            console.error("Inventory load failed:", err);
-            document.getElementById('humidorGrid').innerHTML = '<p style="text-align:center; color:var(--gold);">Inventory currently resting. Please check back shortly.</p>';
+            console.error("Load failed:", err);
+            document.getElementById('humidorGrid').innerHTML = '<p style="text-align:center; color:var(--gold); padding: 50px;">The humidor is currently being stocked. Please refresh in a moment.</p>';
         }
     }
 
