@@ -11,17 +11,11 @@
         header { padding: 40px 20px; text-align: center; }
         h1 { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); margin: 0; }
         .motto { font-style: italic; color: var(--mint); margin-top: 5px; text-align: center; display: block; }
-
-        /* Legend */
         .legend { display: flex; justify-content: center; gap: 20px; margin: 10px auto 30px; flex-wrap: wrap; max-width: 900px; padding: 0 20px; }
         .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--mint); font-weight: 600; }
-        .dot-key { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-
-        /* Controls */
-        .controls { max-width: 900px; margin: 0 auto 20px; padding: 0 20px; display: flex; gap: 15px; flex-wrap: wrap; }
-        input, select { width: 100%; padding: 15px 25px; border-radius: 50px; border: 1px solid var(--forest); background: #052621; color: white; outline: none; font-family: inherit; font-size: 1rem; }
-
-        /* Grid & Cards */
+        .dot-key { width: 12px; height: 12px; border-radius: 50%; }
+        .controls { max-width: 900px; margin: 0 auto 20px; padding: 0 20px; }
+        input { width: 100%; padding: 15px 25px; border-radius: 50px; border: 1px solid var(--forest); background: #052621; color: white; outline: none; font-family: inherit; font-size: 1rem; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; padding: 40px; max-width: 1400px; margin: auto; }
         .card { background: var(--forest); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid transparent; position: relative; }
         .card:hover { transform: translateY(-5px); border-color: var(--gold); }
@@ -31,160 +25,96 @@
         .card-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
         .cigar-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--white); line-height: 1.2; }
         .cigar-price { color: var(--gold); font-weight: 600; margin-top: 5px; font-size: 1.1rem; }
-
-        /* 🔥 GOLD GLOW FOR 3RD RULE */
-        .card.house-blend { 
-            border: 2px solid var(--gold) !important; 
-            box-shadow: 0 0 20px rgba(201, 168, 76, 0.5); 
-            background: linear-gradient(145deg, #033d33, #052621); 
-        }
-        .house-badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: var(--jungle); padding: 5px 12px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; border-radius: 4px; z-index: 10; }
-
-        /* Drawer */
+        .card.house-blend { border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(201, 168, 76, 0.4); }
+        .house-badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: var(--jungle); padding: 5px 12px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; border-radius: 4px; }
         .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 99; backdrop-filter: blur(5px); }
         .drawer { position: fixed; top: 0; right: -100%; width: 100%; max-width: 450px; height: 100%; background: var(--jungle); z-index: 100; transition: 0.4s; padding: 40px; box-sizing: border-box; overflow-y: auto; border-left: 1px solid var(--gold); }
         .drawer.active { right: 0; }
         .drawer-overlay.active { display: block; }
-        
-        /* 🔥 STRENGTH DOT IN DRAWER */
-        .strength-container { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
-        .dot-large { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
-        .strength-text { text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; font-weight: 600; color: var(--mint); }
-
+        .strength-container { display: flex; align-items: center; gap: 10px; margin: 20px 0; }
+        .dot-large { width: 14px; height: 14px; border-radius: 50%; }
         .spec-box { margin-top: 25px; border-top: 1px solid rgba(201,168,76,0.2); padding-top: 20px; }
-        .spec-label { color: var(--mint); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-        .spec-val { font-size: 1.1rem; margin-bottom: 18px; color: #e0e0e0; }
-        .profile { font-family: 'Playfair Display', serif; font-style: italic; line-height: 1.6; border-left: 2px solid var(--gold); padding-left: 15px; margin-top: 25px; color: #f0f0f0; }
+        .spec-label { color: var(--mint); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+        .spec-val { font-size: 1.1rem; margin-bottom: 15px; color: #e0e0e0; }
+        .profile { font-family: 'Playfair Display', serif; font-style: italic; line-height: 1.6; border-left: 2px solid var(--gold); padding-left: 15px; margin-top: 20px; }
     </style>
 </head>
 <body>
-
-<header>
-    <h1>The Virtual Humidor</h1>
-    <div class="motto">tabacarius qui curat</div>
-</header>
-
-<div class="legend">
-    <div class="legend-item"><span class="dot-key" style="background-color: #ffcc00;"></span> Mild</div>
-    <div class="legend-item"><span class="dot-key" style="background-color: #28a745;"></span> Medium</div>
-    <div class="legend-item"><span class="dot-key" style="background-color: #dc3545;"></span> Full</div>
-    <div class="legend-item"><span class="dot-key" style="background-color: #007bff;"></span> Flavored</div>
-</div>
-
-<div class="controls">
-    <input type="text" id="searchBar" placeholder="Search brands, wrappers, or flavors..." onkeyup="processFilters()">
-</div>
-
-<div class="grid" id="humidorGrid"></div>
-
-<div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
-<div id="sideDrawer" class="drawer">
-    <span onclick="closeDrawer()" style="color:var(--gold); font-size:2.5rem; cursor:pointer; float:right; line-height:1;">&times;</span>
-    <img id="dImg" src="" style="width:100%; height:250px; object-fit:contain; background:white; border-radius:10px;">
-    <h2 id="dName" style="color:var(--gold); font-family:'Playfair Display'; margin-top:20px; font-size: 1.8rem;"></h2>
-    
-    <div class="strength-container">
-        <span id="dDot" class="dot-large"></span>
-        <span id="dStrengthText" class="strength-text"></span>
+    <header><h1>The Virtual Humidor</h1><div class="motto">tabacarius qui curat</div></header>
+    <div class="legend">
+        <div class="legend-item"><span class="dot-key" style="background-color: #ffcc00;"></span> Mild</div>
+        <div class="legend-item"><span class="dot-key" style="background-color: #28a745;"></span> Medium</div>
+        <div class="legend-item"><span class="dot-key" style="background-color: #dc3545;"></span> Full</div>
+        <div class="legend-item"><span class="dot-key" style="background-color: #007bff;"></span> Flavored</div>
+    </div>
+    <div class="controls"><input type="text" id="searchBar" placeholder="Search brands, wrappers, or flavors..." onkeyup="processFilters()"></div>
+    <div class="grid" id="humidorGrid"></div>
+    <div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
+    <div id="sideDrawer" class="drawer">
+        <span onclick="closeDrawer()" style="color:var(--gold); font-size:2rem; cursor:pointer; float:right;">&times;</span>
+        <img id="dImg" src="" style="width:100%; height:250px; object-fit:contain; background:white; border-radius:10px;">
+        <h2 id="dName" style="color:var(--gold); font-family:'Playfair Display'; margin-top:20px;"></h2>
+        <div class="strength-container"><span id="dDot" class="dot-large"></span><span id="dStrengthText" style="text-transform:uppercase; letter-spacing:1px; font-size:0.8rem;"></span></div>
+        <div id="dPrice" style="font-size:1.3rem; margin-bottom:20px;"></div>
+        <div class="spec-box">
+            <div class="spec-label">Vitola</div><div id="dVitola" class="spec-val"></div>
+            <div class="spec-label">Wrapper</div><div id="dWrapper" class="spec-val"></div>
+            <div class="spec-label">Binder / Filler</div><div id="dBinder" class="spec-val"></div>
+            <div class="profile" id="dProfile"></div>
+        </div>
     </div>
 
-    <div id="dPrice" style="font-size:1.4rem; color: var(--white); font-weight: 600;"></div>
-
-    <div class="spec-box">
-        <div class="spec-label">Vitola</div><div id="dVitola" class="spec-val"></div>
-        <div class="spec-label">Wrapper</div><div id="dWrapper" class="spec-val"></div>
-        <div class="spec-label">Binder / Filler</div><div id="dBinder" class="spec-val"></div>
-        <div class="profile" id="dProfile"></div>
-    </div>
-</div>
-
-<script>
-    let inventory = [];
-
-    function getStrengthUI(strength, name, profile) {
-        const n = (name || "").toLowerCase();
-        const s = (strength || "").toLowerCase();
-        const p = (profile || "").toLowerCase();
-        if (n.includes('latte') || n.includes('infused') || p.includes('infused') || n.includes('breeze')) 
-            return { color: '#007bff', label: 'Flavored / Infused', type: 'flavored' };
-        if (s.includes('full') || s.includes('bold') || n.includes('3rd rule')) 
-            return { color: '#dc3545', label: 'Full Bodied', type: 'full' };
-        if (s.includes('mild') || s.includes('mellow')) 
-            return { color: '#ffcc00', label: 'Mild / Mellow', type: 'mild' };
-        return { color: '#28a745', label: 'Medium Bodied', type: 'medium' };
-    }
-
-    async function load() {
-        try {
+    <script>
+        let inventory = [];
+        function getUI(strength, name) {
+            const s = (strength || "").toLowerCase();
+            const n = (name || "").toLowerCase();
+            if (s.includes('mild')) return { c: '#ffcc00', l: 'Mild' };
+            if (s.includes('full')) return { c: '#dc3545', l: 'Full Bodied' };
+            if (s.includes('flavored') || n.includes('latte')) return { c: '#007bff', l: 'Flavored' };
+            return { c: '#28a745', l: 'Medium' };
+        }
+        async function load() {
             const r = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
             inventory = await r.json();
-            processFilters();
-        } catch (err) {
-            document.getElementById('humidorGrid').innerHTML = '<p style="text-align:center; padding:50px; color:var(--gold);">Humidor syncing...</p>';
+            render(inventory);
         }
-    }
-
-    function render(items) {
-        document.getElementById('humidorGrid').innerHTML = items.map(item => {
-            const isHouse = item.name.toLowerCase().includes('3rd rule');
-            const det = item.details || {};
-            const ui = getStrengthUI(det.strength, item.name, det.profile || "");
-            const img = det.image || 'https://thetobaccocenter.com/logo-placeholder.png';
-            
-            return `
-            <div class="card ${isHouse ? 'house-blend' : ''}" onclick="openDrawer('${item.id}')">
-                ${isHouse ? '<div class="house-badge">House Blend</div>' : ''}
-                <img src="${img}" onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
-                <div class="card-info">
-                    <div class="name-wrapper">
-                        <span class="card-dot" style="background-color: ${ui.color}"></span>
-                        <div class="cigar-name">${item.name}</div>
+        function render(items) {
+            document.getElementById('humidorGrid').innerHTML = items.map(i => {
+                const ui = getUI(i.details?.strength, i.name);
+                const isH = i.name.toLowerCase().includes('3rd rule');
+                return `
+                <div class="card ${isH ? 'house-blend' : ''}" onclick="openDrawer('${i.id}')">
+                    ${isH ? '<div class="house-badge">House Blend</div>' : ''}
+                    <img src="${i.details?.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
+                    <div class="card-info">
+                        <div class="name-wrapper"><span class="card-dot" style="background-color:${ui.c}"></span><div class="cigar-name">${i.name}</div></div>
+                        <div class="cigar-price">$${(i.price || 0).toFixed(2)}</div>
                     </div>
-                    <div class="cigar-price">$${(item.price || 0).toFixed(2)}</div>
-                </div>
-            </div>`;
-        }).join('');
-    }
-
-    function processFilters() {
-        const query = document.getElementById('searchBar').value.toLowerCase();
-        const filtered = inventory.filter(item => {
-            const det = item.details || {};
-            const matchesSearch = item.name.toLowerCase().includes(query) || (det.wrapper || "").toLowerCase().includes(query);
-            return matchesSearch && item.stock > 0;
-        });
-        render(filtered);
-    }
-
-    function openDrawer(id) {
-        const item = inventory.find(i => i.id === id);
-        if (!item) return;
-        const det = item.details || {};
-        const ui = getStrengthUI(det.strength, item.name, det.profile || "");
-        
-        document.getElementById('dImg').src = det.image || 'https://thetobaccocenter.com/logo-placeholder.png';
-        document.getElementById('dName').innerText = item.name;
-        
-        // Update Drawer Dot & Text
-        document.getElementById('dDot').style.backgroundColor = ui.color;
-        document.getElementById('dStrengthText').innerText = ui.label;
-        
-        document.getElementById('dPrice').innerText = `$${(item.price || 0).toFixed(2)}`;
-        document.getElementById('dVitola').innerText = det.vitola || "Classic Vitola";
-        document.getElementById('dWrapper').innerText = det.wrapper || "Hand-Selected Leaf";
-        document.getElementById('dBinder').innerText = (det.binder || "Premium") + " / " + (det.filler || "Long-Filler");
-        document.getElementById('dProfile').innerText = det.profile || "Professional tasting notes available in-lounge.";
-        
-        document.getElementById('sideDrawer').classList.add('active');
-        document.getElementById('overlay').classList.add('active');
-    }
-
-    function closeDrawer() {
-        document.getElementById('sideDrawer').classList.remove('active');
-        document.getElementById('overlay').classList.remove('active');
-    }
-
-    load();
-</script>
+                </div>`;
+            }).join('');
+        }
+        function processFilters() {
+            const q = document.getElementById('searchBar').value.toLowerCase();
+            render(inventory.filter(i => i.name.toLowerCase().includes(q)));
+        }
+        function openDrawer(id) {
+            const i = inventory.find(x => x.id === id); if(!i) return;
+            const ui = getUI(i.details?.strength, i.name);
+            document.getElementById('dImg').src = i.details?.image || 'https://thetobaccocenter.com/logo-placeholder.png';
+            document.getElementById('dName').innerText = i.name;
+            document.getElementById('dDot').style.backgroundColor = ui.c;
+            document.getElementById('dStrengthText').innerText = ui.l;
+            document.getElementById('dPrice').innerText = `$${(i.price || 0).toFixed(2)}`;
+            document.getElementById('dVitola').innerText = i.details?.vitola || "Standard";
+            document.getElementById('dWrapper').innerText = i.details?.wrapper || "Premium Leaf";
+            document.getElementById('dBinder').innerText = (i.details?.binder || "Select") + " / " + (i.details?.filler || "Long-filler");
+            document.getElementById('dProfile').innerText = i.details?.profile || "Tasting notes available in-lounge.";
+            document.getElementById('sideDrawer').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+        function closeDrawer() { document.getElementById('sideDrawer').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+        load();
+    </script>
 </body>
 </html>
