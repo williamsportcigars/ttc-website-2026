@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ttc-main-site",
+  "compatibility_date": "2026-05-02",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "Main Site"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
