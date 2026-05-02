@@ -12,7 +12,6 @@
         h1 { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); margin: 0; }
         .motto { font-style: italic; color: var(--mint); margin-top: 5px; }
 
-        /* Legend Styling */
         .legend { 
             display: flex; justify-content: center; gap: 20px; 
             margin: 10px auto 30px; flex-wrap: wrap; 
@@ -21,7 +20,6 @@
         .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--mint); font-weight: 600; }
         .dot-key { width: 10px; height: 10px; border-radius: 50%; }
 
-        /* Controls Section */
         .controls { max-width: 900px; margin: 0 auto 20px; padding: 0 20px; display: flex; gap: 15px; flex-wrap: wrap; }
         .search-box { flex: 2; min-width: 250px; }
         .filter-box { flex: 1; min-width: 150px; }
@@ -35,7 +33,6 @@
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; padding: 40px; max-width: 1400px; margin: auto; }
         
-        /* Card Styling */
         .card { background: var(--forest); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid transparent; position: relative; }
         .card:hover { transform: translateY(-5px); border-color: var(--gold); }
         .card img { width: 100%; height: 250px; object-fit: contain; background: white; padding: 10px; box-sizing: border-box; }
@@ -46,11 +43,9 @@
         .cigar-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--white); line-height: 1.2; }
         .cigar-price { color: var(--gold); font-weight: 600; margin-top: 5px; font-size: 1.1rem; }
 
-        /* 🔥 HOUSE BLEND STYLING */
         .card.house-blend { border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(201, 168, 76, 0.4); background: linear-gradient(145deg, #033d33, #052621); }
         .house-badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: var(--jungle); padding: 5px 12px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; border-radius: 4px; z-index: 10; }
 
-        /* Drawer Styling */
         .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 99; backdrop-filter: blur(5px); }
         .drawer { position: fixed; top: 0; right: -100%; width: 100%; max-width: 450px; height: 100%; background: var(--jungle); z-index: 100; transition: 0.4s; padding: 40px; box-sizing: border-box; overflow-y: auto; border-left: 1px solid var(--gold); }
         .drawer.active { right: 0; }
@@ -137,14 +132,20 @@
     }
 
     async function load() {
-        const r = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/public-humidor');
-        inventory = await r.json();
-        inventory.sort((a, b) => {
-            if (a.name.toLowerCase().includes('3rd rule')) return -1;
-            if (b.name.toLowerCase().includes('3rd rule')) return 1;
-            return a.name.localeCompare(b.name);
-        });
-        render(inventory);
+        try {
+            // UPDATED: Pointing to your recreated Worker API
+            const r = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/public-humidor');
+            inventory = await r.json();
+            inventory.sort((a, b) => {
+                if (a.name.toLowerCase().includes('3rd rule')) return -1;
+                if (b.name.toLowerCase().includes('3rd rule')) return 1;
+                return a.name.localeCompare(b.name);
+            });
+            render(inventory);
+        } catch (err) {
+            console.error("Inventory load failed:", err);
+            document.getElementById('humidorGrid').innerHTML = '<p style="text-align:center; color:var(--gold);">Inventory currently resting. Please check back shortly.</p>';
+        }
     }
 
     function render(items) {
