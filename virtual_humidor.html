@@ -1,56 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Virtual Humidor | The Tobacco Center</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Josefin+Sans:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #c9a84c; --jungle: #001b16; --forest: #033d33; }
-        body { font-family: 'Josefin Sans', sans-serif; background: var(--jungle); color: #eee; padding: 20px; text-align: center; }
-        h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2.8rem; margin: 40px 0 10px; }
-        
-        /* Filter Container - Stays at top */
-        #filter-area { margin-bottom: 30px; }
+        :root {
+            --black: #001b16; --dark: #001b16; --forest: #033d33; --jungle: #022e27;
+            --teal: #0d6354; --teal-light: #259f8a; --mint: #259f8a; --mint-pale: #e0fef8;
+            --gold: #c9a84c; --gold-light: #e8c76a;
+            --cream: #f0fdf8; --warm-white: #f7fffe;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Libre Baskerville', Georgia, serif;
+            --font-sans: 'Josefin Sans', sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: var(--font-body); 
+            background: var(--black); 
+            color: var(--warm-white); 
+            line-height: 1.7; 
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* HEADER STYLING MATCH */
+        .header-area { padding: 60px 20px 40px; position: relative; }
+        h2 { 
+            font-family: var(--font-display); 
+            font-size: clamp(2.5rem, 5vw, 4rem); 
+            font-weight: 900; 
+            color: var(--warm-white); 
+            margin-bottom: 10px;
+        }
+        h2 em { color: var(--mint); font-style: italic; }
+        .eyebrow { 
+            font-family: var(--font-sans); 
+            font-size: 11px; 
+            letter-spacing: 0.2em; 
+            text-transform: uppercase; 
+            color: var(--mint); 
+            display: block; 
+            margin-bottom: 1rem; 
+        }
+
+        /* FILTER DROPDOWN MATCH */
+        .filter-area { margin-bottom: 50px; z-index: 10; position: relative; }
         select { 
-            padding: 12px 25px; border-radius: 50px; background: var(--forest); 
-            color: white; border: 1px solid var(--gold); outline: none; 
-            font-family: inherit; cursor: pointer; min-width: 200px;
+            background: var(--jungle); 
+            color: var(--mint-pale); 
+            border: 1px solid rgba(77,191,138,0.35); 
+            padding: 12px 25px; 
+            font-family: var(--font-sans); 
+            font-size: 11px; 
+            letter-spacing: 0.14em; 
+            text-transform: uppercase; 
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
         }
 
-        #inventory-list { max-width: 800px; margin: 0 auto; display: grid; gap: 20px; min-height: 100vh; }
-        
-        /* 🛑 GRID-LOCK: ABSOLUTE SHAKE PREVENTION */
-        .item { 
-            background: var(--forest); border-radius: 12px; border-left: 5px solid var(--gold); 
+        /* INVENTORY LIST - STABILIZED GRID */
+        #inventory-list { 
+            max-width: 900px; 
+            margin: 0 auto; 
             display: grid; 
-            grid-template-columns: 100px 1fr; /* Rigid pillar for image */
-            gap: 25px; 
-            padding: 20px; text-align: left; align-items: start; 
-            min-height: 140px; 
-            box-sizing: border-box;
-            overflow: hidden;
+            gap: 24px; 
+            min-height: 100vh;
         }
 
-        .img-box { 
-            width: 100px; height: 100px; 
-            background: #fff; border-radius: 8px; 
-            overflow: hidden; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
+        .item { 
+            background: var(--jungle); 
+            border: 1px solid rgba(77,191,138,0.15);
+            padding: 25px; 
+            display: grid;
+            grid-template-columns: 120px 1fr; /* Rigid pillar to prevent shaking */
+            gap: 30px;
+            text-align: left;
+            align-items: start;
+            position: relative;
         }
-        .img-box img { width: 100px; height: 100px; object-fit: contain; display: block; }
-        
-        .strength { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }
-        .Mild { background: #f1c40f; color: #000; } 
-        .Medium { background: #e67e22; color: #fff; } 
-        .Full { background: #c0392b; color: #fff; } 
-        .Flavored { background: #9b59b6; color: #fff; }
+
+        /* STRENGTH TAGS */
+        .strength-tag {
+            font-family: var(--font-sans);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .Mild { background: rgba(232, 199, 106, 0.2); color: var(--gold-light); border: 1px solid var(--gold); }
+        .Medium { background: rgba(37, 159, 138, 0.2); color: var(--mint-pale); border: 1px solid var(--mint); }
+        .Full { background: rgba(201, 76, 76, 0.2); color: #ff9e9e; border: 1px solid #c0392b; }
+        .Flavored { background: rgba(155, 89, 182, 0.2); color: #e1b7ff; border: 1px solid #9b59b6; }
+
+        /* IMAGE CONTAINER - RIGID SIZE */
+        .img-box { 
+            width: 120px; 
+            height: 120px; 
+            background: #fff; 
+            border-radius: 0; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .img-box img { width: 100%; height: 100%; object-fit: contain; }
+
+        .cigar-name { 
+            font-family: var(--font-display); 
+            font-size: 1.5rem; 
+            color: var(--warm-white); 
+            line-height: 1.2; 
+            margin-bottom: 5px;
+        }
+        .cigar-meta { 
+            font-family: var(--font-sans); 
+            font-size: 10px; 
+            letter-spacing: 0.12em; 
+            text-transform: uppercase; 
+            color: var(--mint); 
+            margin-bottom: 12px;
+        }
+        .cigar-profile { font-size: 0.9rem; color: rgba(253,252,248,0.6); }
+
+        /* LEAF DECORATION */
+        .leaf { position: absolute; pointer-events: none; z-index: 0; opacity: 0.05; }
     </style>
 </head>
 <body>
 
-    <h2>Virtual Humidor</h2>
+    <section class="header-area">
+        <svg class="leaf" style="left:-5%;top:0;width:30%;" viewBox="0 0 500 640" fill="none"><path d="M250 30 C165 65 55 175 45 310 C35 445 115 570 240 580 C365 590 455 470 455 335 C455 200 355 55 250 30Z" fill="#4dbf8a"/><path d="M250 30 L250 580" stroke="#4dbf8a" stroke-width="4"/></svg>
+        <span class="eyebrow">The Current Collection</span>
+        <h2>Virtual <em>Humidor.</em></h2>
+    </section>
 
-    <div id="filter-area">
+    <div class="filter-area">
         <select id="strengthFilter" onchange="applyFilter()">
             <option value="All">All Strengths</option>
             <option value="Mild">Mild</option>
@@ -80,7 +176,7 @@
             list.innerHTML = "";
 
             if (items.length === 0) {
-                list.innerHTML = "<p>No matching cigars found.</p>";
+                list.innerHTML = "<p style='text-align:center; opacity:0.5;'>No cigars found in this category.</p>";
                 return;
             }
 
@@ -94,10 +190,10 @@
                             <img src="${meta.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" alt="${i.name}">
                         </div>
                         <div class="text-content">
-                            <span class="strength ${str}">${str}</span>
-                            <div style="font-family:'Playfair Display'; color:var(--gold); font-size:1.4rem; font-weight:bold;">${i.name}</div>
-                            <div style="font-size:0.9rem; color:#ccc; margin: 4px 0;">${meta.vitola || ''} ${meta.wrapper ? '• ' + meta.wrapper : ''}</div>
-                            <div style="font-size:0.9rem; line-height:1.4; color:#eee; margin-top:8px;">${meta.profile || 'Classic TTC Selection.'}</div>
+                            <span class="strength-tag ${str}">${str}</span>
+                            <div class="cigar-name">${i.name}</div>
+                            <div class="cigar-meta">${meta.vitola || ''} ${meta.wrapper ? ' · ' + meta.wrapper : ''}</div>
+                            <div class="cigar-profile">${meta.profile || 'Hand-selected boutique premium tobacco.'}</div>
                         </div>
                     </div>`;
             });
@@ -113,7 +209,6 @@
             }
         }
 
-        // Initialize on load
         loadInventory();
     </script>
 </body>
