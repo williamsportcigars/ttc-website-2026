@@ -9,47 +9,49 @@
         body { font-family: 'Josefin Sans', sans-serif; background: var(--jungle); color: #eee; padding: 20px; text-align: center; }
         h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2.8rem; margin: 40px 0 10px; }
         
-        /* Filter Styling */
-        .filter-box { margin-bottom: 30px; }
-        select { padding: 12px 25px; border-radius: 50px; background: var(--forest); color: white; border: 1px solid var(--gold); outline: none; font-family: inherit; cursor: pointer; }
+        /* Filter Container - Stays at top */
+        #filter-area { margin-bottom: 30px; }
+        select { 
+            padding: 12px 25px; border-radius: 50px; background: var(--forest); 
+            color: white; border: 1px solid var(--gold); outline: none; 
+            font-family: inherit; cursor: pointer; min-width: 200px;
+        }
 
-        #inventory { max-width: 800px; margin: 0 auto; display: grid; gap: 20px; min-height: 800px; }
+        #inventory-list { max-width: 800px; margin: 0 auto; display: grid; gap: 20px; min-height: 100vh; }
         
-        /* 🛑 GRID-LOCK: PREVENTS SHAKING */
+        /* 🛑 GRID-LOCK: ABSOLUTE SHAKE PREVENTION */
         .item { 
             background: var(--forest); border-radius: 12px; border-left: 5px solid var(--gold); 
             display: grid; 
-            grid-template-columns: 100px 1fr; /* Fixed pillar for image */
-            gap: 20px; 
+            grid-template-columns: 100px 1fr; /* Rigid pillar for image */
+            gap: 25px; 
             padding: 20px; text-align: left; align-items: start; 
-            min-height: 140px; /* Lock row height */
+            min-height: 140px; 
             box-sizing: border-box;
             overflow: hidden;
         }
 
         .img-box { 
             width: 100px; height: 100px; 
-            background: white; border-radius: 8px; 
+            background: #fff; border-radius: 8px; 
             overflow: hidden; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
         }
-        .img-box img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .img-box img { width: 100px; height: 100px; object-fit: contain; display: block; }
         
-        /* Strength Tags */
         .strength { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }
         .Mild { background: #f1c40f; color: #000; } 
         .Medium { background: #e67e22; color: #fff; } 
         .Full { background: #c0392b; color: #fff; } 
         .Flavored { background: #9b59b6; color: #fff; }
-
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
+
     <h2>Virtual Humidor</h2>
-    
-    <div class="filter-box">
-        <select id="strengthFilter" onchange="filterItems()">
+
+    <div id="filter-area">
+        <select id="strengthFilter" onchange="applyFilter()">
             <option value="All">All Strengths</option>
             <option value="Mild">Mild</option>
             <option value="Medium">Medium</option>
@@ -58,60 +60,61 @@
         </select>
     </div>
 
-    <div id="inventory">Loading Selection...</div>
+    <div id="inventory-list">Loading Collection...</div>
 
     <script>
-        let allItems = [];
+        let fullInventory = [];
 
-        async function load() {
+        async function loadInventory() {
             try {
                 const res = await fetch("https://ttc-inv-api.williamsportcigars.workers.dev/");
-                allItems = await res.json();
-                render(allItems);
+                fullInventory = await res.json();
+                renderInventory(fullInventory);
             } catch (e) {
-                document.getElementById("inventory").innerText = "Error loading inventory.";
+                document.getElementById("inventory-list").innerText = "Connection lost.";
             }
         }
 
-        function render(items) {
-            const container = document.getElementById("inventory");
-            container.innerHTML = "";
+        function renderInventory(items) {
+            const list = document.getElementById("inventory-list");
+            list.innerHTML = "";
 
             if (items.length === 0) {
-                container.innerHTML = "<p>No items found in this category.</p>";
+                list.innerHTML = "<p>No matching cigars found.</p>";
                 return;
             }
 
             items.forEach(i => {
-                const details = i.details || {};
-                const strength = details.strength || 'Medium';
+                const meta = i.details || {};
+                const str = meta.strength || 'Medium';
                 
-                container.innerHTML += `
-                    <div class="item" data-strength="${strength}">
+                list.innerHTML += `
+                    <div class="item">
                         <div class="img-box">
-                            <img src="${details.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" loading="lazy">
+                            <img src="${meta.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" alt="${i.name}">
                         </div>
-                        <div class="details">
-                            <span class="strength ${strength}">${strength}</span>
+                        <div class="text-content">
+                            <span class="strength ${str}">${str}</span>
                             <div style="font-family:'Playfair Display'; color:var(--gold); font-size:1.4rem; font-weight:bold;">${i.name}</div>
-                            <div style="font-size:0.9rem; color:#ccc; margin-top:5px;">${details.vitola || ''} ${details.wrapper ? '• ' + details.wrapper : ''}</div>
-                            <div style="font-size:0.9rem; margin-top:8px; line-height:1.4; color:#eee;">${details.profile || 'Classic TTC Selection.'}</div>
+                            <div style="font-size:0.9rem; color:#ccc; margin: 4px 0;">${meta.vitola || ''} ${meta.wrapper ? '• ' + meta.wrapper : ''}</div>
+                            <div style="font-size:0.9rem; line-height:1.4; color:#eee; margin-top:8px;">${meta.profile || 'Classic TTC Selection.'}</div>
                         </div>
                     </div>`;
             });
         }
 
-        function filterItems() {
-            const val = document.getElementById("strengthFilter").value;
-            if (val === "All") {
-                render(allItems);
+        function applyFilter() {
+            const selected = document.getElementById("strengthFilter").value;
+            if (selected === "All") {
+                renderInventory(fullInventory);
             } else {
-                const filtered = allItems.filter(i => (i.details?.strength || "Medium") === val);
-                render(filtered);
+                const filtered = fullInventory.filter(item => (item.details?.strength || "Medium") === selected);
+                renderInventory(filtered);
             }
         }
 
-        load();
+        // Initialize on load
+        loadInventory();
     </script>
 </body>
 </html>
