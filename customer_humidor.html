@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Humidor | The Tobacco Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Josefin+Sans:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --jungle: #001b16; --forest: #033d33; --gold: #c9a84c; --white: #eee; }
+        body { font-family: 'Josefin Sans', sans-serif; background: var(--jungle); color: var(--white); padding: 20px; text-align: center; }
+        h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2.5rem; margin-bottom: 10px; }
+        .subtitle { color: var(--mint); margin-bottom: 30px; opacity: 0.8; }
+        input { padding: 15px; font-size: 18px; width: 100%; max-width: 300px; border-radius: 50px; border: 1px solid var(--gold); background: #052621; color: white; text-align: center; outline: none; }
+        button { padding: 15px 30px; border-radius: 50px; border: none; background: var(--gold); color: var(--jungle); font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 300px; transition: 0.3s; }
+        button:hover { transform: scale(1.05); }
+        #results { max-width: 600px; margin: 40px auto; text-align: left; }
+        .item { background: var(--forest); padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--gold); display: flex; gap: 20px; align-items: center; }
+        .item img { width: 80px; height: 80px; object-fit: contain; background: white; border-radius: 8px; }
+        .item-info { flex: 1; }
+        .item-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); }
+        .item-meta { font-size: 0.8rem; opacity: 0.7; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<h2>My Humidor</h2>
+<p class="subtitle">Enter your phone number to see your recent smokes</p>
+
+<input id="phone" type="tel" placeholder="(XXX) XXX-XXXX" /> <br>
+<button onclick="lookup()">View My History</button>
+
+<div id="results"></div>
+
+<script>
+const API_URL = "https://ttc-inv-api.williamsportcigars.workers.dev/customer-lookup";
+
+// Auto-format phone
+document.getElementById("phone").addEventListener("input", e => {
+    let x = e.target.value.replace(/\D/g, "").slice(0, 10);
+    e.target.value = x.length > 6 ? `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}` : x.length > 3 ? `(${x.slice(0,3)}) ${x.slice(3)}` : x;
+});
+
+async function lookup() {
+    const phone = document.getElementById("phone").value.replace(/\D/g, "").slice(-10);
+    if (phone.length !== 10) return alert("Enter a valid phone number");
+
+    document.getElementById("results").innerHTML = "Searching the vault...";
+    
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ phone })
+        });
+        const data = await res.json();
+        
+        const container = document.getElementById("results");
+        container.innerHTML = data.items.length ? "" : "<p style='text-align:center'>No history found for this number.</p>";
+
+        data.items.forEach(item => {
+            container.innerHTML += `
+                <div class="item">
+                    <img src="${item.meta?.image || 'https://thetobaccocenter.com/logo-placeholder.png'}">
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-meta">Purchased: ${item.date}</div>
+                        <div style="font-size:0.9rem; margin-top:5px; font-style:italic;">${item.meta?.profile || ""}</div>
+                    </div>
+                </div>`;
+        });
+    } catch (e) {
+        document.getElementById("results").innerHTML = "Connection error.";
+    }
+}
+</script>
+</body>
+</html>
