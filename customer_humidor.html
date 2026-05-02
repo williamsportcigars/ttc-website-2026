@@ -16,39 +16,37 @@
     </style>
 </head>
 <body>
-
-<h2>My Humidor</h2>
-<input id="phone" type="tel" placeholder="(XXX) XXX-XXXX" /> <br>
-<button onclick="lookup()">Enter Vault</button>
-<div id="results"></div>
-
-<script>
-const API_URL = "https://ttc-inv-api.williamsportcigars.workers.dev/customer-lookup";
-document.getElementById("phone").addEventListener("input", e => {
-    let x = e.target.value.replace(/\D/g, "").slice(0, 10);
-    e.target.value = x.length > 6 ? `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}` : x.length > 3 ? `(${x.slice(0,3)}) ${x.slice(3)}` : x;
-});
-async function lookup() {
-    const phone = document.getElementById("phone").value.replace(/\D/g, "").slice(-10);
-    const container = document.getElementById("results");
-    container.innerHTML = "Opening vault...";
-    try {
-        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ phone }) });
-        const data = await res.json();
-        container.innerHTML = data.items.length ? "" : "No smokes found for this number.";
-        data.items.forEach(item => {
-            container.innerHTML += `
-                <div class="item">
-                    <img src="${item.meta?.image || 'https://thetobaccocenter.com/logo-placeholder.png'}">
-                    <div>
-                        <div style="font-family:'Playfair Display'; color:var(--gold); font-size:1.3rem;">${item.name}</div>
-                        <div style="font-size:0.8rem; color:var(--mint)">Last Smoked: ${item.date}</div>
-                        <div style="font-size:0.9rem; margin-top:8px; font-style:italic;">${item.meta?.profile || ""}</div>
-                    </div>
-                </div>`;
+    <h2>My Humidor</h2>
+    <input id="phone" type="tel" placeholder="(XXX) XXX-XXXX" /> <br>
+    <button onclick="lookup()">Enter Vault</button>
+    <div id="results"></div>
+    <script>
+        const API_URL = "https://ttc-inv-api.williamsportcigars.workers.dev/customer-lookup";
+        document.getElementById("phone").addEventListener("input", e => {
+            let x = e.target.value.replace(/\D/g, "").slice(0, 10);
+            e.target.value = x.length > 6 ? `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}` : x.length > 3 ? `(${x.slice(0,3)}) ${x.slice(3)}` : x;
         });
-    } catch (e) { container.innerHTML = "Connection error."; }
-}
-</script>
+        async function lookup() {
+            const phone = document.getElementById("phone").value.replace(/\D/g, "").slice(-10);
+            const container = document.getElementById("results");
+            container.innerHTML = "Opening vault...";
+            try {
+                const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ phone }) });
+                const data = await res.json();
+                container.innerHTML = data.items.length ? "" : "No smokes found for this number.";
+                data.items.forEach(item => {
+                    container.innerHTML += `
+                        <div class="item">
+                            <img src="${item.meta?.image || 'https://thetobaccocenter.com/logo-placeholder.png'}">
+                            <div>
+                                <div style="font-family:'Playfair Display'; color:var(--gold); font-size:1.3rem;">${item.name}</div>
+                                <div style="font-size:0.8rem; color:var(--mint)">Last Smoked: ${item.date}</div>
+                                <div style="font-size:0.9rem; margin-top:8px; font-style:italic;">${item.meta?.profile || ""}</div>
+                            </div>
+                        </div>`;
+                });
+            } catch (e) { container.innerHTML = "Connection error."; }
+        }
+    </script>
 </body>
 </html>
