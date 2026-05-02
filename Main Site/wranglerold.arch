@@ -1,9 +1,0 @@
-{
-  "name": "ttc-main-site",
-  "main": "index.js",
-  "compatibility_date": "2024-04-01",
-  "assets": {
-    "directory": "./", // This tells Cloudflare to upload your .html files
-    "binding": "ASSETS"
-  }
-}
