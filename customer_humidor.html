@@ -33,7 +33,7 @@
             try {
                 const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ phone }) });
                 const data = await res.json();
-                container.innerHTML = data.items.length ? "" : "No history found. Ensure you give your phone number at checkout!";
+                container.innerHTML = data.items.length ? "" : "No history found. Note: Only purchases with your phone number attached at checkout will appear.";
                 data.items.forEach(item => {
                     container.innerHTML += `
                         <div class="item">
