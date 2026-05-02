@@ -6,15 +6,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Josefin+Sans:wght@300;600&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #c9a84c; --jungle: #001b16; --forest: #033d33; }
-        body { font-family: 'Josefin Sans', sans-serif; background: var(--jungle); color: #eee; padding: 20px; text-align: center; }
+        body { font-family: 'Josefin Sans', sans-serif; background: var(--jungle); color: #eee; padding: 20px; text-align: center; overflow-y: scroll; /* Prevents scrollbar jump */ }
         h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2.5rem; margin-top: 40px; }
         
-        input { padding: 15px; font-size: 18px; width: 100%; max-width: 320px; border-radius: 50px; border: 1px solid var(--gold); background: #052621; color: white; text-align: center; outline: none; box-sizing: border-box; }
-        button { padding: 15px; border-radius: 50px; border: none; background: var(--gold); color: var(--jungle); font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 320px; transition: 0.3s; }
+        input { padding: 15px; font-size: 18px; width: 100%; max-width: 320px; border-radius: 50px; border: 1px solid var(--gold); background: #052621; color: white; text-align: center; outline: none; }
+        button { padding: 15px; border-radius: 50px; border: none; background: var(--gold); color: var(--jungle); font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 320px; }
         
-        /* 🛑 THE SHAKE-KILLER: CSS GRID LOCK */
-        #results { max-width: 650px; margin: 40px auto; text-align: left; }
+        #results { max-width: 650px; margin: 40px auto; text-align: left; min-height: 500px; /* Reserves page height */ }
         
+        /* 🛑 STABILIZED CONTAINER */
         .item { 
             background: var(--forest); 
             padding: 20px; 
@@ -22,37 +22,37 @@
             margin-bottom: 15px; 
             border-left: 5px solid var(--gold); 
             display: grid;
-            /* Column 1 is EXACTLY 85px. Column 2 takes the rest. */
             grid-template-columns: 85px 1fr; 
             gap: 20px; 
-            align-items: start;
-            min-height: 100px; /* Pre-reserves vertical space */
+            align-items: center;
+            height: 125px; /* STRICT FIXED HEIGHT TO KILL SHAKE */
+            box-sizing: border-box;
             overflow: hidden;
         }
 
         .img-box { 
             width: 85px; 
             height: 85px; 
-            background: white; 
+            background: rgba(255,255,255,0.1); 
             border-radius: 8px; 
-            display: block; 
             overflow: hidden;
-            flex-shrink: 0;
         }
 
         .img-box img { 
-            width: 85px; 
-            height: 85px; 
+            width: 100%; 
+            height: 100%; 
             object-fit: contain; 
-            display: block;
         }
 
-        .details { display: block; }
+        /* 🦴 SKELETON LOADING STATE */
+        .skeleton { animation: pulse 1.5s infinite ease-in-out; }
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 0.6; } 100% { opacity: 0.3; } }
+        .skele-text { height: 15px; background: rgba(255,255,255,0.1); margin-bottom: 8px; border-radius: 4px; }
     </style>
 </head>
 <body>
     <h2>Virtual Humidor</h2>
-    <p style="margin-bottom:25px; font-weight:300;">Enter your phone number to view your smoking history.</p>
+    <p style="margin-bottom:25px;">View your cigar history.</p>
     
     <input id="phone" type="tel" placeholder="(XXX) XXX-XXXX" /> <br>
     <button onclick="lookup()">Unlock Vault</button>
@@ -62,7 +62,6 @@
     <script>
         const API_URL = "https://ttc-inv-api.williamsportcigars.workers.dev/customer-lookup";
 
-        // Auto-format phone input
         document.getElementById("phone").addEventListener("input", e => {
             let x = e.target.value.replace(/\D/g, "").slice(0, 10);
             e.target.value = x.length > 6 ? `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}` : x.length > 3 ? `(${x.slice(0,3)}) ${x.slice(3)}` : x;
@@ -71,42 +70,41 @@
         async function lookup() {
             const phone = document.getElementById("phone").value.replace(/\D/g, "").slice(-10);
             const container = document.getElementById("results");
-            if(phone.length < 10) return alert("Please enter a full phone number.");
+            if(phone.length < 10) return;
 
-            container.innerHTML = "<p style='text-align:center; color:var(--gold);'>Opening your private vault...</p>";
+            // 🛑 SHOW PLACEHOLDERS IMMEDIATELY TO STOP SHAKE
+            container.innerHTML = `
+                <div class="item skeleton"><div class="img-box"></div><div><div class="skele-text" style="width:60%"></div><div class="skele-text" style="width:40%"></div></div></div>
+                <div class="item skeleton"><div class="img-box"></div><div><div class="skele-text" style="width:50%"></div><div class="skele-text" style="width:30%"></div></div></div>
+            `;
 
             try {
                 const res = await fetch(API_URL, { 
                     method: "POST", 
-                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ phone }) 
                 });
                 const data = await res.json();
 
                 if (!data.items || data.items.length === 0) {
-                    container.innerHTML = "<p style='text-align:center;'>No history found. Ensure you use this phone number at the register!</p>";
+                    container.innerHTML = "<p style='text-align:center;'>No history found.</p>";
                     return;
                 }
 
                 container.innerHTML = "";
                 data.items.forEach(item => {
-                    // Use a placeholder if no image exists
                     const imgSrc = item.meta?.image || 'https://thetobaccocenter.com/logo-placeholder.png';
-                    
                     container.innerHTML += `
                         <div class="item">
-                            <div class="img-box">
-                                <img src="${imgSrc}" alt="Cigar Image">
-                            </div>
-                            <div class="details">
-                                <div style="font-family:'Playfair Display'; color:var(--gold); font-size:1.3rem; font-weight:bold;">${item.name}</div>
-                                <div style="font-size:0.8rem; color:#259f8a; margin-bottom:8px;">Purchased: ${item.date}</div>
-                                <div style="font-size:0.9rem; line-height:1.4; color:#ccc;">${item.meta?.profile || "Classic TTC selection."}</div>
+                            <div class="img-box"><img src="${imgSrc}"></div>
+                            <div>
+                                <div style="color:var(--gold); font-size:1.2rem; font-weight:bold;">${item.name}</div>
+                                <div style="font-size:0.8rem; color:#259f8a;">Purchased: ${item.date}</div>
+                                <div style="font-size:0.9rem; color:#ccc; margin-top:5px; height: 40px; overflow: hidden;">${item.meta?.profile || "Classic TTC Selection."}</div>
                             </div>
                         </div>`;
                 });
             } catch (e) {
-                container.innerHTML = "<p style='text-align:center; color:red;'>Vault connection error. Please try again.</p>";
+                container.innerHTML = "<p>Connection Error.</p>";
             }
         }
     </script>
