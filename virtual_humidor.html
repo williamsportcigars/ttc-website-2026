@@ -26,18 +26,33 @@
         .nav-logo { font-family: var(--font-display); color: var(--mint); font-size: 15px; letter-spacing: 0.06em; text-decoration: none; font-weight: 700; text-transform: uppercase; }
         .nav-logo span { font-style: italic; font-weight: 400; color: rgba(168,230,200,0.55); font-size: 11px; display: block; letter-spacing: 0.12em; }
 
-        /* HERO AREA MATCHING index.html */
+        /* HERO AREA */
         .inv-hero { background: var(--black); padding: 120px 4rem 60px; position: relative; overflow: hidden; text-align: left; }
         .inv-hero h1 { font-family: var(--font-display); font-size: clamp(3rem,6vw,5.5rem); font-weight: 900; line-height: 1.05; color: var(--warm-white); margin-bottom: 1.5rem; }
         .inv-hero h1 em { color: var(--mint); font-style: italic; }
         .eyebrow { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mint); display: block; margin-bottom: 1rem; }
 
-        /* FILTER DROPDOWN */
+        /* FILTER DROPDOWN - FIXED VISIBILITY */
         .filter-wrap { background: var(--forest); padding: 2rem 4rem; border-top: 1px solid rgba(77,191,138,0.12); display: flex; align-items: center; gap: 20px; }
         .filter-wrap label { font-family: var(--font-sans); font-size: 10px; color: var(--mint-pale); text-transform: uppercase; letter-spacing: 0.1em; }
-        select { background: transparent; color: var(--warm-white); border: 1px solid var(--mint); padding: 8px 15px; font-family: var(--font-sans); text-transform: uppercase; font-size: 11px; outline: none; cursor: pointer; }
+        
+        select { 
+            background: var(--jungle); 
+            color: var(--mint); /* Text color inside the box */
+            border: 1px solid var(--mint); 
+            padding: 8px 15px; 
+            font-family: var(--font-sans); 
+            text-transform: uppercase; 
+            font-size: 11px; 
+            outline: none; 
+            cursor: pointer; 
+        }
+        select option {
+            background: white; /* Background of the options list */
+            color: black;      /* Text color of the options list */
+        }
 
-        /* INVENTORY GRID LOCK - NO SHAKING */
+        /* INVENTORY GRID */
         .inventory-section { padding: 5rem 4rem; background: var(--cream); }
         #inventory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto; }
         
@@ -46,7 +61,7 @@
             border: 1px solid var(--border); 
             padding: 2rem; 
             display: grid; 
-            grid-template-columns: 120px 1fr; /* Rigid image column */
+            grid-template-columns: 120px 1fr; 
             gap: 20px;
             align-items: start;
             min-height: 180px;
@@ -61,6 +76,7 @@
         .cigar-meta { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem; }
         .cigar-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.8; }
 
+        /* STATUS MESSAGES - FIXED TO TEAL */
         .status-msg { font-family: var(--font-display); font-style: italic; color: var(--teal); text-align: center; grid-column: 1/-1; padding: 4rem; }
 
         /* FOOTER */
@@ -77,27 +93,19 @@
 </head>
 <body>
 
-<div id="age-gate" style="position:fixed;inset:0;z-index:9999;background:#001b16;display:flex;align-items:center;justify-content:center;padding:2rem;">
-  <div style="max-width:480px;width:100%;text-align:center;">
-    <h1 style="font-family:'Playfair Display',serif;font-size:2rem;color:#f7fffe;margin-bottom:1rem;">Age Verification</h1>
-    <p style="color:rgba(253,252,248,0.6);margin-bottom:2rem;">You must be 21 or older to view the humidor.</p>
-    <button onclick="enterSite()" style="font-family:'Josefin Sans',sans-serif;background:#259f8a;color:#001b16;padding:15px 36px;border:none;cursor:pointer;font-weight:600;text-transform:uppercase;">I am 21+</button>
-  </div>
-</div>
-
 <nav class="site-nav">
     <a href="index.html" class="nav-logo">The Tobacco Center <span>tabacarius qui curat</span></a>
 </nav>
 
 <section class="inv-hero">
-    <span class="eyebrow">Available In-Store</span>
+    <span class="eyebrow">Inventory Catalog</span>
     <h1>The Virtual <em>Humidor.</em></h1>
 </section>
 
 <div class="filter-wrap">
     <label>Filter By Strength:</label>
     <select id="strengthFilter" onchange="applyFilter()">
-        <option value="All">All Cigars</option>
+        <option value="All">All Selections</option>
         <option value="Mild">Mild</option>
         <option value="Medium">Medium</option>
         <option value="Full">Full</option>
@@ -116,16 +124,6 @@
 </footer>
 
 <script>
-    // Age Gate Logic
-    if (sessionStorage.getItem('ttc-age-verified') === 'yes') {
-        document.getElementById('age-gate').style.display = 'none';
-    }
-    function enterSite() {
-        sessionStorage.setItem('ttc-age-verified', 'yes');
-        document.getElementById('age-gate').style.display = 'none';
-    }
-
-    // Inventory Logic
     let fullInventory = [];
     async function loadInventory() {
         const grid = document.getElementById("inventory-grid");
@@ -134,7 +132,7 @@
             fullInventory = await res.json();
             renderInventory(fullInventory);
         } catch (e) {
-            grid.innerHTML = `<div class="status-msg">Connection lost. Please refresh the page.</div>`;
+            grid.innerHTML = `<div class="status-msg">Vault offline. Please refresh the page.</div>`;
         }
     }
 
@@ -142,7 +140,7 @@
         const grid = document.getElementById("inventory-grid");
         grid.innerHTML = "";
         if (items.length === 0) {
-            grid.innerHTML = `<div class="status-msg">No cigars found in this selection.</div>`;
+            grid.innerHTML = `<div class="status-msg">No cigars found in this category.</div>`;
             return;
         }
         items.forEach(i => {
