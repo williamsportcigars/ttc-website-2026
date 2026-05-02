@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body { font-family: sans-serif; background: #001b16; color: #eee; padding: 20px; text-align: center; }
-        h2 { color: #c9a84c; }
+        h2 { color: #c9a84c; font-size: 2.2rem; }
         input { padding: 15px; font-size: 18px; width: 100%; max-width: 320px; border-radius: 50px; border: 1px solid #c9a84c; background: #052621; color: white; text-align: center; outline: none; }
         button { padding: 15px; border-radius: 50px; border: none; background: #c9a84c; color: #001b16; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 320px; }
         .item { background: #033d33; padding: 20px; border-radius: 12px; margin: 15px auto; border-left: 5px solid #c9a84c; display: flex; gap: 20px; align-items: center; text-align: left; max-width: 600px; }
@@ -30,7 +30,7 @@
             try {
                 const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ phone }) });
                 const data = await res.json();
-                container.innerHTML = data.items.length ? "" : "Found your profile! History sync in progress.";
+                container.innerHTML = data.items.length ? "" : "Found your profile! Purchase history updates soon.";
                 data.items.forEach(item => {
                     container.innerHTML += `
                         <div class="item">
