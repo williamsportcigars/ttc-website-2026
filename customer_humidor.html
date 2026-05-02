@@ -1,116 +1,65 @@
-export default {
-  async scheduled(event, env, ctx) {
-    const MID = "639WCHYRBTWW1";
-    const API_KEY = "d47f9a2c-5bd8-a683-081d-de1b2618b941";
-    try {
-      const invRes = await fetch(`https://api.clover.com/v3/merchants/${MID}/items?expand=itemStock&limit=1000`, {
-        headers: { "Authorization": `Bearer ${API_KEY}` }
-      });
-      const invData = await invRes.json();
-      const inventory = invData.elements.map(i => ({ id: i.id, name: i.name, price: i.price/100, stock: i.itemStock?.quantity || 0, hidden: i.hidden }));
-      await env.KV_BINDING.put("inventory_items", JSON.stringify(inventory));
-    } catch (err) { console.error("Sync Error: " + err.message); }
-  },
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Humidor | The Tobacco Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&Josefin+Sans:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #c9a84c; --jungle: #001b16; --forest: #033d33; }
+        body { font-family: 'Josefin Sans', sans-serif; background: var(--jungle); color: #eee; padding: 20px; text-align: center; }
+        h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2.5rem; margin-top: 40px; }
+        
+        input { padding: 15px; font-size: 18px; width: 100%; max-width: 320px; border-radius: 50px; border: 1px solid var(--gold); background: #052621; color: white; text-align: center; outline: none; }
+        button { padding: 15px; border-radius: 50px; border: none; background: var(--gold); color: var(--jungle); font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 320px; }
+        
+        #results { max-width: 650px; margin: 40px auto; text-align: left; }
+        
+        /* 🛑 GRID-LOCK: PREVENTS SHAKING */
+        .item { 
+            background: var(--forest); padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid var(--gold); 
+            display: grid; grid-template-columns: 85px 1fr; gap: 20px; align-items: center; min-height: 120px;
+        }
+        .img-box { width: 85px; height: 85px; background: white; border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+        .img-box img { width: 100%; height: 100%; object-fit: contain; }
+    </style>
+</head>
+<body>
+    <h2>Customer Humidor</h2>
+    <p>Enter your phone number to see your purchase history.</p>
+    <input id="phone" type="tel" placeholder="(XXX) XXX-XXXX" /> <br>
+    <button onclick="lookup()">Enter Vault</button>
+    <div id="results"></div>
 
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    const pass = "6116"; 
-    const corsHeaders = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type" };
-
-    if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
-
-    // ROUTE: Add History
-    if (url.pathname.includes("add-history") && request.method === "POST") {
-      const { password, phone, cigarName } = await request.json();
-      if (password !== pass) return new Response("Unauthorized", { status: 401 });
-      const cleanPhone = phone.replace(/\D/g, "").slice(-10);
-      let history = JSON.parse(await env.CUSTOMER_KV.get(cleanPhone) || "[]");
-      history.unshift({ name: cigarName, date: new Date().toLocaleDateString() });
-      await env.CUSTOMER_KV.put(cleanPhone, JSON.stringify(history.slice(0, 50)));
-      return new Response("Cigar Added!", { headers: corsHeaders });
-    }
-
-    // ROUTE: Admin Save (Deep Merge Fix)
-    if (url.pathname.includes("save") && request.method === "POST") {
-      const { password, key, value } = await request.json();
-      if (password !== pass) return new Response("Unauthorized", { status: 401 });
-      
-      const existingRaw = await env.KV_BINDING.get(key);
-      const existing = existingRaw ? JSON.parse(existingRaw) : {};
-      // This line merges the old data (images) with your new edits (text)
-      const merged = { ...existing, ...value }; 
-      
-      await env.KV_BINDING.put(key, JSON.stringify(merged));
-      return new Response("Success", { headers: corsHeaders });
-    }
-
-    // ROUTE: Customer History Lookup
-    if (url.pathname.includes("customer-lookup") && request.method === "POST") {
-      const { phone } = await request.json();
-      const cleanPhone = phone.replace(/\D/g, "").slice(-10);
-      const rawHistory = await env.CUSTOMER_KV.get(cleanPhone);
-      if (!rawHistory) return new Response(JSON.stringify({ items: [] }), { headers: corsHeaders });
-      const history = JSON.parse(rawHistory);
-      const inventory = JSON.parse(await env.KV_BINDING.get("inventory_items") || "[]");
-      const items = await Promise.all(history.map(async (hItem) => {
-        const invMatch = inventory.find(i => i.name === hItem.name);
-        const meta = invMatch ? JSON.parse(await env.KV_BINDING.get(`meta_${invMatch.id}`) || "{}") : {};
-        return { ...hItem, meta };
-      }));
-      return new Response(JSON.stringify({ items }), { headers: corsHeaders });
-    }
-
-    if (url.pathname.includes("admin")) return new Response(getAdminHTML(), { headers: { "Content-Type": "text/html" } });
-
-    // Public Inventory (3rd Rule Priority)
-    const raw = await env.KV_BINDING.get("inventory_items");
-    const itemsList = JSON.parse(raw || "[]").filter(i => !i.hidden && i.stock > 0);
-    const enriched = await Promise.all(itemsList.map(async (i) => {
-      const m = await env.KV_BINDING.get(`meta_${i.id}`);
-      return { ...i, details: m ? JSON.parse(m) : null };
-    }));
-
-    enriched.sort((a, b) => {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
-      if (nameA.includes('3rd rule') && !nameB.includes('3rd rule')) return -1;
-      if (!nameA.includes('3rd rule') && nameB.includes('3rd rule')) return 1;
-      return nameA.localeCompare(nameB);
-    });
-
-    return new Response(JSON.stringify(enriched), { headers: { "Content-Type": "application/json", ...corsHeaders } });
-  }
-};
-
-function getAdminHTML() {
-  return `<!DOCTYPE html><html><head><title>TTC Admin</title><style>body{background:#001b16;color:white;font-family:sans-serif;padding:20px;}.card{background:#033d33;padding:15px;margin:10px 0;border:1px solid #c9a84c;border-radius:8px;display:flex;justify-content:space-between;align-items:center;}button{background:#c9a84c;border:none;padding:12px;cursor:pointer;font-weight:bold;border-radius:5px;}input, textarea, select{width:100%;background:#001b16;color:white;border:1px solid #c9a84c;padding:10px;margin-bottom:10px;box-sizing:border-box;}#editor{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#052621;border:2px solid #c9a84c;padding:30px;width:400px;z-index:100;box-shadow: 0 0 50px black;}</style></head><body>
-    <h1>TTC Admin</h1>
-    <div id="login" style="text-align:center;"><input type="password" id="pw" placeholder="6116"><button onclick="auth()">Login</button></div>
-    <div id="main" style="display:none">
-      <div style="background:#052621; padding:15px; border:1px solid #259f8a; margin-bottom:20px;">
-        <h3>Add to Humidor</h3>
-        <input id="hPhone" placeholder="Phone">
-        <input id="hCigar" placeholder="Cigar Name">
-        <button onclick="addHistory()">Add to Vault</button>
-      </div>
-      <hr><div id="list"></div>
-    </div>
-    <div id="editor">
-      <h3 id="e-title"></h3>
-      <label>Strength:</label>
-      <select id="e-strength"><option value="Mild">Mild</option><option value="Medium">Medium</option><option value="Full">Full</option><option value="Flavored">Flavored</option></select>
-      <input id="e-vitola" placeholder="e.g. Toro">
-      <textarea id="e-profile" rows="5" placeholder="Description"></textarea>
-      <button onclick="saveEdit()">Save Changes</button>
-      <button onclick="document.getElementById('editor').style.display='none'">Cancel</button>
-    </div>
     <script>
-      let data = []; let activeId = null;
-      function auth(){if(document.getElementById('pw').value==='6116'){document.getElementById('login').style.display='none';document.getElementById('main').style.display='block';load();}}
-      async function load(){const r=await fetch('/');data=await r.json();render(data);}
-      function render(items){document.getElementById('list').innerHTML=items.map(i=>\`<div class="card"><div><b>\${i.name}</b></div><button onclick="edit('\${i.id}')">Edit</button></div>\`).join('');}
-      function edit(id){const i=data.find(x=>x.id===id);activeId=id;document.getElementById('e-title').innerText=i.name;document.getElementById('e-strength').value=i.details?.strength||"Medium";document.getElementById('e-vitola').value=i.details?.vitola||"";document.getElementById('e-profile').value=i.details?.profile||"";document.getElementById('editor').style.display='block';}
-      async function saveEdit(){const meta={strength:document.getElementById('e-strength').value, vitola:document.getElementById('e-vitola').value, profile:document.getElementById('e-profile').value}; const res = await fetch('/save',{method:'POST',body:JSON.stringify({password:'6116',key:'meta_'+activeId,value:meta})}); if(res.ok){alert("Saved Successfully!"); document.getElementById('editor').style.display='none'; load();}else{alert("Error Saving.");}}
-      async function addHistory(){const phone=document.getElementById('hPhone').value; const cigarName=document.getElementById('hCigar').value; const res = await fetch('/add-history',{method:'POST',body:JSON.stringify({password:'6116',phone,cigarName})}); alert("Added to customer's history!");}
-    </script></body></html>`;
-}
+        document.getElementById("phone").addEventListener("input", e => {
+            let x = e.target.value.replace(/\D/g, "").slice(0, 10);
+            e.target.value = x.length > 6 ? `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}` : x.length > 3 ? `(${x.slice(0,3)}) ${x.slice(3)}` : x;
+        });
+
+        async function lookup() {
+            const phone = document.getElementById("phone").value.replace(/\D/g, "").slice(-10);
+            const container = document.getElementById("results");
+            container.innerHTML = "<p style='text-align:center; color:var(--gold)'>Searching Vault...</p>";
+            
+            const res = await fetch("https://ttc-inv-api.williamsportcigars.workers.dev/customer-lookup", {
+                method: "POST",
+                body: JSON.stringify({ phone })
+            });
+            const data = await res.json();
+            
+            container.innerHTML = data.items.length ? "" : "<p style='text-align:center'>No history found.</p>";
+            data.items.forEach(item => {
+                container.innerHTML += `
+                    <div class="item">
+                        <div class="img-box"><img src="${item.meta?.image || 'https://thetobaccocenter.com/logo-placeholder.png'}"></div>
+                        <div>
+                            <div style="font-family:'Playfair Display'; color:var(--gold); font-size:1.2rem; font-weight:bold;">${item.name}</div>
+                            <div style="font-size:0.8rem; color:#259f8a">Purchased: ${item.date}</div>
+                            <div style="font-size:0.9rem; margin-top:5px; color:#ccc;">${item.meta?.profile || item.note || ""}</div>
+                        </div>
+                    </div>`;
+            });
+        }
+    </script>
+</body>
+</html>
