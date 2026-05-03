@@ -72,7 +72,7 @@
             inventory = await res.json();
             renderGrid();
         } catch (err) {
-            console.error("Load failed", err);
+            console.error("Load failed:", err);
         }
     }
 
@@ -81,37 +81,33 @@
         const grid = document.getElementById('inventory-grid');
         grid.innerHTML = '';
 
-        // Added "item && item.strength" check to prevent crashing if data is missing
-        inventory
-            .filter(item => item && (filter === 'All' || item.strength === filter))
-            .forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'cigar-card';
-                card.onclick = () => card.classList.toggle('open');
-                
-                const s = item.strength || 'Medium';
-                const dotsMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
-                let dots = '';
-                for(let d=1; d<=5; d++) {
-                    const active = d <= (dotsMap[s] || 3) ? `active-${s}` : '';
-                    dots += `<div class="dot ${active}"></div>`;
-                }
+        inventory.filter(i => filter === 'All' || i.strength === filter).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'cigar-card';
+            card.onclick = () => card.classList.toggle('open');
+            
+            const dotsMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
+            let dots = '';
+            for(let d=1; d<=5; d++) {
+                const active = d <= (dotsMap[item.strength] || 3) ? `active-${item.strength}` : '';
+                dots += `<div class="dot ${active}"></div>`;
+            }
 
-                card.innerHTML = `
-                    <div class="price-badge">$${((item.price || 0) / 100).toFixed(2)}</div>
-                    <div class="img-container">
-                        <img src="${item.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" 
-                             onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
-                    </div>
-                    <div class="card-body">
-                        <div class="dots">${dots}</div>
-                        <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${s}</div>
-                        <h3 class="cigar-name">${item.name || 'Unknown Cigar'}</h3>
-                    </div>
-                    <div class="drawer"><div class="drawer-inner">${item.profile || ''}</div></div>
-                `;
-                grid.appendChild(card);
-            });
+            card.innerHTML = `
+                <div class="price-badge">$${(item.price / 100).toFixed(2)}</div>
+                <div class="img-container">
+                    <img src="${item.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" 
+                         onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
+                </div>
+                <div class="card-body">
+                    <div class="dots">${dots}</div>
+                    <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${item.strength}</div>
+                    <h3 class="cigar-name">${item.name}</h3>
+                </div>
+                <div class="drawer"><div class="drawer-inner">${item.profile}</div></div>
+            `;
+            grid.appendChild(card);
+        });
     }
     load();
 </script>
