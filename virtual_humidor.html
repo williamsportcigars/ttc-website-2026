@@ -27,12 +27,11 @@
         .filter-wrap { background: var(--jungle); padding: 1.2rem 5%; display: flex; align-items: center; gap: 15px; border-bottom: 2px solid var(--mint); }
         select { background: white; color: black; border: none; padding: 8px 12px; border-radius: 4px; font-weight: 600; cursor: pointer; }
 
-        /* GRID (ANTI-SHAKE) */
+        /* GRID */
         #inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; padding: 4rem 5%; max-width: 1400px; margin: 0 auto; }
 
         .cigar-card { background: white; border: 1px solid #dcece9; border-radius: 4px; overflow: hidden; cursor: pointer; transition: 0.3s; position: relative; }
         
-        /* IMAGE BOX: FIXED SIZE TO PREVENT SHAKE */
         .img-container { 
             width: 100%; height: 200px; background: #fff; 
             display: flex; align-items: center; justify-content: center; 
@@ -53,7 +52,6 @@
 
         .price-badge { position: absolute; top: 12px; right: 12px; background: var(--black); color: var(--mint); padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
 
-        /* DRAWER */
         .drawer { max-height: 0; overflow: hidden; transition: 0.4s ease-out; background: #fafafa; opacity: 0; }
         .cigar-card.open .drawer { max-height: 400px; opacity: 1; border-top: 1px dashed var(--mint); }
         .drawer-inner { padding: 1.5rem; font-size: 0.9rem; font-style: italic; color: #444; }
@@ -88,9 +86,13 @@
     let inventory = [];
 
     async function load() {
-        const res = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
-        inventory = await res.json();
-        renderGrid();
+        try {
+            const res = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
+            inventory = await res.json();
+            renderGrid();
+        } catch (err) {
+            console.error("Error loading inventory:", err);
+        }
     }
 
     function renderGrid() {
@@ -98,33 +100,40 @@
         const grid = document.getElementById('inventory-grid');
         grid.innerHTML = '';
 
-        inventory.filter(i => filter === 'All' || i.strength === filter).forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'cigar-card';
-            card.onclick = () => card.classList.toggle('open');
-            
-            const dotsMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
-            let dots = '';
-            for(let d=1; d<=5; d++) {
-                const active = d <= (dotsMap[item.strength] || 3) ? `active-${item.strength}` : '';
-                dots += `<div class="dot ${active}"></div>`;
-            }
+        // Filter and Loop through items
+        inventory
+            .filter(item => filter === 'All' || item.details.strength === filter)
+            .forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'cigar-card';
+                card.onclick = () => card.classList.toggle('open');
+                
+                // Dot calculation using item.details.strength
+                const strength = item.details.strength;
+                const dotsMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
+                let dots = '';
+                for(let d=1; d<=5; d++) {
+                    const active = d <= (dotsMap[strength] || 3) ? `active-${strength}` : '';
+                    dots += `<div class="dot ${active}"></div>`;
+                }
 
-            card.innerHTML = `
-                <div class="price-badge">$${(item.price / 100).toFixed(2)}</div>
-                <div class="img-container">
-                    <img src="${item.details.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" 
-                         onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
-                </div>
-                <div class="card-body">
-                    <div class="dots">${dots}</div>
-                    <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${item.strength}</div>
-                    <h3 class="cigar-name">${item.name}</h3>
-                </div>
-                <div class="drawer"><div class="drawer-inner">${item.details.profile}</div></div>
-            `;
-            grid.appendChild(card);
-        });
+                card.innerHTML = `
+                    <div class="price-badge">$${(item.price / 100).toFixed(2)}</div>
+                    <div class="img-container">
+                        <img src="${item.details.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" 
+                             onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
+                    </div>
+                    <div class="card-body">
+                        <div class="dots">${dots}</div>
+                        <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${strength}</div>
+                        <h3 class="cigar-name">${item.name}</h3>
+                    </div>
+                    <div class="drawer">
+                        <div class="drawer-inner">${item.details.profile}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
     }
     load();
 </script>
