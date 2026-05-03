@@ -1,107 +1,209 @@
-<div id="inventory-grid">
-    <p id="status-message" style="grid-column: 1/-1; text-align: center; padding: 50px; font-style: italic;">
-        Opening the vault...
-    </p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Humidor | The Tobacco Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #001b16; --jungle: #022e27; --mint: #259f8a;
+            --warm-white: #f7fffe; --yellow: #f1c40f; --green: #2ecc71;
+            --red: #e74c3c; --blue: #3498db;
+            --font-display: 'Playfair Display', serif;
+            --font-sans: 'Josefin Sans', sans-serif;
+        }
+
+        /* AGE GATE */
+        #age-gate {
+            position: fixed; inset: 0; background: var(--black); z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; font-family: var(--font-sans); text-align: center;
+        }
+
+        body { background: #f0fdf8; color: var(--black); font-family: var(--font-sans); margin: 0; overflow-x: hidden; }
+
+        /* HEADER & HERO */
+        .site-nav { background: var(--black); padding: 1rem 5%; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--jungle); }
+        .inv-hero { background: var(--black); padding: 80px 5% 40px; color: white; }
+        .inv-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 6vw, 4rem); margin: 0; line-height: 1; }
+        .inv-hero em { color: var(--mint); font-style: italic; }
+
+        /* FILTER BAR */
+        .filter-wrap { background: var(--jungle); padding: 1.2rem 5%; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--mint); }
+        .filter-wrap label { color: white; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+        select { background: white; color: black; border: none; padding: 8px 12px; border-radius: 4px; font-family: var(--font-sans); font-weight: 600; cursor: pointer; }
+
+        /* THE GRID (ANTI-SHAKE) */
+        #inventory-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 2.5rem; padding: 4rem 5%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .cigar-card { 
+            background: white; border: 1px solid #dcece9; border-radius: 4px; 
+            overflow: hidden; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative;
+            display: flex; flex-direction: column;
+        }
+
+        .price-badge {
+            position: absolute; top: 12px; right: 12px;
+            background: var(--black); color: var(--mint);
+            padding: 5px 12px; border-radius: 3px; font-weight: 600; font-size: 0.85rem;
+            z-index: 5; border: 1px solid var(--mint);
+        }
+
+        /* FIXED IMAGE SIZE (ANTI-SHAKE) */
+        .img-container { height: 200px; width: 100%; display: flex; align-items: center; justify-content: center; background: #fff; padding: 20px; }
+        .img-container img { max-height: 100%; width: auto; object-fit: contain; }
+
+        .card-body { padding: 1.5rem; flex-grow: 1; border-top: 1px solid #f0f0f0; }
+        .cigar-name { font-family: var(--font-display); font-size: 1.4rem; margin: 8px 0; color: var(--black); }
+
+        /* STRENGTH DOTS */
+        .dots { display: flex; gap: 4px; margin-bottom: 10px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #eee; }
+        .dot.active-Mild { background: var(--yellow); }
+        .dot.active-Flavored { background: var(--blue); }
+        .dot.active-Medium { background: var(--green); }
+        .dot.active-Full { background: var(--red); }
+
+        /* MOBILE DRAWER */
+        .drawer { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); background: #fafafa; }
+        .cigar-card.open { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,27,22,0.1); border-color: var(--mint); }
+        .cigar-card.open .drawer { max-height: 400px; }
+        .drawer-inner { padding: 1.5rem; font-size: 0.95rem; line-height: 1.6; color: #444; border-top: 1px solid #eee; }
+
+        footer { background: var(--black); color: rgba(255,255,255,0.4); text-align: center; padding: 4rem 1rem; font-size: 0.75rem; line-height: 1.8; }
+        
+        .loading-text { grid-column: 1/-1; text-align: center; padding: 100px; font-family: var(--font-display); font-style: italic; font-size: 1.5rem; color: var(--jungle); }
+    </style>
+</head>
+<body>
+
+<div id="age-gate">
+    <h1 style="font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 10px;">THE TOBACCO CENTER</h1>
+    <p style="margin-bottom: 30px; opacity: 0.8; letter-spacing: 1px;">PREMIUM CIGAR LOUNGE & HUMIDOR</p>
+    <button onclick="document.getElementById('age-gate').remove()" style="background: var(--mint); border: none; padding: 18px 50px; font-family: var(--font-sans); font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; color: var(--black);">I Am 21+</button>
 </div>
+
+<nav class="site-nav">
+    <div style="color: var(--mint); font-family: var(--font-display); font-size: 1.4rem; font-weight: bold; letter-spacing: 1px;">TTC</div>
+</nav>
+
+<section class="inv-hero">
+    <span style="color: var(--mint); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 10px;">Williamsport, PA</span>
+    <h1>The Virtual <em>Humidor.</em></h1>
+</section>
+
+<div class="filter-wrap">
+    <label>Browse Selection:</label>
+    <select id="strengthFilter" onchange="renderGrid()">
+        <option value="All">All Inventory</option>
+        <option value="Mild">Mild</option>
+        <option value="Flavored">Flavored</option>
+        <option value="Medium">Medium</option>
+        <option value="Full">Full</option>
+    </select>
+</div>
+
+<div id="inventory-grid">
+    <div class="loading-text">Consulting the master blender...</div>
+</div>
+
+<footer>
+    © 2026 THE TOBACCO CENTER LLC<br>
+    123 Main St, Williamsport, PA<br>
+    <span style="color: var(--mint); margin-top: 10px; display: block;">HAND-CURATED PREMIUM BOUTIQUE SELECTION</span>
+</footer>
 
 <script>
     let inventory = [];
 
-    // Clover prices are often in cents (1550 = $15.50). 
-    // This handles both cents or standard decimals.
-    function formatCurrency(price) {
-        if (!price && price !== 0) return "TBD";
-        const num = parseFloat(price);
-        // If the price is a large integer (like 1500), treat as cents
-        const finalPrice = num > 1000 ? num / 100 : num;
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        }).format(finalPrice);
+    function formatPrice(cents) {
+        if (!cents) return "$--";
+        // Handles if Clover sends 1500 (cents) or 15.00 (dollars)
+        const price = cents > 1000 ? cents / 100 : cents;
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
     }
 
     async function fetchCigars() {
         const grid = document.getElementById('inventory-grid');
-        const status = document.getElementById('status-message');
+        const apiUrl = 'https://ttc-inv-api.williamsportcigars.workers.dev/';
 
         try {
-            // Added a cache-buster to ensure we get fresh data
-            const res = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/?v=' + Date.now());
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('API Error');
+            const data = await response.json();
             
-            if (!res.ok) throw new Error("Server responded with error " + res.status);
-            
-            const data = await res.json();
-            console.log("TTC API Data Loaded:", data); // Check your browser console (F12)
-
-            // Normalize data: Some APIs use 'meta', others use 'details'
-            inventory = data.map(item => ({
-                ...item,
-                meta: item.meta || item.details || {},
-                price: item.price || item.cost || 0
-            }));
-
-            // 3rd RULE SORTING
-            inventory.sort((a, b) => {
-                const isARule = a.name.toLowerCase().includes("3rd rule");
-                const isBRule = b.name.toLowerCase().includes("3rd rule");
-                if (isARule && !isBRule) return -1;
-                if (!isARule && isBRule) return 1;
-                return a.name.localeCompare(b.name);
+            // SORTING LOGIC: "3rd Rule" at the top, then A-Z
+            inventory = data.sort((a, b) => {
+                const aName = a.name.toLowerCase();
+                const bName = b.name.toLowerCase();
+                const aRule = aName.includes("3rd rule");
+                const bRule = bName.includes("3rd rule");
+                if (aRule && !bRule) return -1;
+                if (!aRule && bRule) return 1;
+                return aName.localeCompare(bName);
             });
 
             renderGrid();
         } catch (err) {
-            console.error("Fetch Error:", err);
-            status.innerHTML = `
-                <div style="color: #e74c3c;">
-                    <strong>Vault Connection Error</strong><br>
-                    <span style="font-size: 0.8rem; opacity: 0.7;">${err.message}</span><br>
-                    <button onclick="location.reload()" style="margin-top:15px; padding: 5px 15px;">Retry Connection</button>
+            console.error("Fetch failed:", err);
+            grid.innerHTML = `
+                <div class="loading-text" style="color: #e74c3c;">
+                    Vault Locked.<br>
+                    <span style="font-size: 1rem; font-family: var(--font-sans); font-style: normal; opacity: 0.7;">
+                        The connection to our Clover inventory was interrupted.
+                    </span><br>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; cursor: pointer;">Retry Connection</button>
                 </div>`;
         }
     }
 
     function renderGrid() {
-        const filterValue = document.getElementById('strengthFilter').value;
+        const filter = document.getElementById('strengthFilter').value;
         const grid = document.getElementById('inventory-grid');
         grid.innerHTML = '';
 
-        const filtered = inventory.filter(i => filterValue === 'All' || i.strength === filterValue);
-
-        if (filtered.length === 0) {
-            grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 50px;">No cigars found in the "${filterValue}" category.</p>`;
-            return;
-        }
+        const filtered = inventory.filter(i => filter === 'All' || i.strength === filter);
 
         filtered.forEach(item => {
+            // Safety fallbacks for missing data
+            const meta = item.meta || item.details || {};
+            const imgSrc = meta.image || 'https://thetobaccocenter.com/logo-placeholder.png';
+            const profile = meta.profile || 'A hand-curated premium boutique selection from The Tobacco Center.';
+            const strength = item.strength || 'Medium';
+            const price = item.price || item.cost || 0;
+
             const card = document.createElement('div');
             card.className = 'cigar-card';
             card.onclick = () => card.classList.toggle('open');
 
+            // Dot System
             const strengthMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
-            let dotsHTML = '';
+            let dots = '';
             for(let d=1; d<=5; d++) {
-                const activeClass = d <= (strengthMap[item.strength] || 3) ? `active-${item.strength}` : '';
-                dotsHTML += `<div class="dot ${activeClass}"></div>`;
+                const active = d <= (strengthMap[strength] || 3) ? `active-${strength}` : '';
+                dots += `<div class="dot ${active}"></div>`;
             }
 
             card.innerHTML = `
-                <div class="price-badge">${formatCurrency(item.price)}</div>
+                <div class="price-badge">${formatPrice(price)}</div>
                 <div class="img-container">
-                    <img src="${item.meta.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" 
-                         onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'"
-                         loading="lazy">
+                    <img src="${imgSrc}" onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'" loading="lazy">
                 </div>
                 <div class="card-body">
-                    <div class="dots">${dotsHTML}</div>
-                    <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${item.strength || 'Medium'}</div>
+                    <div class="dots">${dots}</div>
+                    <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase; letter-spacing: 1px;">${strength}</div>
                     <h3 class="cigar-name">${item.name}</h3>
-                    <div style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">${item.meta.vitola || 'Hand-Rolled'}</div>
+                    <div style="font-size: 11px; opacity: 0.5; text-transform: uppercase;">${meta.vitola || 'Premium Selection'}</div>
                 </div>
                 <div class="drawer">
                     <div class="drawer-inner">
-                        <strong style="color: var(--black); display: block; margin-bottom: 5px;">Tasting Notes:</strong>
-                        ${item.meta.profile || 'Hand-curated premium selection from our humidor.'}
+                        <strong style="color: var(--mint); display: block; margin-bottom: 8px; font-size: 0.8rem; text-transform: uppercase;">Tasting Profile</strong>
+                        ${profile}
                     </div>
                 </div>
             `;
@@ -111,3 +213,6 @@
 
     fetchCigars();
 </script>
+
+</body>
+</html>
