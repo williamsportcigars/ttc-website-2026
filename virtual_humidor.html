@@ -14,36 +14,42 @@
             --font-sans: 'Josefin Sans', sans-serif;
         }
 
-        body { font-family: var(--font-sans); background: var(--cream); color: var(--black); margin: 0; }
+        body { font-family: var(--font-sans); background: var(--cream); margin: 0; color: var(--black); }
 
-        /* NAV */
-        .site-nav { background: var(--black); padding: 1rem 4rem; display: flex; align-items: center; }
+        /* NAVIGATION */
+        .site-nav { background: var(--black); padding: 1rem 4rem; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .nav-logo { font-family: var(--font-display); color: var(--mint); text-decoration: none; font-weight: 700; text-transform: uppercase; font-size: 14px; }
         .nav-logo span { font-size: 10px; opacity: 0.5; margin-left: 10px; font-style: italic; }
 
         /* HERO */
         .inv-hero { background: var(--black); padding: 6rem 4rem; color: white; }
-        .inv-hero .eyebrow { color: var(--mint); text-transform: uppercase; letter-spacing: 0.2em; font-size: 10px; }
-        .inv-hero h1 { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4rem); margin: 1rem 0; }
+        .inv-hero .eyebrow { color: var(--mint); text-transform: uppercase; letter-spacing: 0.2em; font-size: 10px; display: block; margin-bottom: 0.5rem; }
+        .inv-hero h1 { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4rem); margin: 0; }
         .inv-hero h1 em { color: var(--mint); font-style: italic; }
 
-        /* FILTERS */
-        .filter-wrap { padding: 1.5rem 4rem; background: var(--jungle); color: white; display: flex; align-items: center; gap: 20px; border-bottom: 2px solid var(--mint); }
-        select { background: white; color: black; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; }
+        /* FILTER BAR */
+        .filter-wrap { background: var(--jungle); padding: 1.5rem 4rem; display: flex; align-items: center; gap: 15px; border-bottom: 2px solid var(--mint); color: white; }
+        .filter-wrap label { font-size: 12px; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+        select { background: white; color: black; border: none; padding: 8px 12px; border-radius: 4px; font-weight: 600; cursor: pointer; }
 
-        /* GRID */
+        /* INVENTORY GRID */
         .inventory-section { padding: 5rem 4rem; }
         #inventory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto; }
         
         .cigar-card { 
-            background: var(--warm-white); border: 1px solid var(--border); padding: 2rem; 
-            display: grid; grid-template-columns: 120px 1fr; gap: 20px;
-            align-items: start; min-height: 180px; position: relative; transition: transform 0.2s;
+            background: var(--warm-white); 
+            border: 1px solid var(--border); 
+            padding: 2rem; 
+            display: grid; 
+            grid-template-columns: 120px 1fr; 
+            gap: 20px;
+            align-items: start;
+            min-height: 180px;
+            position: relative;
         }
-        .cigar-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .cigar-card::before { content: ''; display: block; width: 28px; height: 2px; background: var(--mint); position: absolute; top: 1.5rem; left: 2rem; }
 
-        .img-box { width: 120px; height: 120px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #eee; }
+        .img-box { width: 120px; height: 120px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #eee; flex-shrink: 0; }
         .img-box img { width: 100%; height: 100%; object-fit: contain; }
 
         .cigar-card h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--black); margin: 1rem 0 0.5rem; line-height: 1.3; }
@@ -52,11 +58,12 @@
 
         .status-msg { font-family: var(--font-display); font-style: italic; color: var(--teal); text-align: center; grid-column: 1/-1; padding: 4rem; }
 
+        /* FOOTER */
         .site-footer { background: var(--black); padding: 3rem 4rem; text-align: center; }
-        .footer-copy { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; }
+        .footer-copy { font-family: var(--font-sans); font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; }
 
         @media (max-width: 768px) {
-            .site-nav, .inv-hero, .filter-wrap, .inventory-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+            .site-nav, .inv-hero, .filter-wrap, .inventory-section { padding: 2rem 1.5rem; }
             .cigar-card { grid-template-columns: 1fr; text-align: center; }
             .img-box { margin: 0 auto; }
             .cigar-card::before { left: 50%; transform: translateX(-50%); }
@@ -75,7 +82,7 @@
 </section>
 
 <div class="filter-wrap">
-    <label style="font-size: 12px; text-transform: uppercase; font-weight: 600;">Strength:</label>
+    <label>Filter By Strength:</label>
     <select id="strengthFilter" onchange="applyFilter()">
         <option value="All">All Selections</option>
         <option value="Mild">Mild</option>
@@ -92,7 +99,7 @@
 </section>
 
 <footer class="site-footer">
-    <div class="footer-copy">© 2026 THE TOBACCO CENTER LLC · WILLIAMSPORT, PA</div>
+    <div class="footer-copy">© 2026 THE TOBACCO CENTER LLC · 21 W CHURCH ST, WILLIAMSPORT, PA</div>
 </footer>
 
 <script>
@@ -101,7 +108,8 @@
     async function loadInventory() {
         const grid = document.getElementById("inventory-grid");
         try {
-            const res = await fetch("https://ttc-inv-api.williamsportcigars.workers.dev/");
+            // "Date.now()" acts as a cache-buster so you always get the latest data
+            const res = await fetch("https://ttc-inv-api.williamsportcigars.workers.dev/?v=" + Date.now());
             fullInventory = await res.json();
             renderInventory(fullInventory);
         } catch (e) {
@@ -112,37 +120,47 @@
 
     function renderInventory(items) {
         const grid = document.getElementById("inventory-grid");
-        grid.innerHTML = "";
+        let htmlBuffer = "";
         
-        if (items.length === 0) {
+        if (!items || items.length === 0) {
             grid.innerHTML = `<div class="status-msg">No cigars found in this category.</div>`;
             return;
         }
 
         items.forEach(i => {
-            // Worker is now flat, so we access properties directly
-            const imgSrc = i.image || 'https://thetobaccocenter.com/logo-placeholder.png';
-            const strength = i.strength || 'Medium';
-            const profile = i.profile || 'A hand-curated boutique selection from our humidor.';
-            const vitola = i.vitola || 'Boutique';
+            // This line is the "Safe Check": 
+            // It looks in i.details if it exists, otherwise it looks at i itself.
+            const d = i.details ? i.details : i;
+            
+            const name = i.name || "Premium Selection";
+            const imgSrc = d.image || d.img || 'https://thetobaccocenter.com/logo-placeholder.png';
+            const strength = d.strength || 'Medium';
+            const profile = d.profile || d.description || 'A hand-curated boutique selection from our humidor.';
+            const vitola = d.vitola || 'Boutique';
 
-            grid.innerHTML += `
+            htmlBuffer += `
                 <div class="cigar-card">
                     <div class="img-box">
                         <img src="${imgSrc}" loading="lazy" onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
                     </div>
                     <div>
                         <div class="cigar-meta">${strength} · ${vitola}</div>
-                        <h3>${i.name}</h3>
+                        <h3>${name}</h3>
                         <p>${profile}</p>
                     </div>
                 </div>`;
         });
+        
+        grid.innerHTML = htmlBuffer;
     }
 
     function applyFilter() {
         const val = document.getElementById("strengthFilter").value;
-        renderInventory(val === "All" ? fullInventory : fullInventory.filter(i => i.strength === val));
+        renderInventory(val === "All" ? fullInventory : fullInventory.filter(i => {
+            // Filters checking both potential data locations
+            const s = (i.details ? i.details.strength : i.strength) || "Medium";
+            return s === val;
+        }));
     }
 
     loadInventory();
