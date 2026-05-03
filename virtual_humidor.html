@@ -13,45 +13,30 @@
             --font-display: 'Playfair Display', serif;
             --font-sans: 'Josefin Sans', sans-serif;
         }
-
         body { font-family: var(--font-sans); background: var(--warm-white); color: var(--black); margin: 0; }
-
         .site-nav { background: var(--black); padding: 1rem 5%; position: sticky; top: 0; z-index: 100; height: 64px; display: flex; align-items: center; }
         .nav-logo { font-family: var(--font-display); color: var(--mint); text-decoration: none; font-weight: 700; text-transform: uppercase; font-size: 14px; }
         .inv-hero { background: var(--black); padding: 80px 5% 40px; color: white; }
         .inv-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 4rem); margin: 0; }
         .inv-hero h1 em { color: var(--mint); font-style: italic; }
-
         .filter-wrap { background: var(--jungle); padding: 1.2rem 5%; display: flex; align-items: center; gap: 15px; border-bottom: 2px solid var(--mint); }
         select { background: white; color: black; border: none; padding: 8px 12px; border-radius: 4px; font-weight: 600; cursor: pointer; }
-
         #inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; padding: 4rem 5%; max-width: 1400px; margin: 0 auto; }
-
         .cigar-card { background: white; border: 1px solid #dcece9; border-radius: 4px; overflow: hidden; cursor: pointer; transition: 0.3s; position: relative; }
-        
-        .img-container { 
-            width: 100%; height: 200px; background: #fff; 
-            display: flex; align-items: center; justify-content: center; 
-            padding: 20px; box-sizing: border-box; border-bottom: 1px solid #f0f0f0;
-        }
+        .img-container { width: 100%; height: 200px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; border-bottom: 1px solid #f0f0f0; }
         .img-container img { max-height: 100%; max-width: 100%; object-fit: contain; }
-
         .card-body { padding: 1.5rem; }
         .cigar-name { font-family: var(--font-display); font-size: 1.3rem; margin: 10px 0; min-height: 3.2rem; }
-
         .dots { display: flex; gap: 5px; margin-bottom: 10px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; background: #eee; }
         .dot.active-Mild { background: var(--yellow); }
         .dot.active-Flavored { background: var(--blue); }
         .dot.active-Medium { background: var(--green); }
         .dot.active-Full { background: var(--red); }
-
         .price-badge { position: absolute; top: 12px; right: 12px; background: var(--black); color: var(--mint); padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
-
         .drawer { max-height: 0; overflow: hidden; transition: 0.4s ease-out; background: #fafafa; opacity: 0; }
         .cigar-card.open .drawer { max-height: 400px; opacity: 1; border-top: 1px dashed var(--mint); }
         .drawer-inner { padding: 1.5rem; font-size: 0.9rem; font-style: italic; color: #444; }
-
         footer { background: var(--black); color: rgba(255,255,255,0.4); text-align: center; padding: 3rem; font-size: 10px; }
     </style>
 </head>
@@ -87,7 +72,7 @@
             inventory = await res.json();
             renderGrid();
         } catch (err) {
-            console.error("Failed to load:", err);
+            console.error("Load failed", err);
         }
     }
 
@@ -96,33 +81,37 @@
         const grid = document.getElementById('inventory-grid');
         grid.innerHTML = '';
 
-        inventory.filter(i => filter === 'All' || i.strength === filter).forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'cigar-card';
-            card.onclick = () => card.classList.toggle('open');
-            
-            const dotsMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
-            let dots = '';
-            for(let d=1; d<=5; d++) {
-                const active = d <= (dotsMap[item.strength] || 3) ? `active-${item.strength}` : '';
-                dots += `<div class="dot ${active}"></div>`;
-            }
+        // Added "item && item.strength" check to prevent crashing if data is missing
+        inventory
+            .filter(item => item && (filter === 'All' || item.strength === filter))
+            .forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'cigar-card';
+                card.onclick = () => card.classList.toggle('open');
+                
+                const s = item.strength || 'Medium';
+                const dotsMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
+                let dots = '';
+                for(let d=1; d<=5; d++) {
+                    const active = d <= (dotsMap[s] || 3) ? `active-${s}` : '';
+                    dots += `<div class="dot ${active}"></div>`;
+                }
 
-            card.innerHTML = `
-                <div class="price-badge">$${(item.price / 100).toFixed(2)}</div>
-                <div class="img-container">
-                    <img src="${item.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" 
-                         onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
-                </div>
-                <div class="card-body">
-                    <div class="dots">${dots}</div>
-                    <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${item.strength}</div>
-                    <h3 class="cigar-name">${item.name}</h3>
-                </div>
-                <div class="drawer"><div class="drawer-inner">${item.profile}</div></div>
-            `;
-            grid.appendChild(card);
-        });
+                card.innerHTML = `
+                    <div class="price-badge">$${((item.price || 0) / 100).toFixed(2)}</div>
+                    <div class="img-container">
+                        <img src="${item.image || 'https://thetobaccocenter.com/logo-placeholder.png'}" 
+                             onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
+                    </div>
+                    <div class="card-body">
+                        <div class="dots">${dots}</div>
+                        <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${s}</div>
+                        <h3 class="cigar-name">${item.name || 'Unknown Cigar'}</h3>
+                    </div>
+                    <div class="drawer"><div class="drawer-inner">${item.profile || ''}</div></div>
+                `;
+                grid.appendChild(card);
+            });
     }
     load();
 </script>
