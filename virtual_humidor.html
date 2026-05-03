@@ -67,9 +67,13 @@
     let inventory = [];
 
     async function load() {
-        const res = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
-        inventory = await res.json();
-        renderGrid();
+        try {
+            const res = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
+            inventory = await res.json();
+            renderGrid();
+        } catch (e) {
+            console.error("Load failed", e);
+        }
     }
 
     function renderGrid() {
@@ -77,16 +81,16 @@
         const grid = document.getElementById('inventory-grid');
         grid.innerHTML = '';
 
-        // Fixed the filter and dot logic to look inside .details
         inventory.filter(i => filter === 'All' || i.details.strength === filter).forEach(item => {
             const card = document.createElement('div');
             card.className = 'cigar-card';
             card.onclick = () => card.classList.toggle('open');
             
+            const currentStrength = item.details.strength;
             const dotsMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
             let dots = '';
             for(let d=1; d<=5; d++) {
-                const active = d <= (dotsMap[item.details.strength] || 3) ? `active-${item.details.strength}` : '';
+                const active = d <= (dotsMap[currentStrength] || 3) ? `active-${currentStrength}` : '';
                 dots += `<div class="dot ${active}"></div>`;
             }
 
@@ -98,7 +102,7 @@
                 </div>
                 <div class="card-body">
                     <div class="dots">${dots}</div>
-                    <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${item.details.strength}</div>
+                    <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${currentStrength}</div>
                     <h3 class="cigar-name">${item.name}</h3>
                 </div>
                 <div class="drawer"><div class="drawer-inner">${item.details.profile}</div></div>
