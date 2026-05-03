@@ -4,204 +4,208 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Virtual Humidor | The Tobacco Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --black: #001b16; --jungle: #022e27; --mint: #259f8a;
-            --warm-white: #f7fffe; --yellow: #f1c40f; --green: #2ecc71;
-            --red: #e74c3c; --blue: #3498db;
-            --font-display: 'Playfair Display', serif;
-            --font-sans: 'Josefin Sans', sans-serif;
+          --black: #001b16; --forest: #033d33; --jungle: #022e27;
+          --mint: #259f8a; --mint-pale: #e0fef8; --teal: #0d6354;
+          --warm-white: #f7fffe; --border: #9dd4c8;
+          /* REQUESTED COLORS */
+          --yellow: #f1c40f; --green: #2ecc71; --red: #e74c3c; --blue: #3498db;
+          --font-display: 'Playfair Display', serif;
+          --font-body: 'Libre Baskerville', serif;
+          --font-sans: 'Josefin Sans', sans-serif;
         }
 
-        /* --- Age Gate Overlay --- */
-        #age-gate {
-            position: fixed; inset: 0; background: var(--black); z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; font-family: var(--font-sans); text-align: center; padding: 20px;
-        }
+        body { font-family: var(--font-body); background: var(--warm-white); color: var(--black); line-height: 1.6; }
 
-        body { background: #f0fdf8; color: var(--black); font-family: var(--font-sans); margin: 0; overflow-x: hidden; }
+        .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--black); border-bottom: 1px solid rgba(77,191,138,0.2); padding: 0 1rem; display: flex; align-items: center; height: 64px; }
+        .nav-logo { font-family: var(--font-display); color: var(--mint); font-size: 14px; text-decoration: none; font-weight: 700; text-transform: uppercase; }
 
-        /* --- Navigation & Hero --- */
-        .site-nav { background: var(--black); padding: 1rem 5%; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--jungle); }
-        .inv-hero { background: var(--black); padding: 80px 5% 40px; color: white; }
-        .inv-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 6vw, 4rem); margin: 0; line-height: 1; }
-        .inv-hero em { color: var(--mint); font-style: italic; }
+        .inv-hero { background: var(--black); padding: 100px 2rem 40px; text-align: left; }
+        .inv-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 900; color: var(--warm-white); }
+        .inv-hero h1 em { color: var(--mint); font-style: italic; }
+        .eyebrow { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mint); display: block; margin-bottom: 0.5rem; }
 
-        /* --- Filter Bar --- */
-        .filter-wrap { background: var(--jungle); padding: 1.2rem 5%; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--mint); }
-        .filter-wrap label { color: white; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
-        select { background: white; color: black; border: none; padding: 8px 12px; border-radius: 4px; font-family: var(--font-sans); font-weight: 600; cursor: pointer; }
+        .filter-wrap { background: var(--forest); padding: 1.5rem 2rem; display: flex; align-items: center; gap: 15px; border-top: 1px solid rgba(77,191,138,0.12); }
+        select { background: white; color: black; border: 2px solid var(--mint); padding: 8px; font-family: var(--font-sans); font-size: 12px; font-weight: 600; text-transform: uppercase; outline: none; border-radius: 4px; appearance: auto; }
 
-        /* --- Inventory Grid (Anti-Shake) --- */
-        #inventory-grid {
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 2.5rem; padding: 4rem 5%; max-width: 1400px; margin: 0 auto;
-        }
+        .inventory-section { padding: 3rem 1rem; background: #f0fdf8; min-height: 80vh; }
+        #inventory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
 
+        /* CIGAR CARD */
         .cigar-card { 
-            background: white; border: 1px solid #dcece9; border-radius: 4px; 
-            overflow: hidden; cursor: pointer; transition: transform 0.3s ease; position: relative;
-            display: flex; flex-direction: column;
+            background: white; 
+            border: 1px solid var(--border); 
+            padding: 1.5rem; 
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none; /* Prevents text selection during tapping */
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .price-badge {
-            position: absolute; top: 12px; right: 12px;
-            background: var(--black); color: var(--mint);
-            padding: 5px 12px; border-radius: 3px; font-weight: 600; font-size: 0.85rem;
-            z-index: 5; border: 1px solid var(--mint);
+        .img-container { 
+            width: 100%; 
+            height: 200px; 
+            background: #fff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            pointer-events: none; /* Allows click to pass through to the card */
+        }
+        .img-container img { max-height: 100%; max-width: 100%; object-fit: contain; }
+
+        /* DOT COLORS */
+        .strength-dots { display: flex; gap: 5px; margin-bottom: 10px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #eee; border: 1px solid rgba(0,0,0,0.1); }
+        
+        /* THE COLOR SYSTEM */
+        .Mild .active { background: var(--yellow); }
+        .Medium .active { background: var(--green); }
+        .Full .active { background: var(--red); }
+        .Flavored .active { background: var(--blue); }
+
+        .cigar-card h3 { font-family: var(--font-display); font-size: 1.35rem; color: var(--black); margin-bottom: 5px; }
+        .cigar-meta { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; margin-bottom: 5px; }
+
+        .Mild .cigar-meta-strength { color: #d4ac0d; }
+        .Medium .cigar-meta-strength { color: var(--teal); }
+        .Full .cigar-meta-strength { color: var(--red); }
+        .Flavored .cigar-meta-strength { color: var(--blue); }
+
+        /* THE DRAWER */
+        .drawer { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem; 
+            color: #444; 
+            line-height: 1.5;
+            opacity: 0;
+        }
+        .cigar-card.open { border-color: var(--mint); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .cigar-card.open .drawer { 
+            max-height: 500px; 
+            margin-top: 15px; 
+            padding-top: 15px;
+            border-top: 1px dashed var(--border);
+            opacity: 1;
         }
 
-        .img-container { height: 200px; width: 100%; display: flex; align-items: center; justify-content: center; background: #fff; padding: 20px; box-sizing: border-box; }
-        .img-container img { max-height: 100%; width: auto; object-fit: contain; }
+        .status-msg { font-family: var(--font-display); font-style: italic; color: var(--teal); text-align: center; grid-column: 1/-1; padding: 4rem; }
+        .site-footer { background: var(--black); padding: 2rem; text-align: center; color: rgba(255,255,255,0.3); font-family: var(--font-sans); font-size: 10px; }
 
-        .card-body { padding: 1.5rem; flex-grow: 1; border-top: 1px solid #f0f0f0; }
-        .cigar-name { font-family: var(--font-display); font-size: 1.4rem; margin: 8px 0; color: var(--black); min-height: 3.4rem; }
-
-        /* --- Strength Meter --- */
-        .dots { display: flex; gap: 4px; margin-bottom: 10px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: #eee; }
-        .dot.active-Mild { background: var(--yellow); }
-        .dot.active-Flavored { background: var(--blue); }
-        .dot.active-Medium { background: var(--green); }
-        .dot.active-Full { background: var(--red); }
-
-        /* --- Mobile Drawer --- */
-        .drawer { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); background: #fafafa; }
-        .cigar-card.open { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,27,22,0.1); border-color: var(--mint); }
-        .cigar-card.open .drawer { max-height: 400px; }
-        .drawer-inner { padding: 1.5rem; font-size: 0.95rem; line-height: 1.6; color: #444; border-top: 1px solid #eee; }
-
-        footer { background: var(--black); color: rgba(255,255,255,0.4); text-align: center; padding: 4rem 1rem; font-size: 0.75rem; line-height: 1.8; }
-        .loading-text { grid-column: 1/-1; text-align: center; padding: 100px; font-family: var(--font-display); font-style: italic; font-size: 1.5rem; color: var(--jungle); }
+        @media (max-width: 600px) {
+            .filter-wrap { flex-direction: column; align-items: flex-start; }
+            .inv-hero { padding: 80px 1rem 30px; }
+        }
     </style>
 </head>
 <body>
 
-<div id="age-gate">
-    <h1 style="font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 10px;">THE TOBACCO CENTER</h1>
-    <p style="margin-bottom: 30px; opacity: 0.8; letter-spacing: 1px;">PREMIUM CIGAR LOUNGE & HUMIDOR</p>
-    <button onclick="document.getElementById('age-gate').remove()" style="background: var(--mint); border: none; padding: 18px 50px; font-family: var(--font-sans); font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; color: var(--black);">I Am 21+</button>
-</div>
-
-<nav class="site-nav"><div style="color: var(--mint); font-family: var(--font-display); font-size: 1.4rem; font-weight: bold;">TTC</div></nav>
+<nav class="site-nav">
+    <a href="index.html" class="nav-logo">The Tobacco Center</a>
+</nav>
 
 <section class="inv-hero">
-    <span style="color: var(--mint); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 10px;">Williamsport, PA</span>
+    <span class="eyebrow">Inventory Catalog</span>
     <h1>The Virtual <em>Humidor.</em></h1>
 </section>
 
 <div class="filter-wrap">
-    <label for="strengthFilter">Browse Selection:</label>
-    <select id="strengthFilter">
+    <label style="color: white; font-family: var(--font-sans); font-size: 11px; text-transform: uppercase;">Filter Selection:</label>
+    <select id="strengthFilter" onchange="applyFilter()">
         <option value="All">All Inventory</option>
-        <option value="Mild">Mild</option>
-        <option value="Flavored">Flavored</option>
-        <option value="Medium">Medium</option>
-        <option value="Full">Full</option>
+        <option value="Mild">Mild (Yellow)</option>
+        <option value="Flavored">Flavored (Blue)</option>
+        <option value="Medium">Medium (Green)</option>
+        <option value="Full">Full (Red)</option>
     </select>
+    <p style="color: var(--mint-pale); font-size: 10px; font-family: var(--font-sans); text-transform: uppercase;">(Tap image to read profile)</p>
 </div>
 
-<div id="inventory-grid">
-    <div class="loading-text">Opening the vault...</div>
-</div>
+<section class="inventory-section">
+    <div id="inventory-grid">
+        <div class="status-msg">Opening the vault...</div>
+    </div>
+</section>
 
-<footer>
-    © 2026 THE TOBACCO CENTER LLC<br>
-    Williamsport, PA · PREMIUM BOUTIQUE SELECTION
+<footer class="site-footer">
+    © 2026 The Tobacco Center LLC · Williamsport, PA
 </footer>
 
 <script>
-    let inventoryData = [];
+    let fullInventory = [];
 
-    function fixUrl(url) {
-        if (!url) return 'https://thetobaccocenter.com/logo-placeholder.png';
-        return url.replace('http://', 'https://');
+    async function loadInventory() {
+        const grid = document.getElementById("inventory-grid");
+        try {
+            const res = await fetch("https://ttc-inv-api.williamsportcigars.workers.dev/");
+            fullInventory = await res.json();
+            renderInventory(fullInventory);
+        } catch (e) {
+            grid.innerHTML = `<div class="status-msg">Vault offline. Please refresh.</div>`;
+        }
     }
 
-    function formatPrice(val) {
-        if (!val) return "$--";
-        const price = val > 1000 ? val / 100 : val;
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
-    }
+    function renderInventory(items) {
+        const grid = document.getElementById("inventory-grid");
+        grid.innerHTML = "";
+        
+        if (items.length === 0) {
+            grid.innerHTML = `<div class="status-msg">No cigars found in this selection.</div>`;
+            return;
+        }
 
-    function renderGrid() {
-        const grid = document.getElementById('inventory-grid');
-        const filterValue = document.getElementById('strengthFilter').value;
-        if (!grid) return;
-        grid.innerHTML = '';
+        items.forEach(i => {
+            const meta = i.details || {};
+            const imgSrc = meta.image || 'https://thetobaccocenter.com/logo-placeholder.png';
+            const str = meta.strength || 'Medium';
 
-        const processed = inventoryData.map(item => {
-            const meta = item.meta || item.details || {};
-            let s = item.strength || meta.strength;
-            // Force 3rd Rule to Full if data is missing
-            if (item.name.toLowerCase().includes("3rd rule") && (!s || s === "Medium")) s = "Full";
-            if (!s) s = "Medium";
-            return { ...item, finalStrength: s };
-        });
-
-        const filtered = processed.filter(i => filterValue === 'All' || i.finalStrength === filterValue);
-
-        filtered.forEach(item => {
-            const meta = item.meta || item.details || {};
-            const card = document.createElement('div');
-            card.className = 'cigar-card';
-            card.onclick = () => card.classList.toggle('open');
-
+            // Requested Color Logic
             const strengthMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
-            let dots = '';
+            const activeDots = strengthMap[str] || 3;
+            let dotsHTML = '';
             for(let d=1; d<=5; d++) {
-                const active = d <= (strengthMap[item.finalStrength] || 3) ? `active-${item.finalStrength}` : '';
-                dots += `<div class="dot ${active}"></div>`;
+                dotsHTML += `<div class="dot ${d <= activeDots ? 'active' : ''}"></div>`;
             }
 
+            const card = document.createElement('div');
+            card.className = `cigar-card ${str}`;
+            
+            // Re-written click logic for 100% reliability
+            card.addEventListener('click', function(e) {
+                this.classList.toggle('open');
+            });
+
             card.innerHTML = `
-                <div class="price-badge">${formatPrice(item.price || item.cost)}</div>
-                <div class="img-container">
-                    <img src="${fixUrl(meta.image)}" onerror="this.src='https://thetobaccocenter.com/logo-placeholder.png'">
+                <div class="img-container"><img src="${imgSrc}" loading="lazy"></div>
+                <div class="strength-dots">${dotsHTML}</div>
+                <div class="cigar-meta">
+                    <span class="cigar-meta-strength">${str}</span> · ${meta.vitola || 'Boutique'}
                 </div>
-                <div class="card-body">
-                    <div class="dots">${dots}</div>
-                    <div style="font-size: 10px; font-weight: 600; color: var(--mint); text-transform: uppercase;">${item.finalStrength}</div>
-                    <h3 class="cigar-name">${item.name}</h3>
-                    <div style="font-size: 11px; opacity: 0.5; text-transform: uppercase;">${meta.vitola || 'Boutique'}</div>
-                </div>
+                <h3>${i.name}</h3>
                 <div class="drawer">
-                    <div class="drawer-inner">
-                        <strong style="color: var(--mint); display: block; margin-bottom: 8px; font-size: 0.8rem; text-transform: uppercase;">Tasting Profile</strong>
-                        ${meta.profile || 'Hand-curated premium selection.'}
-                    </div>
+                    <p style="font-weight:600; color:var(--teal); margin-bottom:5px;">Tasting Notes:</p>
+                    <p>${meta.profile || 'Hand-curated premium boutique selection from The Tobacco Center.'}</p>
                 </div>
             `;
             grid.appendChild(card);
         });
     }
 
-    async function init() {
-        const filterElem = document.getElementById('strengthFilter');
-        if (filterElem) filterElem.addEventListener('change', renderGrid);
-
-        try {
-            const response = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
-            const data = await response.json();
-            
-            // Priority Sort: 3rd Rule at top, then Alphabetical
-            inventoryData = data.sort((a, b) => {
-                const aRule = a.name.toLowerCase().includes("3rd rule");
-                const bRule = b.name.toLowerCase().includes("3rd rule");
-                if (aRule && !bRule) return -1;
-                if (!aRule && bRule) return 1;
-                return a.name.localeCompare(b.name);
-            });
-            renderGrid();
-        } catch (err) {
-            document.getElementById('inventory-grid').innerHTML = `<div class="loading-text">Vault Locked. Please refresh.</div>`;
-        }
+    function applyFilter() {
+        const val = document.getElementById("strengthFilter").value;
+        renderInventory(val === "All" ? fullInventory : fullInventory.filter(i => (i.details?.strength || "Medium") === val));
     }
 
-    window.onload = init;
+    loadInventory();
 </script>
+
 </body>
 </html>
