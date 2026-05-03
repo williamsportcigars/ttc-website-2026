@@ -11,8 +11,9 @@
         :root {
           --black: #001b16; --forest: #033d33; --jungle: #022e27;
           --mint: #259f8a; --mint-pale: #e0fef8; --teal: #0d6354;
-          --gold: #c9a84c; --gold-light: #e8c76a; --warm-white: #f7fffe; 
-          --border: #9dd4c8; --blue: #3498db; --red: #ff4c4c;
+          --warm-white: #f7fffe; --border: #9dd4c8;
+          /* REQUESTED COLORS */
+          --yellow: #f1c40f; --green: #2ecc71; --red: #e74c3c; --blue: #3498db;
           --font-display: 'Playfair Display', serif;
           --font-body: 'Libre Baskerville', serif;
           --font-sans: 'Josefin Sans', sans-serif;
@@ -20,54 +21,89 @@
 
         body { font-family: var(--font-body); background: var(--warm-white); color: var(--black); line-height: 1.6; }
 
-        /* NAVIGATION */
-        .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--black); border-bottom: 1px solid rgba(77,191,138,0.2); padding: 0 1rem; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+        .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--black); border-bottom: 1px solid rgba(77,191,138,0.2); padding: 0 1rem; display: flex; align-items: center; height: 64px; }
         .nav-logo { font-family: var(--font-display); color: var(--mint); font-size: 14px; text-decoration: none; font-weight: 700; text-transform: uppercase; }
 
-        /* HERO */
         .inv-hero { background: var(--black); padding: 100px 2rem 40px; text-align: left; }
         .inv-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 900; color: var(--warm-white); }
         .inv-hero h1 em { color: var(--mint); font-style: italic; }
         .eyebrow { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mint); display: block; margin-bottom: 0.5rem; }
 
-        /* FILTER BAR */
         .filter-wrap { background: var(--forest); padding: 1.5rem 2rem; display: flex; align-items: center; gap: 15px; border-top: 1px solid rgba(77,191,138,0.12); }
-        select { background: white; color: black; border: 2px solid var(--mint); padding: 8px; font-family: var(--font-sans); font-size: 12px; font-weight: 600; text-transform: uppercase; outline: none; border-radius: 4px; }
+        select { background: white; color: black; border: 2px solid var(--mint); padding: 8px; font-family: var(--font-sans); font-size: 12px; font-weight: 600; text-transform: uppercase; outline: none; border-radius: 4px; appearance: auto; }
 
-        /* INVENTORY GRID */
         .inventory-section { padding: 3rem 1rem; background: #f0fdf8; min-height: 80vh; }
         #inventory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
 
         /* CIGAR CARD */
-        .cigar-card { background: white; border: 1px solid var(--border); padding: 1.5rem; position: relative; cursor: pointer; transition: transform 0.2s ease; }
-        .img-container { width: 100%; height: 200px; background: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; border-bottom: 1px solid #eee; }
+        .cigar-card { 
+            background: white; 
+            border: 1px solid var(--border); 
+            padding: 1.5rem; 
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none; /* Prevents text selection during tapping */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .img-container { 
+            width: 100%; 
+            height: 200px; 
+            background: #fff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            pointer-events: none; /* Allows click to pass through to the card */
+        }
         .img-container img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
-        /* THE DOT SYSTEM COLORS */
+        /* DOT COLORS */
         .strength-dots { display: flex; gap: 5px; margin-bottom: 10px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ddd; border: 1px solid rgba(0,0,0,0.1); }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #eee; border: 1px solid rgba(0,0,0,0.1); }
         
-        /* Dot color matching parent class */
-        .Mild .active { background: var(--gold); border-color: #8c732c; }
-        .Flavored .active { background: var(--blue); border-color: #246696; }
-        .Medium .active { background: var(--mint); border-color: var(--teal); }
-        .Full .active { background: var(--red); border-color: #b22d2d; }
+        /* THE COLOR SYSTEM */
+        .Mild .active { background: var(--yellow); }
+        .Medium .active { background: var(--green); }
+        .Full .active { background: var(--red); }
+        .Flavored .active { background: var(--blue); }
 
-        .cigar-card h3 { font-family: var(--font-display); font-size: 1.3rem; color: var(--black); margin-bottom: 5px; }
-        .cigar-meta { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: #444; }
+        .cigar-card h3 { font-family: var(--font-display); font-size: 1.35rem; color: var(--black); margin-bottom: 5px; }
+        .cigar-meta { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; margin-bottom: 5px; }
 
-        /* Metadata text color matching */
-        .Mild .cigar-meta-strength { color: var(--gold); }
-        .Flavored .cigar-meta-strength { color: var(--blue); }
+        .Mild .cigar-meta-strength { color: #d4ac0d; }
         .Medium .cigar-meta-strength { color: var(--teal); }
         .Full .cigar-meta-strength { color: var(--red); }
+        .Flavored .cigar-meta-strength { color: var(--blue); }
 
         /* THE DRAWER */
-        .drawer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, margin-top 0.4s ease; font-size: 0.85rem; color: #444; line-height: 1.5; }
-        .cigar-card.open .drawer { max-height: 200px; margin-top: 15px; padding-top: 10px; border-top: 1px dashed var(--border); }
+        .drawer { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem; 
+            color: #444; 
+            line-height: 1.5;
+            opacity: 0;
+        }
+        .cigar-card.open { border-color: var(--mint); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .cigar-card.open .drawer { 
+            max-height: 500px; 
+            margin-top: 15px; 
+            padding-top: 15px;
+            border-top: 1px dashed var(--border);
+            opacity: 1;
+        }
 
         .status-msg { font-family: var(--font-display); font-style: italic; color: var(--teal); text-align: center; grid-column: 1/-1; padding: 4rem; }
         .site-footer { background: var(--black); padding: 2rem; text-align: center; color: rgba(255,255,255,0.3); font-family: var(--font-sans); font-size: 10px; }
+
+        @media (max-width: 600px) {
+            .filter-wrap { flex-direction: column; align-items: flex-start; }
+            .inv-hero { padding: 80px 1rem 30px; }
+        }
     </style>
 </head>
 <body>
@@ -82,20 +118,20 @@
 </section>
 
 <div class="filter-wrap">
-    <label style="color: white; font-family: var(--font-sans); font-size: 11px; text-transform: uppercase;">Filter Strength:</label>
+    <label style="color: white; font-family: var(--font-sans); font-size: 11px; text-transform: uppercase;">Filter Selection:</label>
     <select id="strengthFilter" onchange="applyFilter()">
-        <option value="All">All Cigars</option>
-        <option value="Mild">Mild</option>
-        <option value="Flavored">Flavored</option>
-        <option value="Medium">Medium</option>
-        <option value="Full">Full</option>
+        <option value="All">All Inventory</option>
+        <option value="Mild">Mild (Yellow)</option>
+        <option value="Flavored">Flavored (Blue)</option>
+        <option value="Medium">Medium (Green)</option>
+        <option value="Full">Full (Red)</option>
     </select>
-    <p style="color: var(--mint-pale); font-size: 10px; font-family: var(--font-sans); text-transform: uppercase;">(Click image to toggle notes)</p>
+    <p style="color: var(--mint-pale); font-size: 10px; font-family: var(--font-sans); text-transform: uppercase;">(Tap image to read profile)</p>
 </div>
 
 <section class="inventory-section">
     <div id="inventory-grid">
-        <div class="status-msg">Opening the humidor doors...</div>
+        <div class="status-msg">Opening the vault...</div>
     </div>
 </section>
 
@@ -131,7 +167,7 @@
             const imgSrc = meta.image || 'https://thetobaccocenter.com/logo-placeholder.png';
             const str = meta.strength || 'Medium';
 
-            // Strength dot logic
+            // Requested Color Logic
             const strengthMap = { 'Mild': 1, 'Flavored': 2, 'Medium': 3, 'Full': 5 };
             const activeDots = strengthMap[str] || 3;
             let dotsHTML = '';
@@ -141,7 +177,11 @@
 
             const card = document.createElement('div');
             card.className = `cigar-card ${str}`;
-            card.onclick = function() { this.classList.toggle('open'); };
+            
+            // Re-written click logic for 100% reliability
+            card.addEventListener('click', function(e) {
+                this.classList.toggle('open');
+            });
 
             card.innerHTML = `
                 <div class="img-container"><img src="${imgSrc}" loading="lazy"></div>
@@ -151,7 +191,8 @@
                 </div>
                 <h3>${i.name}</h3>
                 <div class="drawer">
-                    <p>${meta.profile || 'Hand-curated premium boutique selection.'}</p>
+                    <p style="font-weight:600; color:var(--teal); margin-bottom:5px;">Tasting Notes:</p>
+                    <p>${meta.profile || 'Hand-curated premium boutique selection from The Tobacco Center.'}</p>
                 </div>
             `;
             grid.appendChild(card);
