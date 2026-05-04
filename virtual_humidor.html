@@ -17,176 +17,45 @@
       --muted:     #7a9a8a;
       --border:    #e0ede8;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Josefin Sans', sans-serif; background: var(--cream); color: var(--black); }
-
-    /* ── NAV ── */
-    .site-nav {
-      background: var(--black);
-      padding: 1.2rem 4rem;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 100;
-    }
-    .site-nav a {
-      color: var(--mint);
-      text-decoration: none;
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .site-nav .brand {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.3rem;
-      color: var(--mint-pale);
-    }
-
-    /* ── HERO ── */
-    .hero {
-      background: linear-gradient(135deg, var(--black) 0%, var(--jungle) 100%);
-      padding: 5rem 4rem 4rem;
-      text-align: center;
-    }
-    .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 3rem;
-      color: var(--mint-pale);
-      margin-bottom: 1rem;
-    }
-    .hero p {
-      color: var(--muted);
-      font-size: 0.85rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    /* ── FILTERS ── */
-    .filters {
-      padding: 2rem 4rem 1rem;
-      display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
-    .filters input, .filters select {
-      padding: 8px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.82rem;
-      background: white;
-      outline: none;
-    }
+    .site-nav { background: var(--black); padding: 1.2rem 4rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .site-nav a { color: var(--mint); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; }
+    .site-nav .brand { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.3rem; color: var(--mint-pale); }
+    .hero { background: linear-gradient(135deg, var(--black) 0%, var(--jungle) 100%); padding: 5rem 4rem 4rem; text-align: center; }
+    .hero h1 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 3rem; color: var(--mint-pale); margin-bottom: 1rem; }
+    .hero p { color: var(--muted); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .filters { padding: 2rem 4rem 1rem; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border); }
+    .filters input, .filters select { padding: 8px 14px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Josefin Sans', sans-serif; font-size: 0.82rem; background: white; outline: none; }
     .filters input { width: 220px; }
     .filters input:focus, .filters select:focus { border-color: var(--mint); }
-    .filter-count {
-      margin-left: auto;
-      font-size: 0.75rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
-    /* ── GRID ── */
+    .filter-count { margin-left: auto; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.05em; }
     .inventory-section { padding: 2.5rem 4rem 4rem; }
-    #inventory-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 1.5rem;
-    }
-
-    /* ── CARD ── */
-    .cigar-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.4rem;
-      display: flex;
-      gap: 16px;
-      transition: box-shadow 0.2s, transform 0.2s;
-    }
-    .cigar-card:hover {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      transform: translateY(-2px);
-    }
-    .img-box {
-      width: 90px;
-      height: 90px;
-      background: var(--cream);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      flex-shrink: 0;
-      overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-    }
+    #inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+    .cigar-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; display: flex; gap: 16px; transition: box-shadow 0.2s, transform 0.2s; }
+    .cigar-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .img-box { width: 90px; height: 90px; background: var(--cream); border: 1px solid var(--border); border-radius: 6px; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
     .img-box img { width: 100%; height: 100%; object-fit: contain; }
-    .img-box .placeholder {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 0.65rem;
-      color: var(--muted);
-      text-align: center;
-      padding: 8px;
-    }
+    .placeholder { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.65rem; color: var(--muted); text-align: center; padding: 8px; }
     .card-body { flex: 1; min-width: 0; }
-    .strength-tag {
-      display: inline-block;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--mint);
-      margin-bottom: 4px;
-    }
-    .cigar-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      color: var(--black);
-      margin-bottom: 5px;
-      line-height: 1.3;
-    }
-    .cigar-profile {
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 8px;
-    }
-    .cigar-price {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--gold);
-      letter-spacing: 0.05em;
-    }
-
-    /* ── STATUS / LOADING ── */
-    .status-msg {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 5rem;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      color: var(--muted);
-      font-size: 1.1rem;
-    }
-    .loading-dot {
-      display: inline-block;
-      animation: pulse 1.2s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+    .strength-tag { display: inline-block; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint); margin-bottom: 4px; }
+    .cigar-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--black); margin-bottom: 5px; line-height: 1.3; }
+    .cigar-profile { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 8px; }
+    .cigar-price { font-size: 0.85rem; font-weight: 700; color: var(--gold); }
+    .status-msg { grid-column: 1/-1; text-align: center; padding: 5rem; font-family: 'Playfair Display', serif; font-style: italic; color: var(--muted); font-size: 1.1rem; }
+    .loading-dot { display: inline-block; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
   </style>
 </head>
 <body>
-
 <nav class="site-nav">
   <a href="https://thetobaccocenter.com" class="brand">The Tobacco Center</a>
   <a href="https://thetobaccocenter.com">← Back to Site</a>
 </nav>
-
 <div class="hero">
   <h1>Virtual Humidor</h1>
   <p>Browse our current selection — Williamsport, PA</p>
 </div>
-
 <div class="filters">
   <input type="text" id="search" placeholder="🔍 Search by name..." oninput="filterItems()">
   <select id="strength-filter" onchange="filterItems()">
@@ -199,73 +68,56 @@
   </select>
   <div class="filter-count" id="filter-count"></div>
 </div>
-
 <section class="inventory-section">
   <div id="inventory-grid">
     <div class="status-msg"><span class="loading-dot">●</span> Loading humidor...</div>
   </div>
 </section>
-
 <script>
-  // ── CONFIG ── point to dedicated humidor worker (NOT inventory dashboard)
   const HUMIDOR_API = 'https://ttc-humidor.williamsportcigars.workers.dev';
-
   var allItems = [];
 
   async function load() {
     var grid = document.getElementById('inventory-grid');
     try {
-     var r = await fetch(HUMIDOR_API + '/cigars?v=' + Date.now());
+      var r = await fetch(HUMIDOR_API + '/cigars?v=' + Date.now());
       var data = await r.json();
-
-      if (data.error) {
-        grid.innerHTML = '<div class="status-msg">Error: ' + data.error + '</div>';
-        return;
-      }
-
+      if (!Array.isArray(data)) { grid.innerHTML = '<div class="status-msg">Error loading humidor</div>'; return; }
       allItems = data;
       renderItems(allItems);
-
     } catch(e) {
-      grid.innerHTML = '<div class="status-msg">Could not connect to humidor: ' + e.message + '</div>';
+      grid.innerHTML = '<div class="status-msg">Could not load humidor: ' + e.message + '</div>';
     }
   }
 
   function renderItems(items) {
     var grid = document.getElementById('inventory-grid');
     document.getElementById('filter-count').textContent = items.length + ' cigars';
-
-    if (!items.length) {
-      grid.innerHTML = '<div class="status-msg">No cigars match your search.</div>';
-      return;
-    }
-
+    if (!items.length) { grid.innerHTML = '<div class="status-msg">No cigars match your search.</div>'; return; }
     grid.innerHTML = items.map(function(i) {
-      var imgHtml = i.image
-        ? '<img src="' + i.image + '" alt="' + i.name + '" onerror="this.parentNode.innerHTML=\'<div class=\\\"placeholder\\\">The Tobacco Center</div>\'">'
+      var img = i.image ? i.image.replace(/~/g, '%7E') : '';
+      var imgHtml = img
+        ? '<img src="' + img + '" alt="' + i.name + '" onerror="this.style.display=\'none\'">'
         : '<div class="placeholder">The Tobacco Center</div>';
-
-      return '<div class="cigar-card">' +
-        '<div class="img-box">' + imgHtml + '</div>' +
+      var price = (typeof i.price === 'number' && i.price > 0) ? '$' + i.price.toFixed(2) : '';
+      return '<div class="cigar-card"><div class="img-box">' + imgHtml + '</div>' +
         '<div class="card-body">' +
-          '<div class="strength-tag">' + i.strength + '</div>' +
-          '<div class="cigar-name">' + i.name + '</div>' +
-          '<div class="cigar-profile">' + i.profile + '</div>' +
-          '<div class="cigar-price">$' + i.price.toFixed(2) + '</div>' +
-        '</div>' +
-      '</div>';
+        '<div class="strength-tag">' + (i.strength || 'Medium') + '</div>' +
+        '<div class="cigar-name">' + i.name + '</div>' +
+        '<div class="cigar-profile">' + (i.profile || '') + '</div>' +
+        '<div class="cigar-price">' + price + '</div>' +
+        '</div></div>';
     }).join('');
   }
 
   function filterItems() {
     var q = document.getElementById('search').value.toLowerCase().trim();
     var s = document.getElementById('strength-filter').value;
-    var filtered = allItems.filter(function(i) {
+    renderItems(allItems.filter(function(i) {
       if (q && i.name.toLowerCase().indexOf(q) === -1) return false;
       if (s && i.strength !== s) return false;
       return true;
-    });
-    renderItems(filtered);
+    }));
   }
 
   load();
