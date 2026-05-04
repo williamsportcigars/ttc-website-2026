@@ -215,7 +215,7 @@
   async function load() {
     var grid = document.getElementById('inventory-grid');
     try {
-      var r = await fetch(HUMIDOR_API + '?v=' + Date.now());
+     var r = await fetch(HUMIDOR_API + '/cigars?v=' + Date.now());
       var data = await r.json();
 
       if (data.error) {
