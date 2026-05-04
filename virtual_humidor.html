@@ -142,16 +142,36 @@
         }
     }
     function renderInventory(items) {
-        var grid = document.getElementById('inventory-grid');
-        var cnt = document.getElementById('result-count');
-        if (cnt) cnt.textContent = items.length + ' cigars';
-        if (!items.length) { grid.innerHTML = '<div class="status-msg">No cigars found in this category.</div>'; return; }
-        grid.innerHTML = items.map(function(i) {
-            var imgHtml = i.image ? '<img src="' + i.image + '" loading="lazy" alt="' + i.name + '" onerror="this.style.display=\'none\'">' : '<div class="no-img">The Tobacco Center</div>';
-            var price = (typeof i.price === 'number' && i.price > 0) ? '$' + i.price.toFixed(2) : '';
-            return '<div class="cigar-card"><div class="img-box">' + imgHtml + '</div><div class="card-body"><div class="cigar-strength">' + (i.strength||'Medium') + '</div><div class="cigar-name">' + i.name + '</div><div class="cigar-profile">' + (i.profile||'') + '</div><div class="cigar-price">' + price + '</div></div></div>';
-        }).join('');
+    var grid = document.getElementById('inventory-grid');
+    var cnt = document.getElementById('result-count');
+
+    if (cnt) cnt.textContent = items.length + ' cigars';
+
+    if (!items.length) {
+        grid.innerHTML = '<div class="status-msg">No cigars found in this category.</div>';
+        return;
     }
+
+    grid.innerHTML = items.map(function(i) {
+
+        var img = i.image
+          ? `<img src="${i.image}" loading="lazy"
+               onerror="this.onerror=null;this.src='https://pub-8596cac0edf54e0e81ac8a62402528bf.r2.dev/images/fallback.jpg'">`
+          : `<img src="https://pub-8596cac0edf54e0e81ac8a62402528bf.r2.dev/images/fallback.jpg">`;
+
+        return `
+          <div class="cigar-card">
+            <div class="img-box">${img}</div>
+            <div class="card-body">
+              <div class="cigar-strength">${i.strength || 'Medium'}</div>
+              <div class="cigar-name">${i.name}</div>
+              <div class="cigar-profile">${i.profile || ''}</div>
+              <div class="cigar-price">$${i.price.toFixed(2)}</div>
+            </div>
+          </div>
+        `;
+    }).join('');
+}
     function applyFilter() {
         var val = document.getElementById('strengthFilter').value;
         renderInventory(val === 'All' ? fullInventory : fullInventory.filter(function(i){ return (i.strength||'Medium') === val; }));
