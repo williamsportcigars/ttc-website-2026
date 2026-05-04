@@ -1,126 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Virtual Humidor | The Tobacco Center</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --black:     #001b16;
-      --jungle:    #022e27;
-      --mint:      #259f8a;
-      --mint-pale: #e0fef8;
-      --gold:      #c9a84c;
-      --cream:     #fdfcf8;
-      --muted:     #7a9a8a;
-      --border:    #e0ede8;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Josefin Sans', sans-serif; background: var(--cream); color: var(--black); }
-    .site-nav { background: var(--black); padding: 1.2rem 4rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-    .site-nav a { color: var(--mint); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; }
-    .site-nav .brand { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.3rem; color: var(--mint-pale); }
-    .hero { background: linear-gradient(135deg, var(--black) 0%, var(--jungle) 100%); padding: 5rem 4rem 4rem; text-align: center; }
-    .hero h1 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 3rem; color: var(--mint-pale); margin-bottom: 1rem; }
-    .hero p { color: var(--muted); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; }
-    .filters { padding: 2rem 4rem 1rem; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border); }
-    .filters input, .filters select { padding: 8px 14px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Josefin Sans', sans-serif; font-size: 0.82rem; background: white; outline: none; }
-    .filters input { width: 220px; }
-    .filters input:focus, .filters select:focus { border-color: var(--mint); }
-    .filter-count { margin-left: auto; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.05em; }
-    .inventory-section { padding: 2.5rem 4rem 4rem; }
-    #inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
-    .cigar-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; display: flex; gap: 16px; transition: box-shadow 0.2s, transform 0.2s; }
-    .cigar-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
-    .img-box { width: 90px; height: 90px; background: var(--cream); border: 1px solid var(--border); border-radius: 6px; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-    .img-box img { width: 100%; height: 100%; object-fit: contain; }
-    .placeholder { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.65rem; color: var(--muted); text-align: center; padding: 8px; }
-    .card-body { flex: 1; min-width: 0; }
-    .strength-tag { display: inline-block; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint); margin-bottom: 4px; }
-    .cigar-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--black); margin-bottom: 5px; line-height: 1.3; }
-    .cigar-profile { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 8px; }
-    .cigar-price { font-size: 0.85rem; font-weight: 700; color: var(--gold); }
-    .status-msg { grid-column: 1/-1; text-align: center; padding: 5rem; font-family: 'Playfair Display', serif; font-style: italic; color: var(--muted); font-size: 1.1rem; }
-    .loading-dot { display: inline-block; animation: pulse 1.2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Humidor | The Tobacco Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+          --black: #001b16; --forest: #033d33; --jungle: #022e27;
+          --teal: #0d6354; --mint: #259f8a; --mint-pale: #e0fef8;
+          --gold: #c9a84c; --cream: #f0fdf8; --warm-white: #f7fffe;
+          --text: #001b16; --text-muted: #0d4a3a; --border: #9dd4c8;
+          --font-display: 'Playfair Display', Georgia, serif;
+          --font-body: 'Libre Baskerville', Georgia, serif;
+          --font-sans: 'Josefin Sans', sans-serif;
+        }
+        body { font-family: var(--font-body); background: var(--warm-white); color: var(--text); line-height: 1.7; }
+        .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--black); border-bottom: 1px solid rgba(77,191,138,0.2); padding: 0 2rem; display: flex; align-items: center; height: 64px; }
+        .nav-logo { font-family: var(--font-display); color: var(--mint); font-size: 15px; letter-spacing: 0.06em; text-decoration: none; font-weight: 700; text-transform: uppercase; }
+        .nav-logo span { font-style: italic; font-weight: 400; color: rgba(168,230,200,0.55); font-size: 11px; display: block; letter-spacing: 0.12em; }
+        .inv-hero { background: var(--black); padding: 120px 4rem 60px; text-align: left; }
+        .inv-hero h1 { font-family: var(--font-display); font-size: clamp(3rem,6vw,5.5rem); font-weight: 900; line-height: 1.05; color: var(--warm-white); margin-bottom: 1.5rem; }
+        .inv-hero h1 em { color: var(--mint); font-style: italic; }
+        .eyebrow { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mint); display: block; margin-bottom: 1rem; }
+        .filter-wrap { background: var(--forest); padding: 2rem 4rem; border-top: 1px solid rgba(77,191,138,0.12); display: flex; align-items: center; gap: 20px; }
+        .filter-wrap label { font-family: var(--font-sans); font-size: 10px; color: var(--mint-pale); text-transform: uppercase; letter-spacing: 0.1em; }
+        select { background: white !important; color: black !important; border: 2px solid var(--mint); padding: 10px 20px; font-family: var(--font-sans); text-transform: uppercase; font-size: 12px; font-weight: 600; outline: none; cursor: pointer; border-radius: 4px; }
+        select option { background: white; color: black; }
+        .inventory-section { padding: 5rem 4rem; background: var(--cream); }
+        #inventory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto; }
+        .cigar-card { background: var(--warm-white); border: 1px solid var(--border); padding: 2rem; display: grid; grid-template-columns: 120px 1fr; gap: 20px; align-items: start; min-height: 180px; position: relative; }
+        .cigar-card::before { content: ''; display: block; width: 28px; height: 2px; background: var(--mint); position: absolute; top: 1.5rem; left: 2rem; }
+        .img-box { width: 120px; height: 120px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #eee; }
+        .img-box img { width: 100%; height: 100%; object-fit: contain; }
+        .cigar-card h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--black); margin-bottom: 0.5rem; margin-top: 1rem; line-height: 1.3; }
+        .cigar-meta { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem; }
+        .cigar-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.8; }
+        .status-msg { font-family: var(--font-display); font-style: italic; color: var(--teal); text-align: center; grid-column: 1/-1; padding: 4rem; }
+        .site-footer { background: var(--black); border-top: 1px solid rgba(77,191,138,0.1); padding: 2rem 4rem; }
+        .footer-copy { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.08em; color: rgba(253,252,248,0.25); }
+        @media (max-width: 768px) {
+            .inventory-section, .inv-hero, .filter-wrap { padding: 3rem 1.5rem; }
+            .cigar-card { grid-template-columns: 1fr; text-align: center; }
+            .img-box { margin: 0 auto; }
+            .filter-wrap { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
 </head>
 <body>
 <nav class="site-nav">
-  <a href="https://thetobaccocenter.com" class="brand">The Tobacco Center</a>
-  <a href="https://thetobaccocenter.com">← Back to Site</a>
+    <a href="index.html" class="nav-logo">The Tobacco Center <span>tabacarius qui curat</span></a>
 </nav>
-<div class="hero">
-  <h1>Virtual Humidor</h1>
-  <p>Browse our current selection — Williamsport, PA</p>
-</div>
-<div class="filters">
-  <input type="text" id="search" placeholder="🔍 Search by name..." oninput="filterItems()">
-  <select id="strength-filter" onchange="filterItems()">
-    <option value="">All Strengths</option>
-    <option value="Mild">Mild</option>
-    <option value="Flavored">Flavored</option>
-    <option value="Medium">Medium</option>
-    <option value="Medium-Full">Medium-Full</option>
-    <option value="Full">Full</option>
-  </select>
-  <div class="filter-count" id="filter-count"></div>
+<section class="inv-hero">
+    <span class="eyebrow">Inventory Catalog</span>
+    <h1>The Virtual <em>Humidor.</em></h1>
+</section>
+<div class="filter-wrap">
+    <label>Filter By Strength:</label>
+    <select id="strengthFilter" onchange="applyFilter()">
+        <option value="All">All Selections</option>
+        <option value="Mild">Mild</option>
+        <option value="Medium">Medium</option>
+        <option value="Full">Full</option>
+        <option value="Flavored">Flavored</option>
+    </select>
 </div>
 <section class="inventory-section">
-  <div id="inventory-grid">
-    <div class="status-msg"><span class="loading-dot">●</span> Loading humidor...</div>
-  </div>
+    <div id="inventory-grid">
+        <div class="status-msg">Opening the humidor doors...</div>
+    </div>
 </section>
+<footer class="site-footer">
+    <div class="footer-copy">© 2026 The Tobacco Center LLC · 21 W Church St, Williamsport, PA</div>
+</footer>
 <script>
-  const HUMIDOR_API = 'https://ttc-humidor.williamsportcigars.workers.dev';
-  var allItems = [];
-
-  async function load() {
-    var grid = document.getElementById('inventory-grid');
-    try {
-      var r = await fetch(HUMIDOR_API + '/cigars?v=' + Date.now());
-      var data = await r.json();
-      if (!Array.isArray(data)) { grid.innerHTML = '<div class="status-msg">Error loading humidor</div>'; return; }
-      allItems = data;
-      renderItems(allItems);
-    } catch(e) {
-      grid.innerHTML = '<div class="status-msg">Could not load humidor: ' + e.message + '</div>';
+    let fullInventory = [];
+    async function loadInventory() {
+        const grid = document.getElementById("inventory-grid");
+        try {
+            const res = await fetch("https://ttc-humidor.williamsportcigars.workers.dev/cigars");
+            const data = await res.json();
+            fullInventory = Array.isArray(data) ? data : [];
+            renderInventory(fullInventory);
+        } catch (e) {
+            grid.innerHTML = `<div class="status-msg">Vault offline. Please refresh the page.</div>`;
+        }
     }
-  }
-
-  function renderItems(items) {
-    var grid = document.getElementById('inventory-grid');
-    document.getElementById('filter-count').textContent = items.length + ' cigars';
-    if (!items.length) { grid.innerHTML = '<div class="status-msg">No cigars match your search.</div>'; return; }
-    grid.innerHTML = items.map(function(i) {
-      var img = i.image ? i.image.replace(/~/g, '%7E') : '';
-      var imgHtml = img
-        ? '<img src="' + img + '" alt="' + i.name + '" onerror="this.style.display=\'none\'">'
-        : '<div class="placeholder">The Tobacco Center</div>';
-      var price = (typeof i.price === 'number' && i.price > 0) ? '$' + i.price.toFixed(2) : '';
-      return '<div class="cigar-card"><div class="img-box">' + imgHtml + '</div>' +
-        '<div class="card-body">' +
-        '<div class="strength-tag">' + (i.strength || 'Medium') + '</div>' +
-        '<div class="cigar-name">' + i.name + '</div>' +
-        '<div class="cigar-profile">' + (i.profile || '') + '</div>' +
-        '<div class="cigar-price">' + price + '</div>' +
-        '</div></div>';
-    }).join('');
-  }
-
-  function filterItems() {
-    var q = document.getElementById('search').value.toLowerCase().trim();
-    var s = document.getElementById('strength-filter').value;
-    renderItems(allItems.filter(function(i) {
-      if (q && i.name.toLowerCase().indexOf(q) === -1) return false;
-      if (s && i.strength !== s) return false;
-      return true;
-    }));
-  }
-
-  load();
+    function renderInventory(items) {
+        const grid = document.getElementById("inventory-grid");
+        if (!items.length) { grid.innerHTML = `<div class="status-msg">No cigars found.</div>`; return; }
+        grid.innerHTML = items.map(i => `
+            <div class="cigar-card">
+                <div class="img-box">${i.image ? `<img src="${i.image}" loading="lazy" onerror="this.style.display='none'">` : ''}</div>
+                <div>
+                    <div class="cigar-meta">${i.strength || 'Medium'}</div>
+                    <h3>${i.name}</h3>
+                    <p>${i.profile || 'A hand-curated boutique selection from our humidor.'}</p>
+                </div>
+            </div>`).join('');
+    }
+    function applyFilter() {
+        const val = document.getElementById("strengthFilter").value;
+        renderInventory(val === "All" ? fullInventory : fullInventory.filter(i => (i.strength || "Medium") === val));
+    }
+    loadInventory();
 </script>
 </body>
 </html>
