@@ -70,8 +70,7 @@
 const API = "https://ttc-humidor.williamsportcigars.workers.dev";
 
 async function loadItems() {
-  const res = await fetch(API + "/api/items");
-  const data = await res.json();
+const res = await fetch("https://ttc-inv-api.williamsportcigars.workers.dev/");  const data = await res.json();
 
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
