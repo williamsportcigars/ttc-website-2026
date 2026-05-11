@@ -228,13 +228,21 @@ function showInfo(id,msg){var e=document.getElementById(id);e.textContent=msg;e.
 
 async function doLogin() {
   var raw=document.getElementById('login-phone').value.replace(/\D/g,'').slice(-10);
+  var last=document.getElementById('login-lastname').value.trim();
   if(raw.length<10){showErr('login-err','Please enter a valid 10-digit phone number.');return;}
+  if(!last){showErr('login-err','Please enter your last name.');return;}
   phone=raw; hideErr('login-err');
   var btn=document.getElementById('login-btn');
-  btn.textContent='Checking...';btn.disabled=true;
+  btn.textContent='Entering...';btn.disabled=true;
   try {
-    var res=await fetch(API+'/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:raw})});
+    var res=await fetch(API+'/verify-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:raw,lastName:last})});
     var data=await res.json();
+    if(data.valid){sessionStorage.setItem(SK,JSON.stringify(data));loadPortal(data);}
+    else if(data.reason==='not found'){showErr('login-err','Number not found. Please visit us in store to register.');}
+    else{showErr('login-err','Last name does not match our records.');}
+  } catch(e){showErr('login-err','Connection error.');}
+  finally{btn.textContent='Enter My Vault';btn.disabled=false;}
+}    var data=await res.json();
     if(!data.found){
       showErr('login-err','Number not found. Please visit us in store to register.');
     } else if(!data.hasEmail) {
