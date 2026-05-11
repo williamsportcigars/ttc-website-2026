@@ -1,65 +1,418 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Customer Humidor | The Tobacco Center</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&Josefin+Sans:wght@300;600&display=swap" rel="stylesheet">
-    <style>
-        :root { --gold: #c9a84c; --jungle: #001b16; --forest: #033d33; }
-        body { font-family: 'Josefin Sans', sans-serif; background: var(--jungle); color: #eee; padding: 20px; text-align: center; }
-        h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2.5rem; margin-top: 40px; }
-        
-        input { padding: 15px; font-size: 18px; width: 100%; max-width: 320px; border-radius: 50px; border: 1px solid var(--gold); background: #052621; color: white; text-align: center; outline: none; }
-        button { padding: 15px; border-radius: 50px; border: none; background: var(--gold); color: var(--jungle); font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; max-width: 320px; }
-        
-        #results { max-width: 650px; margin: 40px auto; text-align: left; }
-        
-        /* 🛑 GRID-LOCK: PREVENTS SHAKING */
-        .item { 
-            background: var(--forest); padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid var(--gold); 
-            display: grid; grid-template-columns: 85px 1fr; gap: 20px; align-items: center; min-height: 120px;
-        }
-        .img-box { width: 85px; height: 85px; background: white; border-radius: 8px; overflow: hidden; flex-shrink: 0; }
-        .img-box img { width: 100%; height: 100%; object-fit: contain; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Humidor | The Tobacco Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#001b16;--forest:#033d33;--jungle:#022e27;
+  --mint:#259f8a;--gold:#c9a84c;--gold-light:#e8c76a;
+  --warm-white:#f7fffe;--border:#9dd4c8;
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-sans:'Josefin Sans',sans-serif;
+}
+body{font-family:var(--font-sans);background:var(--black);color:white;min-height:100vh}
+.site-nav{background:var(--black);border-bottom:1px solid rgba(77,191,138,0.2);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:var(--font-display);color:var(--mint);font-size:14px;letter-spacing:0.06em;text-decoration:none;font-weight:700;text-transform:uppercase}
+.nav-logo span{font-style:italic;font-weight:400;color:rgba(168,230,200,0.5);font-size:10px;display:block}
+.nav-back{font-size:11px;color:rgba(224,254,248,0.4);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase}
+.nav-back:hover{color:var(--mint)}
+
+/* SCREENS */
+.screen{max-width:440px;margin:0 auto;padding:5rem 2rem;text-align:center}
+#otp-screen,#register-screen,#portal-screen{display:none}
+#portal-screen{max-width:1100px;padding:2rem}
+
+h1{font-family:var(--font-display);font-size:2.8rem;font-weight:900;color:var(--warm-white);margin-bottom:0.5rem}
+h1 em{color:var(--mint);font-style:italic}
+.sub{color:rgba(255,255,255,0.4);font-size:13px;margin-bottom:2.5rem;line-height:1.6}
+
+.input-group{margin-bottom:1rem;text-align:left}
+.input-group label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mint);display:block;margin-bottom:6px}
+.input-group input{width:100%;padding:13px 16px;background:var(--forest);border:1px solid rgba(37,159,138,0.3);color:white;font-family:var(--font-sans);font-size:15px;border-radius:6px;outline:none;transition:border-color 0.2s}
+.input-group input:focus{border-color:var(--mint)}
+.input-group input::placeholder{color:rgba(255,255,255,0.25)}
+
+/* OTP input */
+.otp-input{font-size:2rem!important;letter-spacing:12px!important;text-align:center!important;font-weight:700!important}
+
+.btn{width:100%;padding:13px;font-family:var(--font-sans);font-weight:700;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;margin-top:8px;transition:background 0.2s}
+.btn-gold{background:var(--gold);color:var(--black)}.btn-gold:hover{background:var(--gold-light)}
+.btn-ghost{background:transparent;border:1px solid rgba(37,159,138,0.3);color:rgba(255,255,255,0.4);font-size:11px;padding:8px}
+.btn-ghost:hover{border-color:var(--mint);color:var(--mint)}
+.link-row{margin-top:1rem;font-size:12px;color:rgba(255,255,255,0.3)}
+.link-row a{color:var(--mint);text-decoration:none;cursor:pointer}
+.err{color:#ff6b6b;font-size:12px;margin-top:8px;display:none}
+.info{color:rgba(37,159,138,0.8);font-size:12px;margin-top:8px;display:none}
+.fine-print{margin-top:1rem;font-size:11px;color:rgba(255,255,255,0.15);line-height:1.6}
+
+/* PORTAL */
+.portal-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+.portal-header h2{font-family:var(--font-display);font-size:1.8rem;color:var(--warm-white)}
+.portal-header h2 span{color:var(--mint);font-style:italic}
+.portal-meta{font-size:11px;color:rgba(255,255,255,0.25);margin-top:3px}
+.logout{font-size:11px;color:rgba(255,255,255,0.2);background:none;border:none;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase}
+.logout:hover{color:rgba(255,255,255,0.5)}
+
+/* SUMMARY BAR */
+.summary{background:rgba(37,159,138,0.07);border:1px solid rgba(37,159,138,0.15);border-radius:8px;padding:1rem 1.5rem;margin-bottom:2rem;display:flex;gap:2rem;flex-wrap:wrap}
+.stat .val{font-family:var(--font-display);font-size:1.5rem;color:var(--mint);font-weight:700}
+.stat .lbl{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+
+/* TOP 3 */
+.top3-section{margin-bottom:2rem}
+.top3-label{font-family:var(--font-sans);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.top3-label::after{content:'';flex:1;height:1px;background:rgba(201,168,76,0.2)}
+.top3-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.top-card{background:var(--jungle);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:1.25rem;text-align:center;position:relative;overflow:hidden}
+.top-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.top-card-img{width:80px;height:80px;background:rgba(0,0,0,0.3);border-radius:8px;overflow:hidden;margin:0 auto 10px;display:flex;align-items:center;justify-content:center}
+.top-card-img img{width:100%;height:100%;object-fit:contain}
+.top-card-img .ni{font-family:var(--font-display);font-style:italic;font-size:0.5rem;color:rgba(255,255,255,0.12);padding:6px;text-align:center}
+.top-card-rank{position:absolute;top:10px;left:10px;font-family:var(--font-display);font-size:0.7rem;color:var(--gold);font-weight:700}
+.top-card-name{font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--warm-white);margin-bottom:4px;line-height:1.3}
+.top-card-count{font-size:10px;color:rgba(37,159,138,0.7);letter-spacing:0.05em;margin-bottom:6px}
+.top-card-specs{font-size:9px;color:rgba(255,255,255,0.35);line-height:1.6}
+.top-card-specs b{color:rgba(37,159,138,0.6)}
+
+/* RATING GUIDE */
+.guide{background:var(--forest);border:1px solid rgba(201,168,76,0.12);border-radius:8px;padding:1rem 1.5rem;margin-bottom:1.5rem}
+.guide h4{font-family:var(--font-display);font-size:0.85rem;color:var(--gold);margin-bottom:8px}
+.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.guide-row{display:flex;align-items:center;gap:8px;font-size:10px;color:rgba(255,255,255,0.4);padding:2px 0}
+.gs{color:var(--gold);min-width:55px;font-size:11px;letter-spacing:0.5px}
+
+/* CONTROLS */
+.controls{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
+.sort-btn{padding:5px 12px;border:1px solid rgba(37,159,138,0.2);background:transparent;color:rgba(255,255,255,0.35);font-family:var(--font-sans);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all 0.2s}
+.sort-btn.active,.sort-btn:hover{border-color:var(--mint);color:var(--mint)}
+.item-count{margin-left:auto;font-size:10px;color:rgba(255,255,255,0.2)}
+
+/* PURCHASE GRID */
+#purchase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+
+/* PURCHASE CARD */
+.pcard{background:var(--forest);border:1px solid rgba(37,159,138,0.12);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:8px;transition:border-color 0.2s;position:relative}
+.pcard:hover{border-color:rgba(37,159,138,0.3)}
+.pcard.wishlisted{border-color:rgba(201,168,76,0.35)}
+.pimg{width:100%;aspect-ratio:1;background:rgba(0,0,0,0.3);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.pimg img{width:100%;height:100%;object-fit:contain}
+.pimg .ni{font-family:var(--font-display);font-style:italic;font-size:0.5rem;color:rgba(255,255,255,0.1);text-align:center;padding:8px}
+.pname{font-family:var(--font-display);font-size:0.88rem;font-weight:700;color:var(--warm-white);line-height:1.3}
+.pdate{font-size:10px;color:var(--mint);letter-spacing:0.05em}
+.pspecs{font-size:9px;color:rgba(37,159,138,0.6);line-height:1.6}
+.pspecs b{color:rgba(37,159,138,0.8)}
+.stars{display:flex;gap:2px}
+.star{font-size:1rem;cursor:pointer;color:rgba(255,255,255,0.1);transition:color 0.15s;user-select:none}
+.star.lit,.star:hover{color:var(--gold)}
+.rlabel{font-size:9px;color:rgba(255,255,255,0.2);min-height:12px}
+.pnote-input{width:100%;background:rgba(0,0,0,0.2);border:1px solid rgba(37,159,138,0.15);color:rgba(255,255,255,0.6);padding:6px 8px;font-family:var(--font-sans);font-size:11px;border-radius:4px;outline:none;resize:none;font-style:italic;line-height:1.4}
+.pnote-input:focus{border-color:var(--mint);color:white}
+.pnote-input::placeholder{color:rgba(255,255,255,0.15)}
+.wish-btn{font-size:9px;padding:4px 8px;border:1px solid rgba(201,168,76,0.2);background:transparent;color:rgba(201,168,76,0.4);cursor:pointer;font-family:var(--font-sans);text-transform:uppercase;border-radius:3px;transition:all 0.2s;align-self:flex-start}
+.wish-btn:hover,.wish-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
+
+.empty{text-align:center;padding:4rem;color:rgba(255,255,255,0.2);font-style:italic;font-family:var(--font-display);grid-column:1/-1}
+
+@media(max-width:900px){
+  .top3-grid{grid-template-columns:repeat(3,1fr)}
+  #purchase-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .top3-grid{grid-template-columns:1fr}
+  #purchase-grid{grid-template-columns:1fr}
+  #portal-screen{padding:1rem}
+  .summary{gap:1rem}
+  .guide-grid{grid-template-columns:1fr}
+  h1{font-size:2.2rem}
+}
+</style>
 </head>
 <body>
-    <h2>Customer Humidor</h2>
-    <p>Enter your phone number to see your purchase history.</p>
-    <input id="phone" type="tel" placeholder="(XXX) XXX-XXXX" /> <br>
-    <button onclick="lookup()">Enter Vault</button>
-    <div id="results"></div>
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo">The Tobacco Center <span>tabacarius qui curat</span></a>
+  <a href="index.html" class="nav-back">&larr; Back</a>
+</nav>
 
-    <script>
-        document.getElementById("phone").addEventListener("input", e => {
-            let x = e.target.value.replace(/\D/g, "").slice(0, 10);
-            e.target.value = x.length > 6 ? `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}` : x.length > 3 ? `(${x.slice(0,3)}) ${x.slice(3)}` : x;
-        });
+<!-- LOGIN -->
+<div id="login-screen" class="screen">
+  <h1>My <em>Humidor.</em></h1>
+  <p class="sub">Enter your phone number and last name to access your personal vault.</p>
+  <div class="input-group">
+    <label>Phone Number</label>
+    <input type="tel" id="login-phone" placeholder="(570) 000-0000" autocomplete="tel">
+  </div>
+  <div class="input-group">
+    <label>Last Name</label>
+    <input type="text" id="login-lastname" placeholder="Your last name" autocomplete="family-name">
+  </div>
+  <button class="btn btn-gold" id="login-btn">Enter My Vault</button>
+  <div class="err" id="login-err"></div>
+  <div class="info" id="login-info">Not in our system? Visit us in store to register.</div>
+</div>
 
-        async function lookup() {
-            const phone = document.getElementById("phone").value.replace(/\D/g, "").slice(-10);
-            const container = document.getElementById("results");
-            container.innerHTML = "<p style='text-align:center; color:var(--gold)'>Searching Vault...</p>";
-            
-            const res = await fetch("https://ttc-inv-api.williamsportcigars.workers.dev/customer-lookup", {
-                method: "POST",
-                body: JSON.stringify({ phone })
-            });
-            const data = await res.json();
-            
-            container.innerHTML = data.items.length ? "" : "<p style='text-align:center'>No history found.</p>";
-            data.items.forEach(item => {
-                container.innerHTML += `
-                    <div class="item">
-                        <div class="img-box"><img src="${item.meta?.image || 'https://thetobaccocenter.com/logo-placeholder.png'}"></div>
-                        <div>
-                            <div style="font-family:'Playfair Display'; color:var(--gold); font-size:1.2rem; font-weight:bold;">${item.name}</div>
-                            <div style="font-size:0.8rem; color:#259f8a">Purchased: ${item.date}</div>
-                            <div style="font-size:0.9rem; margin-top:5px; color:#ccc;">${item.meta?.profile || item.note || ""}</div>
-                        </div>
-                    </div>`;
-            });
-        }
-    </script>
+<!-- PORTAL -->
+<div id="portal-screen">
+  <div class="portal-header">
+    <div>
+      <h2>Welcome back, <span id="pname">friend</span>.</h2>
+      <div class="portal-meta" id="pmeta"></div>
+    </div>
+    <button class="logout" onclick="doLogout()">Sign Out</button>
+  </div>
+
+  <div class="summary" id="summary"></div>
+
+  <!-- TOP 3 -->
+  <div class="top3-section" id="top3-section"></div>
+
+  <!-- RATING GUIDE -->
+  <div class="guide">
+    <h4>Rating Guide</h4>
+    <div class="guide-grid">
+      <div class="guide-row"><span class="gs">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span>Buy a box</span></div>
+      <div class="guide-row"><span class="gs">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span>Highly recommend</span></div>
+      <div class="guide-row"><span class="gs">&#9733;&#9733;&#9733;&#9734;&#9734;</span><span>Smoke again</span></div>
+      <div class="guide-row"><span class="gs">&#9733;&#9733;&#9734;&#9734;&#9734;</span><span>It was okay</span></div>
+      <div class="guide-row"><span class="gs">&#9733;&#9734;&#9734;&#9734;&#9734;</span><span>Not for me</span></div>
+      <div class="guide-row"><span class="gs">&#9734;&#9734;&#9734;&#9734;&#9734;</span><span>Money back</span></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="sort-btn active" id="sort-date" onclick="setSort('date')">By Date</button>
+    <button class="sort-btn" id="sort-rating" onclick="setSort('rating')">By Rating</button>
+    <button class="sort-btn" id="sort-name" onclick="setSort('name')">By Name</button>
+    <button class="sort-btn" id="sort-wish" onclick="setSort('wish')">Wishlist</button>
+    <div class="item-count" id="item-count"></div>
+  </div>
+
+  <div id="purchase-grid"></div>
+</div>
+
+<script>
+var API = 'https://ttc-customer.williamsportcigars.workers.dev';
+var SK = 'ttc_cust_v2';
+var purchases = [], phone = '', sortMode = 'date';
+var RLABELS = ['Tap to rate','Not for me','It was okay',"I'd smoke again",'Highly recommend','Buy a box!'];
+
+function showScreen(id) {
+  ['login-screen','portal-screen'].forEach(function(s) {
+    document.getElementById(s).style.display = s===id ? (id==='portal-screen'?'block':'block') : 'none';
+  });
+}
+
+function fmtPhone(el) {
+  el.addEventListener('input', function(e) {
+    var x=e.target.value.replace(/\D/g,'').slice(0,10);
+    e.target.value=x.length>6?'('+x.slice(0,3)+') '+x.slice(3,6)+'-'+x.slice(6):x.length>3?'('+x.slice(0,3)+') '+x.slice(3):x;
+  });
+  el.addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+}
+fmtPhone(document.getElementById('login-phone'));
+
+document.getElementById('otp-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doVerify(); });
+
+window.addEventListener('load', function() {
+  var s = sessionStorage.getItem(SK);
+  if(s) { try { var d=JSON.parse(s); loadPortal(d); } catch(e) { sessionStorage.removeItem(SK); } }
+});
+
+function showErr(id,msg){var e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
+function hideErr(id){document.getElementById(id).style.display='none';}
+function showInfo(id,msg){var e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
+
+async function doLogin() {
+  var raw=document.getElementById('login-phone').value.replace(/\D/g,'').slice(-10);
+  if(raw.length<10){showErr('login-err','Please enter a valid 10-digit phone number.');return;}
+  phone=raw; hideErr('login-err');
+  var btn=document.getElementById('login-btn');
+  btn.textContent='Checking...';btn.disabled=true;
+  try {
+    var res=await fetch(API+'/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:raw})});
+    var data=await res.json();
+    if(!data.found){
+      showErr('login-err','Number not found. Please visit us in store to register.');
+    } else if(!data.hasEmail) {
+      showScreen('register-screen');
+    } else {
+      document.getElementById('otp-sub').textContent='We sent a 6-digit code to ' + data.maskedEmail + '. Enter it below.';
+      showScreen('otp-screen');
+    }
+  } catch(e){showErr('login-err','Connection error. Please try again.');}
+  finally{btn.textContent='Continue';btn.disabled=false;}
+}
+
+async function resendOtp() {
+  await fetch(API+'/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phone})});
+  showInfo('otp-err','Code resent!');
+  setTimeout(function(){hideErr('otp-err');},3000);
+}
+
+async function doVerify() {
+  var otp=document.getElementById('otp-input').value.trim();
+  if(otp.length!==6){showErr('otp-err','Please enter the 6-digit code.');return;}
+  hideErr('otp-err');
+  var btn=document.getElementById('otp-btn');
+  btn.textContent='Verifying...';btn.disabled=true;
+  try {
+    var res=await fetch(API+'/verify-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phone,otp:otp})});
+    var data=await res.json();
+    if(data.valid){
+      sessionStorage.setItem(SK,JSON.stringify(data));
+      loadPortal(data);
+    } else {
+      showErr('otp-err', data.reason==='expired'?'Code expired. Please request a new one.':'Incorrect code. Please try again.');
+    }
+  } catch(e){showErr('otp-err','Connection error.');}
+  finally{btn.textContent='Verify & Enter';btn.disabled=false;}
+}
+
+document.getElementById('login-btn').onclick=doLogin;
+document.getElementById('otp-btn').onclick=doVerify;
+
+document.getElementById('reg-btn').onclick=async function() {
+  var email=document.getElementById('reg-email').value.trim();
+  if(!email||!email.includes('@')){showErr('reg-err','Please enter a valid email.');return;}
+  hideErr('reg-err');
+  var btn=document.getElementById('reg-btn');btn.textContent='Saving...';btn.disabled=true;
+  try {
+    await fetch(API+'/customer-portal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'register',phone:phone,email:email})});
+    var res2=await fetch(API+'/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phone})});
+    var d2=await res2.json();
+    document.getElementById('otp-sub').textContent='We sent a code to '+d2.maskedEmail+'. Enter it below.';
+    showScreen('otp-screen');
+  } catch(e){showErr('reg-err','Error. Please try again.');}
+  finally{btn.textContent='Save & Send Code';btn.disabled=false;}
+};
+
+function loadPortal(data) {
+  showScreen('portal-screen');
+  document.getElementById('pname').textContent=data.name||'friend';
+  document.getElementById('pmeta').textContent=data.email||'';
+  phone=data.phone||phone;
+  purchases=data.purchases||[];
+  renderSummary();
+  renderTop3();
+  renderGrid();
+}
+
+function doLogout(){sessionStorage.removeItem(SK);location.reload();}
+
+function renderSummary() {
+  var total=purchases.length;
+  var rated=purchases.filter(function(p){return p.rating>0;});
+  var avg=rated.length?(rated.reduce(function(a,p){return a+(p.rating||0);},0)/rated.length).toFixed(1):'—';
+  var wish=purchases.filter(function(p){return p.wishlist;}).length;
+  document.getElementById('summary').innerHTML=
+    '<div class="stat"><div class="val">'+total+'</div><div class="lbl">Cigars</div></div>'+
+    '<div class="stat"><div class="val">'+avg+'</div><div class="lbl">Avg Rating</div></div>'+
+    '<div class="stat"><div class="val">'+rated.length+'</div><div class="lbl">Rated</div></div>'+
+    '<div class="stat"><div class="val">'+wish+'</div><div class="lbl">Wishlist</div></div>';
+}
+
+function renderTop3() {
+  // Count purchases by cigar name
+  var counts = {};
+  purchases.forEach(function(p) {
+    if(p.name==='Visit') return;
+    counts[p.name] = (counts[p.name]||{count:0,cigar:p});
+    counts[p.name].count++;
+    counts[p.name].cigar = p;
+  });
+  var sorted = Object.values(counts).sort(function(a,b){return b.count-a.count;}).slice(0,3);
+  if(!sorted.length){document.getElementById('top3-section').style.display='none';return;}
+  var ranks=['#1','#2','#3'];
+  var html='<div class="top3-label">Your Top Cigars</div><div class="top3-grid">';
+  sorted.forEach(function(item,i){
+    var p=item.cigar;
+    var img=p.image?'<img src="'+p.image+'" onerror="this.style.display=\'none\'">':'<div class="ni">TTC</div>';
+    var specs='';
+    if(p.wrapper)specs+='<b>W:</b> '+p.wrapper+' ';
+    if(p.binder)specs+='<b>B:</b> '+p.binder+' ';
+    if(p.filler)specs+='<b>F:</b> '+p.filler;
+    html+='<div class="top-card">'+
+      '<div class="top-card-rank">'+ranks[i]+'</div>'+
+      '<div class="top-card-img">'+img+'</div>'+
+      '<div class="top-card-name">'+p.name+'</div>'+
+      '<div class="top-card-count">'+item.count+' time'+(item.count>1?'s':'')+'</div>'+
+      (specs?'<div class="top-card-specs">'+specs+'</div>':'')+
+    '</div>';
+  });
+  html+='</div>';
+  document.getElementById('top3-section').innerHTML=html;
+}
+
+function setSort(s){
+  sortMode=s;
+  document.querySelectorAll('.sort-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('sort-'+s).classList.add('active');
+  renderGrid();
+}
+
+function renderGrid() {
+  var sorted=purchases.slice();
+  if(sortMode==='date') sorted.sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+  else if(sortMode==='rating') sorted.sort(function(a,b){return (b.rating||0)-(a.rating||0);});
+  else if(sortMode==='name') sorted.sort(function(a,b){return a.name.localeCompare(b.name);});
+  else if(sortMode==='wish') sorted=sorted.filter(function(p){return p.wishlist;});
+  document.getElementById('item-count').textContent=sorted.length+' cigars';
+  if(!sorted.length){document.getElementById('purchase-grid').innerHTML='<div class="empty">'+(sortMode==='wish'?'No wishlist items yet.':'No purchases found.')+'</div>';return;}
+  document.getElementById('purchase-grid').innerHTML=sorted.map(function(p){
+    var oi=purchases.indexOf(p);
+    var stars='';
+    for(var s=1;s<=5;s++) stars+='<span class="star '+(s<=(p.rating||0)?'lit':'')+'" onclick="setRating('+oi+','+s+')">&#9733;</span>';
+    var img=p.image?'<img src="'+p.image+'" onerror="this.style.display=\'none\'">':'<div class="ni">TTC</div>';
+    var specs='';
+    if(p.wrapper)specs+='<b>W:</b> '+p.wrapper+' ';
+    if(p.binder)specs+='<b>B:</b> '+p.binder+' ';
+    if(p.filler)specs+='<b>F:</b> '+p.filler;
+    return '<div class="pcard'+(p.wishlist?' wishlisted':'')+'" id="card-'+oi+'">'+
+      '<div class="pimg">'+img+'</div>'+
+      '<div class="pname">'+p.name+'</div>'+
+      '<div class="pdate">'+p.date+'</div>'+
+      (specs?'<div class="pspecs">'+specs+'</div>':'')+
+      '<div class="stars">'+stars+'</div>'+
+      '<div class="rlabel" id="rl-'+oi+'">'+(p.rating>0?RLABELS[p.rating]:'Tap to rate')+'</div>'+
+      '<textarea class="pnote-input" rows="2" placeholder="Your notes..." onblur="saveNote('+oi+')">'+(p.note||'')+'</textarea>'+
+      '<button class="wish-btn'+(p.wishlist?' active':'')+'" onclick="toggleWishlist('+oi+')">'+(p.wishlist?'&#9733; Requested':'+ Request Again')+'</button>'+
+    '</div>';
+  }).join('');
+}
+
+async function setRating(idx,r){
+  if(purchases[idx].rating===r)r=0;
+  purchases[idx].rating=r;
+  renderSummary();renderGrid();
+  await fetch(API+'/customer-portal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'update',phone:phone,idx:idx,rating:r})});
+  updateSession();
+}
+
+async function saveNote(idx){
+  var card=document.getElementById('card-'+idx);
+  if(!card)return;
+  var ta=card.querySelector('.pnote-input');
+  if(!ta)return;
+  purchases[idx].note=ta.value.trim();
+  await fetch(API+'/customer-portal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'update',phone:phone,idx:idx,note:purchases[idx].note})});
+  updateSession();
+}
+
+async function toggleWishlist(idx){
+  var res=await fetch(API+'/customer-portal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'wishlist',phone:phone,idx:idx})});
+  var data=await res.json();
+  if(data.ok){purchases[idx].wishlist=data.wishlisted;renderSummary();renderGrid();updateSession();}
+}
+
+function updateSession(){
+  var s=JSON.parse(sessionStorage.getItem(SK)||'{}');
+  s.purchases=purchases;
+  sessionStorage.setItem(SK,JSON.stringify(s));
+}
+</script>
 </body>
 </html>
