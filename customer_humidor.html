@@ -215,7 +215,7 @@ function fmtPhone(el) {
 }
 fmtPhone(document.getElementById('login-phone'));
 
-document.getElementById('otp-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doVerify(); });
+document.getElementById('login-lastname').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
 
 window.addEventListener('load', function() {
   var s = sessionStorage.getItem(SK);
