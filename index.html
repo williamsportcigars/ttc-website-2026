@@ -28,6 +28,11 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
 .nav-links { display: flex; gap: 1.5rem; list-style: none; }
 .nav-links a { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
 .nav-links a:hover { color: var(--mint); }
+.humidor-badge { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid rgba(201,168,76,0.3); border-radius: 20px; font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.08em; color: var(--gold-light); background: rgba(201,168,76,0.06); white-space: nowrap; }
+.humidor-badge .hb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 6px var(--mint); flex-shrink: 0; }
+.humidor-badge .hb-sep { opacity: 0.4; }
+.humidor-badge.hb-stale .hb-dot { background: #e07a5f; box-shadow: 0 0 6px #e07a5f; }
+@media (max-width: 900px) { .humidor-badge { font-size: 10px; padding: 5px 10px; gap: 4px; } }
 
 /* SHARED */
 .page-section { padding-top: 64px; }
@@ -542,6 +547,12 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
 <!-- NAV -->
 <nav class="site-nav">
   <a href="#home" class="nav-logo">The Tobacco Center <span>tabacarius qui curat</span></a>
+  <div id="humidor-badge" class="humidor-badge" title="Live humidor conditions">
+    <span class="hb-dot"></span>
+    <span id="hb-temp">--&deg;F</span>
+    <span class="hb-sep">&middot;</span>
+    <span id="hb-rh">--% RH</span>
+  </div>
   <ul class="nav-links">
     <li><a href="#home">Home</a></li>
     <li><a href="#thirdrule">The Third Rule</a></li>
@@ -971,5 +982,25 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
   <div class="footer-motto">tabacarius qui curat</div>
 </footer>
 
+<script>
+(function(){
+  var API = "https://ttc-inv-api.williamsportcigars.workers.dev/humidor-log";
+  var tempEl = document.getElementById("hb-temp"), rhEl = document.getElementById("hb-rh"), badge = document.getElementById("humidor-badge");
+  if (!badge) return;
+  function poll(){
+    fetch(API, { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(d){
+      var readings = d.readings || [];
+      if (!readings.length) return;
+      var latest = readings[readings.length - 1];
+      var ageMs = Date.now() - new Date(latest.timestamp).getTime();
+      tempEl.textContent = Math.round(latest.temp) + "°F";
+      rhEl.textContent = Math.round(latest.humidity) + "% RH";
+      badge.classList.toggle("hb-stale", ageMs > 30 * 60 * 1000);
+    }).catch(function(){});
+  }
+  poll();
+  setInterval(poll, 60000);
+})();
+</script>
 </body>
 </html>
