@@ -210,6 +210,12 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
 .contact-block h4 { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.6rem; }
 .contact-block p, .contact-block address { font-size: 0.95rem; color: var(--text); line-height: 1.85; font-style: normal; }
 .contact-block a { color: var(--teal); }
+.cotm-lead-form { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem; max-width: 340px; }
+.cotm-lead-form input { background: var(--warm-white); border: 1px solid var(--border); padding: 11px 14px; color: var(--text); font-family: var(--font-body); font-size: 0.9rem; outline: none; border-radius: 3px; }
+.cotm-lead-form input:focus { border-color: var(--teal); }
+.cotm-lead-form .cotm-lead-msg { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.05em; line-height: 1.5; }
+.cotm-lead-form .cotm-lead-msg.ok { color: var(--teal); }
+.cotm-lead-form .cotm-lead-msg.err { color: #b03020; }
 .map-placeholder { background: var(--forest); border: 1px solid rgba(77,191,138,0.15); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; min-height: 380px; font-family: var(--font-sans); font-size: 11px; text-align: center; padding: 2rem; }
 .map-placeholder strong { color: rgba(253,252,248,0.5); letter-spacing: 0.08em; font-size: 12px; }
 .map-placeholder p { color: rgba(253,252,248,0.3); max-width: 220px; line-height: 1.6; font-size: 12px; }
@@ -947,7 +953,17 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
       <div class="contact-block"><h4>Hours</h4><p>Monday – Thursday: 11:00 AM – 9:00 PM<br>Friday – Saturday: 11:00 AM – 10:00 PM<br>Sunday: Closed</p></div>
       <div class="contact-block"><h4>Social</h4><p><a href="https://www.facebook.com/TheTobaccoCenter/">Facebook: @TheTobaccoCenter</a><br><a href="https://www.instagram.com/thetobaccocenter/">Instagram: @thetobaccocenter</a><br>
           <a href="https://www.youtube.com/@TheTobaccocenter/">YouTube: @TheTobaccoCenter</a></p></div>
-      <div class="contact-block"><h4>Membership &amp; COTM Club</h4><p>To join the Cigar of the Month Club or ask about membership, call or stop in. Membership is handled in person.</p></div>
+      <div class="contact-block">
+        <h4>Membership &amp; COTM Club</h4>
+        <p>To join the Cigar of the Month Club or ask about membership, call or stop in. Membership is handled in person.</p>
+        <div class="cotm-lead-form">
+          <input type="text" id="cotm-lead-name" placeholder="Your name">
+          <input type="tel" id="cotm-lead-phone" placeholder="Phone number">
+          <input type="email" id="cotm-lead-email" placeholder="Email (optional)">
+          <button type="button" class="btn-primary" id="cotm-lead-btn" onclick="submitCotmLead()" style="align-self:flex-start;">Hold my spot</button>
+          <div id="cotm-lead-msg" class="cotm-lead-msg" style="display:none;"></div>
+        </div>
+      </div>
     </div>
     <div style="border:1px solid rgba(37,159,138,0.2);border-radius:4px;overflow:hidden;min-height:420px;height:100%;">
       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000.1695888057106!2d-77.0040799239478!3d41.23986367131914!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89cfa6229e5bc8ef%3A0x7c6fb7c8fe727b45!2sThe%20Tobacco%20Center!5e0!3m2!1sen!2sus!4v1777342009311!5m2!1sen!2sus" width="100%" height="100%" style="border:0;display:block;min-height:420px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -973,7 +989,8 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
         <div class="insider-perk"><div class="perk-dot"></div><span>Third Rule updates — new vitolas, bundle drops, and limited releases</span></div>
         <div class="insider-perk"><div class="perk-dot"></div><span>Behind-the-scenes content and cigar reviews on our <a href="https://www.youtube.com/@TheTobaccocenter/" style="color:var(--mint);">YouTube channel</a></span></div>
       </div>
-      <a href="http://http://eepurl.com/jEkdTk" target="_blank" rel="noopener" class="btn-primary" style="display:inline-block;margin-top:2.5rem;font-size:12px;padding:16px 36px;">Join the Insider List</a>
+      <p style="margin-top:1.5rem;color:rgba(253,252,248,0.65);font-size:0.9rem;line-height:1.7;">Already love what's in your humidor? Ask about the <a href="#cotm" style="color:var(--mint);text-decoration:underline;">Cigar of the Month Club</a> — members get first dibs on everything you'll see here first.</p>
+      <a href="http://eepurl.com/jEkdTk" target="_blank" rel="noopener" class="btn-primary" style="display:inline-block;margin-top:1.5rem;font-size:12px;padding:16px 36px;">Join the Insider List</a>
       <p class="form-note" style="margin-top:0.75rem;">Opens our secure Mailchimp signup — takes 30 seconds.</p>
       <div class="insider-tagline">tabacarius qui curat — the tobacconist who cares.</div>
     </div>
@@ -1042,6 +1059,46 @@ function closeMobileNav() {
   poll();
   setInterval(poll, 60000);
 })();
+</script>
+<script>
+async function submitCotmLead() {
+  var nameEl = document.getElementById('cotm-lead-name');
+  var phoneEl = document.getElementById('cotm-lead-phone');
+  var emailEl = document.getElementById('cotm-lead-email');
+  var msgEl = document.getElementById('cotm-lead-msg');
+  var btnEl = document.getElementById('cotm-lead-btn');
+  var name = nameEl.value.trim();
+  var phone = phoneEl.value.replace(/\D/g, '');
+  msgEl.style.display = 'none';
+  if (!name || phone.length < 10) {
+    msgEl.textContent = 'Please enter your name and a valid 10-digit phone number.';
+    msgEl.className = 'cotm-lead-msg err';
+    msgEl.style.display = 'block';
+    return;
+  }
+  btnEl.disabled = true;
+  btnEl.textContent = 'Sending...';
+  try {
+    var res = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/cotm-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, phone: phone, email: emailEl.value.trim() })
+    });
+    var data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || 'request failed');
+    msgEl.textContent = "Thanks! We'll call or text you to hold your spot.";
+    msgEl.className = 'cotm-lead-msg ok';
+    msgEl.style.display = 'block';
+    nameEl.value = ''; phoneEl.value = ''; emailEl.value = '';
+    btnEl.textContent = 'Hold my spot';
+  } catch (e) {
+    msgEl.textContent = 'Something went wrong — please call us at (570) 322-7766.';
+    msgEl.className = 'cotm-lead-msg err';
+    msgEl.style.display = 'block';
+    btnEl.textContent = 'Hold my spot';
+  }
+  btnEl.disabled = false;
+}
 </script>
 </body>
 </html>
