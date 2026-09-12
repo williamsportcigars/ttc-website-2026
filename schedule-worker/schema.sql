@@ -61,6 +61,24 @@ CREATE TABLE IF NOT EXISTS swap_requests (
   decided_at TEXT
 );
 
+-- A recurring weekly pattern per employee (e.g. "Gray works Tue-Sat, 9am-5pm").
+-- day_of_week: 0=Monday .. 6=Sunday, matching the app's Monday-start week view.
+-- Applying a template for a given week creates real rows in `shifts` — from
+-- then on those shifts are independent and editable/deletable like any
+-- other, without touching the template.
+CREATE TABLE IF NOT EXISTS schedule_templates (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  employee_id INTEGER NOT NULL REFERENCES employees(id),
+  day_of_week INTEGER NOT NULL CHECK(day_of_week BETWEEN 0 AND 6),
+  start_time TEXT NOT NULL,
+  end_time TEXT NOT NULL,
+  notes TEXT,
+  active INTEGER NOT NULL DEFAULT 1,
+  created_by INTEGER NOT NULL REFERENCES employees(id),
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS activity_log (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   actor_id INTEGER REFERENCES employees(id),

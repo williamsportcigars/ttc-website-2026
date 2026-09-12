@@ -167,6 +167,42 @@
 
     <!-- ---- SCHEDULE ---- -->
     <div class="view active" id="view-schedule">
+      <div class="card admin-only" hidden id="templates-card">
+        <h2 id="template-form-title">Standard Weekly Schedule</h2>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">Set each person's normal week once here, then use "Apply to This Week" below to turn it into real, editable shifts. Editing or deleting a generated shift never changes the pattern.</p>
+        <form id="template-form">
+          <input type="hidden" id="template-editing-id">
+          <div class="form-grid">
+            <div><label for="template-employee">Employee</label><select id="template-employee" required></select></div>
+            <div><label for="template-day">Day</label>
+              <select id="template-day" required>
+                <option value="0">Monday</option>
+                <option value="1">Tuesday</option>
+                <option value="2">Wednesday</option>
+                <option value="3">Thursday</option>
+                <option value="4">Friday</option>
+                <option value="5">Saturday</option>
+                <option value="6">Sunday</option>
+              </select>
+            </div>
+            <div><label for="template-start">Start</label><input type="time" id="template-start" required></div>
+            <div><label for="template-end">End</label><input type="time" id="template-end" required></div>
+            <div><label for="template-notes">Notes</label><input id="template-notes" placeholder="optional"></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn" type="submit" id="template-submit-btn">Add to Standard Schedule</button>
+            <button class="btn secondary" type="button" id="template-cancel-btn" hidden>Cancel</button>
+          </div>
+        </form>
+        <div class="table-wrap" style="margin-top:18px;">
+          <table>
+            <thead><tr><th>Employee</th><th>Day</th><th>Time</th><th>Notes</th><th>Active</th><th></th></tr></thead>
+            <tbody id="templates-table"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="templates-empty" hidden>No standard schedule set up yet.</div>
+      </div>
+
       <div class="card admin-only" hidden id="add-shift-card">
         <h2 id="shift-form-title">Add a Shift</h2>
         <form id="shift-form">
@@ -191,6 +227,7 @@
           <span class="label" id="week-label"></span>
           <button class="btn secondary small" id="week-next">Next Week &rarr;</button>
           <button class="btn secondary small" id="week-today">This Week</button>
+          <button class="btn secondary small admin-only" hidden id="apply-templates-btn">Apply Standard Schedule to This Week</button>
         </div>
         <div class="table-wrap">
           <table>
@@ -354,6 +391,7 @@ let state = {
   employees: [],
   coworkers: [],
   shifts: [],
+  templates: [],
   weekStart: startOfWeek(new Date()),
 };
 
@@ -500,6 +538,7 @@ async function enterApp() {
   try {
     await loadCoworkers();
     if (isAdmin) await loadEmployees();
+    if (isAdmin) await loadTemplates();
     await loadWeek();
     await loadTimeOff();
     await loadSwaps();
@@ -568,9 +607,21 @@ document.getElementById('week-next').addEventListener('click', () => { state.wee
 document.getElementById('week-today').addEventListener('click', () => { state.weekStart = startOfWeek(new Date()); loadWeek(); });
 
 function populateShiftEmployeeSelect() {
-  const sel = document.getElementById('shift-employee');
-  sel.innerHTML = state.employees.map(e => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('');
+  const options = state.employees.map(e => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('');
+  document.getElementById('shift-employee').innerHTML = options;
+  document.getElementById('template-employee').innerHTML = options;
 }
+
+document.getElementById('apply-templates-btn').addEventListener('click', async () => {
+  const week_start = fmtISO(state.weekStart);
+  try {
+    const data = await api('/api/schedule-templates/apply', { method: 'POST', body: JSON.stringify({ week_start }) });
+    toast(`Standard schedule applied: ${data.created} shift(s) added, ${data.skipped} day(s) already had a shift and were left alone.`);
+    await loadWeek();
+  } catch (err) {
+    toast(err.message, true);
+  }
+});
 
 function startEditShift(s) {
   document.getElementById('shift-form-title').textContent = 'Edit Shift';
@@ -628,6 +679,103 @@ async function deleteShift(id) {
   } catch (err) {
     toast(err.message, true);
   }
+}
+
+// ---------- standard weekly schedule templates ----------
+const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+async function loadTemplates() {
+  const data = await api('/api/schedule-templates');
+  state.templates = data.templates;
+  renderTemplates();
+}
+
+function renderTemplates() {
+  const tbody = document.getElementById('templates-table');
+  tbody.innerHTML = '';
+  document.getElementById('templates-empty').hidden = state.templates.length > 0;
+  state.templates.forEach(t => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(t.employee_name)}</td>
+      <td>${DAY_NAMES[t.day_of_week]}</td>
+      <td>${fmtTime(t.start_time)} – ${fmtTime(t.end_time)}</td>
+      <td>${escapeHtml(t.notes || '')}</td>
+      <td>${t.active ? 'Yes' : 'No'}</td>
+      <td></td>`;
+    const actionTd = tr.lastElementChild;
+    actionTd.append(
+      mkBtn('Edit', 'secondary small', () => startEditTemplate(t)),
+      ' ',
+      mkBtn(t.active ? 'Pause' : 'Resume', 'secondary small', () => toggleTemplateActive(t)),
+      ' ',
+      mkBtn('Delete', 'danger small', () => deleteTemplate(t.id))
+    );
+    tbody.appendChild(tr);
+  });
+}
+
+function startEditTemplate(t) {
+  document.getElementById('template-form-title').textContent = 'Edit Standard Schedule Entry';
+  document.getElementById('template-editing-id').value = t.id;
+  document.getElementById('template-employee').value = t.employee_id;
+  document.getElementById('template-day').value = t.day_of_week;
+  document.getElementById('template-start').value = t.start_time;
+  document.getElementById('template-end').value = t.end_time;
+  document.getElementById('template-notes').value = t.notes || '';
+  document.getElementById('template-submit-btn').textContent = 'Save Changes';
+  document.getElementById('template-cancel-btn').hidden = false;
+  document.getElementById('templates-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetTemplateForm() {
+  document.getElementById('template-form').reset();
+  document.getElementById('template-editing-id').value = '';
+  document.getElementById('template-form-title').textContent = 'Standard Weekly Schedule';
+  document.getElementById('template-submit-btn').textContent = 'Add to Standard Schedule';
+  document.getElementById('template-cancel-btn').hidden = true;
+}
+document.getElementById('template-cancel-btn').addEventListener('click', resetTemplateForm);
+
+document.getElementById('template-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('template-editing-id').value;
+  const payload = {
+    employee_id: Number(document.getElementById('template-employee').value),
+    day_of_week: Number(document.getElementById('template-day').value),
+    start_time: document.getElementById('template-start').value,
+    end_time: document.getElementById('template-end').value,
+    notes: document.getElementById('template-notes').value,
+  };
+  try {
+    if (id) {
+      await api('/api/schedule-templates/' + id, { method: 'PATCH', body: JSON.stringify(payload) });
+      toast('Standard schedule entry updated.');
+    } else {
+      await api('/api/schedule-templates', { method: 'POST', body: JSON.stringify(payload) });
+      toast('Added to standard schedule.');
+    }
+    resetTemplateForm();
+    await loadTemplates();
+  } catch (err) {
+    toast(err.message, true);
+  }
+});
+
+async function toggleTemplateActive(t) {
+  try {
+    await api('/api/schedule-templates/' + t.id, { method: 'PATCH', body: JSON.stringify({ active: !t.active }) });
+    await loadTemplates();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function deleteTemplate(id) {
+  if (!confirm('Remove this from the standard schedule? (Shifts already generated from it are not affected.)')) return;
+  try {
+    await api('/api/schedule-templates/' + id, { method: 'DELETE' });
+    toast('Removed from standard schedule.');
+    await loadTemplates();
+  } catch (err) { toast(err.message, true); }
 }
 
 // ---------- time off ----------

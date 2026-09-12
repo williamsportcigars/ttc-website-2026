@@ -392,6 +392,121 @@ async function handleDeleteShift(env, actor, id) {
   return json({ deleted: id });
 }
 
+// -- recurring weekly schedule templates --
+
+function addDaysToISO(iso, n) {
+  const d = new Date(iso + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+async function handleListTemplates(env) {
+  const { results } = await env.DB.prepare(
+    `SELECT t.*, e.name AS employee_name FROM schedule_templates t
+     JOIN employees e ON e.id = t.employee_id
+     ORDER BY e.name, t.day_of_week`
+  ).all();
+  return json({ templates: results });
+}
+
+async function handleCreateTemplate(request, env, actor) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "Invalid JSON" }, 400);
+  }
+  const { employee_id, day_of_week, start_time, end_time, notes } = body || {};
+  if (!employee_id || day_of_week == null || !start_time || !end_time) {
+    return json({ error: "employee_id, day_of_week, start_time, end_time required" }, 400);
+  }
+  if (day_of_week < 0 || day_of_week > 6) return json({ error: "day_of_week must be 0 (Monday) to 6 (Sunday)" }, 400);
+
+  const result = await env.DB.prepare(
+    "INSERT INTO schedule_templates (employee_id, day_of_week, start_time, end_time, notes, created_by) VALUES (?, ?, ?, ?, ?, ?)"
+  )
+    .bind(employee_id, day_of_week, start_time, end_time, notes || null, actor.id)
+    .run();
+
+  await logActivity(env, actor, "schedule_template_created", { employee_id, day_of_week, start_time, end_time });
+  const template = await env.DB.prepare("SELECT * FROM schedule_templates WHERE id = ?").bind(result.meta.last_row_id).first();
+  return json({ template }, 201);
+}
+
+async function handleUpdateTemplate(request, env, actor, id) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "Invalid JSON" }, 400);
+  }
+  const tpl = await env.DB.prepare("SELECT * FROM schedule_templates WHERE id = ?").bind(id).first();
+  if (!tpl) return json({ error: "Not found" }, 404);
+
+  const day_of_week = body.day_of_week != null ? Number(body.day_of_week) : tpl.day_of_week;
+  const start_time = body.start_time ?? tpl.start_time;
+  const end_time = body.end_time ?? tpl.end_time;
+  const notes = body.notes !== undefined ? body.notes : tpl.notes;
+  const active = body.active != null ? (body.active ? 1 : 0) : tpl.active;
+
+  await env.DB.prepare(
+    "UPDATE schedule_templates SET day_of_week=?, start_time=?, end_time=?, notes=?, active=?, updated_at=datetime('now') WHERE id=?"
+  )
+    .bind(day_of_week, start_time, end_time, notes, active, id)
+    .run();
+
+  await logActivity(env, actor, "schedule_template_updated", { template_id: id, changes: body });
+  const updated = await env.DB.prepare("SELECT * FROM schedule_templates WHERE id = ?").bind(id).first();
+  return json({ template: updated });
+}
+
+async function handleDeleteTemplate(env, actor, id) {
+  const tpl = await env.DB.prepare("SELECT * FROM schedule_templates WHERE id = ?").bind(id).first();
+  if (!tpl) return json({ error: "Not found" }, 404);
+  await env.DB.prepare("DELETE FROM schedule_templates WHERE id = ?").bind(id).run();
+  await logActivity(env, actor, "schedule_template_deleted", { template_id: id, employee_id: tpl.employee_id });
+  return json({ deleted: id });
+}
+
+async function handleApplyTemplates(request, env, actor) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "Invalid JSON" }, 400);
+  }
+  const { week_start } = body || {};
+  if (!week_start) return json({ error: "week_start (YYYY-MM-DD, a Monday) required" }, 400);
+
+  const { results: templates } = await env.DB.prepare(
+    "SELECT * FROM schedule_templates WHERE active = 1"
+  ).all();
+
+  let created = 0;
+  let skipped = 0;
+  for (const tpl of templates) {
+    const date = addDaysToISO(week_start, tpl.day_of_week);
+    const existing = await env.DB.prepare(
+      "SELECT id FROM shifts WHERE employee_id = ? AND shift_date = ?"
+    )
+      .bind(tpl.employee_id, date)
+      .first();
+    if (existing) {
+      skipped++;
+      continue;
+    }
+    await env.DB.prepare(
+      "INSERT INTO shifts (employee_id, shift_date, start_time, end_time, notes, created_by) VALUES (?, ?, ?, ?, ?, ?)"
+    )
+      .bind(tpl.employee_id, date, tpl.start_time, tpl.end_time, tpl.notes, actor.id)
+      .run();
+    created++;
+  }
+
+  await logActivity(env, actor, "schedule_template_applied", { week_start, created, skipped });
+  return json({ week_start, created, skipped });
+}
+
 // -- time off --
 
 async function handleListTimeOff(request, env, employee) {
@@ -692,6 +807,33 @@ export default {
         const err = requireAdmin(employee);
         if (err) return err;
         return handleDeleteShift(env, employee, Number(m[1]));
+      }
+
+      if (path === "/api/schedule-templates" && method === "GET") {
+        const err = requireAdmin(employee);
+        if (err) return err;
+        return handleListTemplates(env);
+      }
+      if (path === "/api/schedule-templates" && method === "POST") {
+        const err = requireAdmin(employee);
+        if (err) return err;
+        return handleCreateTemplate(request, env, employee);
+      }
+      m = path.match(/^\/api\/schedule-templates\/(\d+)$/);
+      if (m && method === "PATCH") {
+        const err = requireAdmin(employee);
+        if (err) return err;
+        return handleUpdateTemplate(request, env, employee, Number(m[1]));
+      }
+      if (m && method === "DELETE") {
+        const err = requireAdmin(employee);
+        if (err) return err;
+        return handleDeleteTemplate(env, employee, Number(m[1]));
+      }
+      if (path === "/api/schedule-templates/apply" && method === "POST") {
+        const err = requireAdmin(employee);
+        if (err) return err;
+        return handleApplyTemplates(request, env, employee);
       }
 
       if (path === "/api/timeoff" && method === "GET") {

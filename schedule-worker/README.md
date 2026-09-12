@@ -1,9 +1,10 @@
 # TTC Schedule API
 
 Cloudflare Worker backing `schedule.html`. Per-employee logins (PBKDF2-hashed
-passwords, bearer-token sessions in D1), shifts, time-off requests with a
-running vacation-day balance, and shift-swap requests — every meaningful
-action is written to `activity_log`.
+passwords, bearer-token sessions in D1), shifts (plus a recurring "standard
+weekly schedule" you can apply to generate a week's shifts in one click),
+time-off requests with a running vacation-day balance, and shift-swap
+requests — every meaningful action is written to `activity_log`.
 
 ## What's already provisioned
 
@@ -39,6 +40,17 @@ Once logged in as admin, use the **Employees** tab to add real accounts for
 yourself and each employee. Each new account gets a one-time temporary
 password shown on screen — pass it along and they'll set their own on first
 login.
+
+## Standard weekly schedule
+
+In the Schedule tab (admin), "Standard Weekly Schedule" lets you set each
+employee's normal recurring week once (e.g. "Gray: Tue-Sat, 9am-5pm"). Click
+**Apply Standard Schedule to This Week** to turn that pattern into real
+shifts for whichever week you're viewing — it skips any day that already has
+a shift for that employee (so re-applying, or applying after manual edits,
+never creates duplicates or overwrites something you already changed).
+Generated shifts are ordinary shifts from that point on: editing or deleting
+one has no effect on the underlying pattern.
 
 ## Notes / known limitations (v1)
 
