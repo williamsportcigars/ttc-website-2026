@@ -117,7 +117,7 @@
   <form class="login-card" id="login-form">
     <h1>The Tobacco Center</h1>
     <p class="sub">Employee Scheduling</p>
-    <label for="login-username">Username</label>
+    <label for="login-username">Login Name</label>
     <input id="login-username" autocomplete="username" required>
     <label for="login-password">Password</label>
     <input id="login-password" type="password" autocomplete="current-password" required>
@@ -307,8 +307,8 @@
         <h2>Add Employee</h2>
         <form id="employee-form">
           <div class="form-grid">
-            <div><label for="emp-name">Full Name</label><input id="emp-name" required></div>
-            <div><label for="emp-username">Username</label><input id="emp-username" required></div>
+            <div><label for="emp-name">Name</label><input id="emp-name" required></div>
+            <div><label for="emp-username">Login Name</label><input id="emp-username" required placeholder="auto-filled from name"></div>
             <div><label for="emp-email">Email</label><input id="emp-email" type="email" placeholder="optional"></div>
             <div><label for="emp-role">Role</label><select id="emp-role"><option value="employee">Employee</option><option value="admin">Admin</option></select></div>
             <div><label for="emp-allowance">Vacation Days / Year</label><input id="emp-allowance" type="number" min="0" step="0.5" value="0"></div>
@@ -321,7 +321,7 @@
         <h2>All Employees</h2>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Vacation Days/Yr</th><th>Active</th><th></th></tr></thead>
+            <thead><tr><th>Name</th><th>Login Name</th><th>Role</th><th>Vacation Days/Yr</th><th>Active</th><th></th></tr></thead>
             <tbody id="employees-table"></tbody>
           </table>
         </div>
@@ -942,10 +942,18 @@ async function toggleEmployeeActive(e) {
 function showCredentialBanner(name, username, password) {
   const el = document.getElementById('employee-credential-banner');
   el.innerHTML = `<div class="banner"><span class="close" onclick="this.parentElement.remove()">&times;</span>
-    Give <strong>${escapeHtml(name)}</strong> (username <code>${escapeHtml(username)}</code>) this temporary password —
+    Give <strong>${escapeHtml(name)}</strong> (login name <code>${escapeHtml(username)}</code>) this temporary password —
     it's shown once and they'll be asked to set their own on first login: <code>${escapeHtml(password)}</code></div>`;
 }
 
+// Auto-suggest a login name from the person's name (e.g. "Gray Hogan" -> "gray.hogan")
+// so the admin only really has to type a name — editable if it collides or they'd rather pick their own.
+let loginNameTouched = false;
+document.getElementById('emp-username').addEventListener('input', () => { loginNameTouched = true; });
+document.getElementById('emp-name').addEventListener('input', (e) => {
+  if (loginNameTouched) return;
+  document.getElementById('emp-username').value = e.target.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.+|\.+$/g, '');
+});
 document.getElementById('employee-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const errEl = document.getElementById('employee-error');
@@ -960,6 +968,7 @@ document.getElementById('employee-form').addEventListener('submit', async (e) =>
   try {
     const data = await api('/api/employees', { method: 'POST', body: JSON.stringify(payload) });
     document.getElementById('employee-form').reset();
+    loginNameTouched = false;
     showCredentialBanner(data.employee.name, data.employee.username, data.temporary_password);
     await loadEmployees();
     await loadCoworkers();
