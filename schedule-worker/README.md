@@ -30,6 +30,27 @@ already points at that URL (`API_BASE` near the top of its `<script>`). If
 your account's workers.dev subdomain differs, update `API_BASE` in
 `schedule.html` to match after deploying.
 
+This deploy also uploads `public/index.html` (a copy of `../schedule.html`)
+as this Worker's static assets — so the Worker itself now serves the app
+at `/`, not just the API at `/api/*`. **`public/index.html` is a copy, not a
+symlink**: whenever `schedule.html` is edited, re-copy it
+(`cp ../schedule.html public/index.html`) before redeploying, or the two
+will drift apart.
+
+## Custom domain (e.g. schedule.thetobaccocenter.com)
+
+There's no API for this — it's a one-time manual step in the dashboard:
+
+1. Cloudflare dashboard → **Workers & Pages** → `ttc-schedule-api` →
+   **Settings** → **Domains & Routes** → **Add** → **Custom Domain**.
+2. Enter the subdomain (e.g. `schedule.thetobaccocenter.com`) and confirm.
+   Cloudflare creates the DNS record and issues the SSL certificate
+   automatically — this only works if `thetobaccocenter.com`'s DNS is
+   already on this same Cloudflare account.
+
+Once attached, that subdomain serves the whole app directly (both the page
+at `/` and the API at `/api/*`) — no separate hosting step needed.
+
 ## First login
 
 - Username: `admin`

@@ -2,6 +2,15 @@ name = "ttc-schedule-api"
 main = "src/worker.js"
 compatibility_date = "2026-09-01"
 
+# Serves public/index.html (a copy of ../schedule.html) directly from this
+# Worker for any request that isn't handled by the API. A request path is
+# checked against this directory first; only a miss falls through to
+# src/worker.js, so /api/* is unaffected. This is what lets a custom domain
+# (e.g. schedule.thetobaccocenter.com) attached to this Worker serve the app
+# at "/" with no separate hosting needed.
+[assets]
+directory = "./public"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "ttc_schedule"
