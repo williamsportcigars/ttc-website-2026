@@ -52,6 +52,33 @@ never creates duplicates or overwrites something you already changed).
 Generated shifts are ordinary shifts from that point on: editing or deleting
 one has no effect on the underlying pattern.
 
+## Calendar feed (Apple / Google / Android)
+
+The **My Calendar** tab gives each employee a personal, auto-updating
+subscription link (a long random token in the URL is the access control,
+same approach Google Calendar itself uses for private calendar links — there's
+no login prompt calendar apps could satisfy anyway). It only ever shows that
+one employee's own shifts. "Get a New Link" invalidates the old URL if it
+ever gets shared by mistake.
+
+Event times are declared in `America/New_York` (Williamsport, PA) — change
+the `ICS_TZID` constant near the top of `src/worker.js` if that's wrong.
+
+## Coverage checking
+
+Each day in the Schedule tab's calendar grid shows a Covered/Gap badge,
+computed against these store hours (edit the `STORE_HOURS` constant in
+`schedule.html` if they change):
+
+- Closed Sunday
+- Monday–Thursday: 11am–9pm
+- Friday–Saturday: 11am–10pm
+
+A shift is treated as covering 30 minutes before its start through 30
+minutes after its end (arrival/close-out buffer) — change
+`SHIFT_BUFFER_MINUTES` if that's not right. This is a diagnostic only; it
+doesn't block creating or editing shifts.
+
 ## Notes / known limitations (v1)
 
 - A time-off request's day count is a simple inclusive calendar-day count

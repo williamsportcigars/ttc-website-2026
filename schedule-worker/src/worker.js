@@ -81,6 +81,113 @@ function daysBetweenInclusive(startStr, endStr) {
   return diff > 0 ? diff : 0;
 }
 
+// ---------- iCalendar (.ics) feed ----------
+// Shifts are stored as shop-local wall-clock times with no timezone info;
+// the feed declares them against America/New_York (Williamsport, PA) so
+// every calendar app shows the same real-world time regardless of the
+// viewer's own device timezone. Tell us if the shop isn't actually Eastern
+// time and this constant is the only thing that needs to change.
+const ICS_TZID = "America/New_York";
+const ICS_VTIMEZONE_LINES = [
+  "BEGIN:VTIMEZONE",
+  `TZID:${ICS_TZID}`,
+  "BEGIN:DAYLIGHT",
+  "TZOFFSETFROM:-0500",
+  "TZOFFSETTO:-0400",
+  "TZNAME:EDT",
+  "DTSTART:19700308T020000",
+  "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU",
+  "END:DAYLIGHT",
+  "BEGIN:STANDARD",
+  "TZOFFSETFROM:-0400",
+  "TZOFFSETTO:-0500",
+  "TZNAME:EST",
+  "DTSTART:19701101T020000",
+  "RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU",
+  "END:STANDARD",
+  "END:VTIMEZONE",
+];
+
+function icsEscape(str) {
+  return String(str)
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\n/g, "\\n");
+}
+
+function icsFoldLine(line) {
+  // RFC 5545: a physical line over 75 octets gets folded into a CRLF followed
+  // by a single leading space, repeated as needed. Our content is plain
+  // ASCII, so treating characters as octets here is accurate enough.
+  if (line.length <= 75) return line;
+  let out = line.slice(0, 75);
+  let rest = line.slice(75);
+  while (rest.length > 0) {
+    out += "\r\n " + rest.slice(0, 74);
+    rest = rest.slice(74);
+  }
+  return out;
+}
+
+function icsDateTime(dateStr, timeStr) {
+  // "2026-09-15" + "09:00" -> "20260915T090000"
+  return dateStr.replace(/-/g, "") + "T" + timeStr.replace(":", "") + "00";
+}
+
+function buildICS(employeeName, shifts) {
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//The Tobacco Center//Employee Scheduling//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    `X-WR-CALNAME:${icsEscape(employeeName + " - TTC Schedule")}`,
+    ...ICS_VTIMEZONE_LINES,
+  ];
+  for (const s of shifts) {
+    lines.push(
+      "BEGIN:VEVENT",
+      `UID:shift-${s.id}@ttc-schedule.williamsportcigars`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;TZID=${ICS_TZID}:${icsDateTime(s.shift_date, s.start_time)}`,
+      `DTEND;TZID=${ICS_TZID}:${icsDateTime(s.shift_date, s.end_time)}`,
+      `SUMMARY:${icsEscape("Shift at The Tobacco Center")}`,
+      `LOCATION:${icsEscape("The Tobacco Center")}`
+    );
+    if (s.notes) lines.push(`DESCRIPTION:${icsEscape(s.notes)}`);
+    lines.push("END:VEVENT");
+  }
+  lines.push("END:VCALENDAR");
+  return lines.map(icsFoldLine).join("\r\n") + "\r\n";
+}
+
+function icsResponse(body) {
+  return new Response(body, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/calendar; charset=utf-8",
+      "Content-Disposition": 'inline; filename="schedule.ics"',
+      "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "no-store",
+    },
+  });
+}
+
+async function handleCalendarFeed(env, token) {
+  const emp = await env.DB.prepare("SELECT * FROM employees WHERE calendar_token = ? AND active = 1").bind(token).first();
+  if (!emp) return new Response("Calendar not found", { status: 404 });
+  const { results } = await env.DB.prepare(
+    `SELECT * FROM shifts WHERE employee_id = ?
+     AND shift_date BETWEEN date('now', '-14 days') AND date('now', '+180 days')
+     ORDER BY shift_date, start_time`
+  )
+    .bind(emp.id)
+    .all();
+  return icsResponse(buildICS(emp.name, results));
+}
+
 function publicEmployee(e) {
   return {
     id: e.id,
@@ -190,7 +297,18 @@ async function handleLogout(request, env, employee) {
 
 async function handleMe(env, employee) {
   const balance = await vacationBalance(env, employee.id, employee.vacation_days_allowance);
-  return json({ employee: publicEmployee(employee), vacation: balance });
+  // calendar_token is only ever handed back on the "who am I" endpoint — never in a
+  // list of employees — so it doesn't leak to admins/coworkers browsing other people.
+  return json({ employee: { ...publicEmployee(employee), calendar_token: employee.calendar_token }, vacation: balance });
+}
+
+async function handleResetCalendarToken(env, actor) {
+  const token = randomHex(24);
+  await env.DB.prepare("UPDATE employees SET calendar_token = ?, updated_at = datetime('now') WHERE id = ?")
+    .bind(token, actor.id)
+    .run();
+  await logActivity(env, actor, "calendar_token_reset", null);
+  return json({ calendar_token: token });
 }
 
 async function handleChangePassword(request, env, employee) {
@@ -257,12 +375,13 @@ async function handleCreateEmployee(request, env, actor) {
   const tempPassword = randomPassword(12);
   const salt = randomHex(16);
   const hash = await hashPassword(tempPassword, salt);
+  const calendarToken = randomHex(24);
 
   const result = await env.DB.prepare(
-    `INSERT INTO employees (name, username, email, password_hash, password_salt, role, vacation_days_allowance, must_change_password)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 1)`
+    `INSERT INTO employees (name, username, email, password_hash, password_salt, role, vacation_days_allowance, must_change_password, calendar_token)
+     VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)`
   )
-    .bind(name, username, email || null, hash, salt, finalRole, allowance)
+    .bind(name, username, email || null, hash, salt, finalRole, allowance, calendarToken)
     .run();
 
   await logActivity(env, actor, "employee_created", { employee: name, username, role: finalRole });
@@ -740,6 +859,12 @@ export default {
     try {
       if (path === "/api/login" && method === "POST") return handleLogin(request, env);
 
+      // Calendar feeds are public (the long random token in the URL is the
+      // access control — calendar apps can't send an Authorization header),
+      // so this is handled before the session check below.
+      const calMatch = path.match(/^\/api\/calendar\/([a-f0-9]+)\.ics$/);
+      if (calMatch && method === "GET") return handleCalendarFeed(env, calMatch[1]);
+
       // Everything below requires a valid session.
       const employee = await getAuthedEmployee(request, env);
 
@@ -757,6 +882,11 @@ export default {
         const err = requireAuth(employee);
         if (err) return err;
         return handleChangePassword(request, env, employee);
+      }
+      if (path === "/api/calendar-token/reset" && method === "POST") {
+        const err = requireAuth(employee);
+        if (err) return err;
+        return handleResetCalendarToken(env, employee);
       }
 
       if (path === "/api/coworkers" && method === "GET") {

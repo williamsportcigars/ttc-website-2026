@@ -90,6 +90,24 @@
   .week-nav { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
   .week-nav .label { font-weight: 600; color: var(--mint-pale); }
 
+  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; align-items: start; }
+  .cal-day { background: var(--dark2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; min-height: 80px; }
+  .cal-day-name { font-weight: 600; color: var(--mint-pale); font-size: 0.85rem; }
+  .cal-day-date { font-size: 0.72rem; color: var(--muted); }
+  .cal-day-hours { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+  .cal-coverage { font-size: 0.68rem; margin-top: 5px; padding: 2px 8px; border-radius: 10px; display: inline-block; }
+  .cal-coverage.ok { background: rgba(92,224,138,0.15); color: var(--green); }
+  .cal-coverage.gap { background: rgba(224,92,92,0.15); color: var(--red); }
+  .cal-none { font-size: 0.75rem; color: var(--muted); margin-top: 8px; }
+  .cal-shift { background: var(--dark3); border: 1px solid var(--border); border-radius: 8px; padding: 7px 9px; margin-top: 8px; font-size: 0.78rem; }
+  .cal-shift .who { font-weight: 600; color: var(--cream); }
+  .cal-shift .when { color: var(--muted); font-size: 0.72rem; margin-top: 1px; }
+  .cal-shift .acts { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .calendar-grid { grid-template-columns: 1fr; }
+  }
+
   .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0 14px; align-items: end; }
   .form-actions { display: flex; gap: 10px; margin-top: 4px; }
 
@@ -159,6 +177,7 @@
     <div class="tab active" data-view="schedule">Schedule</div>
     <div class="tab" data-view="timeoff">Time Off</div>
     <div class="tab" data-view="swaps">Shift Swaps</div>
+    <div class="tab" data-view="mycalendar">My Calendar</div>
     <div class="tab admin-only" data-view="employees" hidden>Employees</div>
     <div class="tab admin-only" data-view="log" hidden>Activity Log</div>
   </div>
@@ -229,13 +248,7 @@
           <button class="btn secondary small" id="week-today">This Week</button>
           <button class="btn secondary small admin-only" hidden id="apply-templates-btn">Apply Standard Schedule to This Week</button>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Date</th><th>Time</th><th>Employee</th><th>Notes</th><th></th></tr></thead>
-            <tbody id="shifts-table"></tbody>
-          </table>
-        </div>
-        <div class="empty" id="shifts-empty" hidden>No shifts scheduled this week.</div>
+        <div class="calendar-grid" id="calendar-grid"></div>
       </div>
     </div>
 
@@ -334,6 +347,38 @@
           </table>
         </div>
         <div class="empty" id="all-swaps-empty" hidden>No swap requests yet.</div>
+      </div>
+    </div>
+
+    <!-- ---- MY CALENDAR ---- -->
+    <div class="view" id="view-mycalendar">
+      <div class="card">
+        <h2>Subscribe to My Schedule</h2>
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;">
+          This link only shows <strong>your</strong> shifts, and updates automatically whenever your schedule changes —
+          no need to re-download anything. Anyone with the link can see your shifts, so don't share it, and use
+          "Get a New Link" below if you ever think someone else has it.
+        </p>
+
+        <div style="margin-bottom:18px;">
+          <label>iPhone / iPad / Mac (Apple Calendar)</label>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-10px 0 10px;">Tap the button below — it opens directly in Calendar and asks you to subscribe.</p>
+          <a id="webcal-link" class="btn" href="#" style="text-decoration:none;display:inline-block;">Add to Apple Calendar</a>
+        </div>
+
+        <div style="margin-bottom:18px;">
+          <label>Android / Google Calendar</label>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-10px 0 10px;">
+            On a computer: open Google Calendar → next to "Other calendars" click <strong>+</strong> → <strong>From URL</strong> →
+            paste the link below → Add calendar. It then syncs to the Google Calendar app on your phone automatically.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <input id="ics-url" readonly style="flex:1;min-width:220px;margin-bottom:0;">
+            <button class="btn secondary small" type="button" id="copy-ics-btn">Copy Link</button>
+          </div>
+        </div>
+
+        <button class="btn danger small" type="button" id="reset-calendar-token-btn">Get a New Link</button>
       </div>
     </div>
 
@@ -542,6 +587,7 @@ async function enterApp() {
     await loadWeek();
     await loadTimeOff();
     await loadSwaps();
+    await loadMyCalendar();
     if (isAdmin) await loadLog();
   } catch (err) {
     toast(err.message, true);
@@ -566,27 +612,130 @@ async function loadWeek() {
   renderSwapShiftOptions();
 }
 
-function renderShifts() {
-  const tbody = document.getElementById('shifts-table');
-  const isAdmin = state.employee.role === 'admin';
-  tbody.innerHTML = '';
-  document.getElementById('shifts-empty').hidden = state.shifts.length > 0;
-  state.shifts.forEach(s => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${fmtNice(s.shift_date)}</td>
-      <td>${fmtTime(s.start_time)} – ${fmtTime(s.end_time)}</td>
-      <td>${escapeHtml(s.employee_name)}${s.employee_id === state.employee.id ? ' <span style="color:var(--mint)">(you)</span>' : ''}</td>
-      <td>${escapeHtml(s.notes || '')}</td>
-      <td></td>`;
-    const actionTd = tr.lastElementChild;
-    if (isAdmin) {
-      const editBtn = mkBtn('Edit', 'secondary small', () => startEditShift(s));
-      const delBtn = mkBtn('Delete', 'danger small', () => deleteShift(s.id));
-      actionTd.append(editBtn, ' ', delBtn);
+// Store hours: closed Sunday; Mon-Thu 11am-9pm; Fri-Sat 11am-10pm. Coverage
+// counts a shift as covering 30 min before its start through 30 min after
+// its end (arrival/close-out buffer), so the store's own open-to-close
+// window is what has to be covered, not open-to-close plus extra padding.
+const STORE_HOURS = {
+  0: null, // Sunday - closed
+  1: { open: '11:00', close: '21:00' },
+  2: { open: '11:00', close: '21:00' },
+  3: { open: '11:00', close: '21:00' },
+  4: { open: '11:00', close: '21:00' },
+  5: { open: '11:00', close: '22:00' },
+  6: { open: '11:00', close: '22:00' },
+};
+const SHIFT_BUFFER_MINUTES = 30;
+const DAY_NAMES_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function toMinutes(hhmm) {
+  const [h, m] = hhmm.split(':').map(Number);
+  return h * 60 + m;
+}
+function minutesToLabel(mins) {
+  const h24 = Math.floor(mins / 60);
+  const m = mins % 60;
+  const ap = h24 >= 12 ? 'PM' : 'AM';
+  const h12 = ((h24 + 11) % 12) + 1;
+  return `${h12}:${String(m).padStart(2, '0')} ${ap}`;
+}
+
+// Returns null if the store is closed that day, otherwise
+// { hours, covered, gaps: [{start,end}] } in minutes-since-midnight.
+function computeCoverage(dateStr, shiftsForDay) {
+  const dow = new Date(dateStr + 'T00:00:00').getDay();
+  const hours = STORE_HOURS[dow];
+  if (!hours) return null;
+  const openMin = toMinutes(hours.open);
+  const closeMin = toMinutes(hours.close);
+
+  const intervals = shiftsForDay
+    .map(s => [
+      Math.max(0, toMinutes(s.start_time) - SHIFT_BUFFER_MINUTES),
+      Math.min(24 * 60, toMinutes(s.end_time) + SHIFT_BUFFER_MINUTES),
+    ])
+    .sort((a, b) => a[0] - b[0]);
+
+  const merged = [];
+  for (const [s, e] of intervals) {
+    if (merged.length && s <= merged[merged.length - 1][1]) {
+      merged[merged.length - 1][1] = Math.max(merged[merged.length - 1][1], e);
+    } else {
+      merged.push([s, e]);
     }
-    tbody.appendChild(tr);
-  });
+  }
+
+  const gaps = [];
+  let cursor = openMin;
+  for (const [s, e] of merged) {
+    if (e <= cursor) continue;
+    if (s > cursor) gaps.push([cursor, Math.min(s, closeMin)]);
+    cursor = Math.max(cursor, e);
+    if (cursor >= closeMin) break;
+  }
+  if (cursor < closeMin) gaps.push([cursor, closeMin]);
+
+  return { hours, covered: gaps.length === 0, gaps: gaps.filter(([s, e]) => e > s).map(([s, e]) => ({ start: s, end: e })) };
+}
+
+function renderShifts() {
+  const grid = document.getElementById('calendar-grid');
+  const isAdmin = state.employee.role === 'admin';
+  grid.innerHTML = '';
+
+  for (let i = 0; i < 7; i++) {
+    const date = addDays(state.weekStart, i);
+    const dateStr = fmtISO(date);
+    const dayShifts = state.shifts
+      .filter(s => s.shift_date === dateStr)
+      .sort((a, b) => a.start_time.localeCompare(b.start_time));
+    const coverage = computeCoverage(dateStr, dayShifts);
+
+    const col = document.createElement('div');
+    col.className = 'cal-day';
+    col.innerHTML = `
+      <div class="cal-day-name">${DAY_NAMES_SHORT[date.getDay()]}</div>
+      <div class="cal-day-date">${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</div>
+      <div class="cal-day-hours">${coverage ? fmtTime(coverage.hours.open) + ' – ' + fmtTime(coverage.hours.close) : 'Closed'}</div>
+    `;
+    if (coverage) {
+      const badge = document.createElement('div');
+      badge.className = 'cal-coverage ' + (coverage.covered ? 'ok' : 'gap');
+      badge.textContent = coverage.covered
+        ? 'Covered'
+        : 'Gap ' + coverage.gaps.map(g => `${minutesToLabel(g.start)}–${minutesToLabel(g.end)}`).join(', ');
+      col.appendChild(badge);
+    }
+
+    if (dayShifts.length === 0) {
+      const none = document.createElement('div');
+      none.className = 'cal-none';
+      none.textContent = 'No shifts';
+      col.appendChild(none);
+    }
+
+    dayShifts.forEach(s => {
+      const card = document.createElement('div');
+      card.className = 'cal-shift';
+      card.innerHTML = `
+        <div class="who">${escapeHtml(s.employee_name)}${s.employee_id === state.employee.id ? ' <span style="color:var(--mint)">(you)</span>' : ''}</div>
+        <div class="when">${fmtTime(s.start_time)} – ${fmtTime(s.end_time)}</div>
+        ${s.notes ? `<div class="when">${escapeHtml(s.notes)}</div>` : ''}
+      `;
+      if (isAdmin) {
+        const acts = document.createElement('div');
+        acts.className = 'acts';
+        acts.append(
+          mkBtn('Edit', 'secondary small', () => startEditShift(s)),
+          mkBtn('Delete', 'danger small', () => deleteShift(s.id))
+        );
+        card.appendChild(acts);
+      }
+      col.appendChild(card);
+    });
+
+    grid.appendChild(col);
+  }
 }
 
 function mkBtn(label, cls, onClick) {
@@ -1132,6 +1281,40 @@ async function resetEmployeePassword(id, name, username) {
     showCredentialBanner(name, username, data.temporary_password);
   } catch (err) { toast(err.message, true); }
 }
+
+// ---------- my calendar ----------
+function renderCalendarLinks(token) {
+  const httpsUrl = API_BASE + '/api/calendar/' + token + '.ics';
+  const webcalUrl = httpsUrl.replace(/^https?:\/\//, 'webcal://');
+  document.getElementById('webcal-link').href = webcalUrl;
+  document.getElementById('ics-url').value = httpsUrl;
+}
+
+async function loadMyCalendar() {
+  const data = await api('/api/me');
+  renderCalendarLinks(data.employee.calendar_token);
+}
+
+document.getElementById('copy-ics-btn').addEventListener('click', async () => {
+  const input = document.getElementById('ics-url');
+  input.select();
+  try {
+    await navigator.clipboard.writeText(input.value);
+    toast('Link copied.');
+  } catch {
+    document.execCommand('copy');
+    toast('Link copied.');
+  }
+});
+
+document.getElementById('reset-calendar-token-btn').addEventListener('click', async () => {
+  if (!confirm('This makes your current calendar link stop working — anyone (including you) using the old link will need the new one. Continue?')) return;
+  try {
+    const data = await api('/api/calendar-token/reset', { method: 'POST' });
+    renderCalendarLinks(data.calendar_token);
+    toast('New calendar link generated — re-subscribe using it.');
+  } catch (err) { toast(err.message, true); }
+});
 
 // ---------- activity log (admin) ----------
 async function loadLog() {

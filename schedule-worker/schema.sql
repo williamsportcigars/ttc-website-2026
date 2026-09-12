@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS employees (
   vacation_days_allowance REAL NOT NULL DEFAULT 0,
   active INTEGER NOT NULL DEFAULT 1,
   must_change_password INTEGER NOT NULL DEFAULT 1,
+  calendar_token TEXT, -- long random secret; the URL-based auth for that employee's .ics feed
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
