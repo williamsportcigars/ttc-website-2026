@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Scheduling — The Tobacco Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:  #001b16;
+    --forest: #033d33;
+    --jungle: #022e27;
+    --teal:   #0d6354;
+    --mint:   #259f8a;
+    --mint-pale: #e0fef8;
+    --gold:   #c9a84c;
+    --gold-light: #e8c76a;
+    --cream:  #f0fdf8;
+    --muted:  #4a8a7a;
+    --border: #0d4a3a;
+    --green:  #5ce08a;
+    --red:    #e05c5c;
+    --blue:   #5c9ce0;
+    --orange: #e09a3c;
+    --dark2:  #012318;
+    --dark3:  #022e27;
+    --dark4:  #033d33;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Josefin Sans', sans-serif; background: var(--black); color: var(--cream); line-height: 1.6; min-height: 100vh; }
+  h1, h2, h3 { font-family: 'Playfair Display', serif; }
+  a { color: var(--mint); }
+  [hidden] { display: none !important; }
+
+  /* ---- login screen ---- */
+  #login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .login-card { background: var(--dark3); border: 1px solid var(--border); border-radius: 14px; padding: 40px 36px; width: 100%; max-width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+  .login-card h1 { font-size: 1.6rem; color: var(--mint-pale); margin-bottom: 4px; font-style: italic; }
+  .login-card p.sub { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 28px; }
+  label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+  input, select, textarea { width: 100%; background: var(--dark2); border: 1px solid var(--border); color: var(--cream); padding: 10px 12px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; margin-bottom: 16px; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--mint); }
+  .btn { display: inline-block; background: var(--teal); color: var(--mint-pale); border: none; padding: 10px 20px; border-radius: 8px; font-family: inherit; font-size: 0.9rem; cursor: pointer; letter-spacing: 0.02em; transition: background .15s; }
+  .btn:hover { background: var(--mint); color: var(--black); }
+  .btn.full { width: 100%; }
+  .btn.secondary { background: transparent; border: 1px solid var(--border); color: var(--cream); }
+  .btn.secondary:hover { background: var(--dark4); color: var(--cream); }
+  .btn.danger { background: transparent; border: 1px solid var(--red); color: var(--red); }
+  .btn.danger:hover { background: var(--red); color: var(--black); }
+  .btn.small { padding: 5px 12px; font-size: 0.78rem; }
+  .error { color: var(--red); font-size: 0.85rem; margin: -8px 0 14px; min-height: 1em; }
+
+  /* ---- app shell ---- */
+  .header { background: linear-gradient(135deg, #001b16 0%, #022e27 100%); border-bottom: 2px solid var(--mint); padding: 16px 30px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 10px; }
+  .header h1 { font-size: 1.5rem; color: var(--mint-pale); font-style: italic; }
+  .header .sub { font-size: 0.65rem; color: var(--mint); text-transform: uppercase; letter-spacing: 0.18em; }
+  .header-right { display: flex; align-items: center; gap: 14px; font-size: 0.85rem; }
+  .role-badge { background: var(--dark4); border: 1px solid var(--border); color: var(--gold-light); padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .tabs { display: flex; background: var(--dark2); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .tab { padding: 14px 22px; cursor: pointer; color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 3px solid transparent; white-space: nowrap; }
+  .tab.active { color: var(--mint-pale); border-bottom-color: var(--mint); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 26px 20px 60px; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .card { background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; padding: 22px; margin-bottom: 20px; }
+  .card h2 { font-size: 1.15rem; color: var(--mint-pale); margin-bottom: 16px; }
+  .row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .row > .card { flex: 1; min-width: 260px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  th { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.05em; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .table-wrap { overflow-x: auto; }
+
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .badge.pending  { background: rgba(224,154,60,0.15); color: var(--orange); }
+  .badge.approved, .badge.accepted { background: rgba(92,224,138,0.15); color: var(--green); }
+  .badge.denied, .badge.declined { background: rgba(224,92,92,0.15); color: var(--red); }
+  .badge.cancelled { background: rgba(74,138,122,0.2); color: var(--muted); }
+
+  .stat-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 4px; }
+  .stat { min-width: 90px; }
+  .stat .val { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold-light); }
+  .stat .lbl { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .week-nav { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+  .week-nav .label { font-weight: 600; color: var(--mint-pale); }
+
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0 14px; align-items: end; }
+  .form-actions { display: flex; gap: 10px; margin-top: 4px; }
+
+  .empty { color: var(--muted); font-size: 0.85rem; padding: 10px 0; }
+  .banner { background: rgba(37,159,138,0.12); border: 1px solid var(--mint); border-radius: 8px; padding: 14px 16px; margin-bottom: 18px; font-size: 0.9rem; }
+  .banner code { background: var(--dark2); padding: 2px 8px; border-radius: 6px; color: var(--gold-light); font-size: 1rem; letter-spacing: 0.04em; }
+  .banner .close { float: right; cursor: pointer; color: var(--muted); }
+
+  .overlay { position: fixed; inset: 0; background: rgba(0,10,8,0.75); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+  .overlay .card { max-width: 400px; width: 100%; }
+
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--dark4); border: 1px solid var(--mint); color: var(--cream); padding: 12px 18px; border-radius: 8px; font-size: 0.85rem; z-index: 300; max-width: 320px; }
+  .toast.err { border-color: var(--red); }
+
+  @media (max-width: 640px) {
+    .header { padding: 14px 16px; }
+    .container { padding: 18px 12px 50px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login-screen">
+  <form class="login-card" id="login-form">
+    <h1>The Tobacco Center</h1>
+    <p class="sub">Employee Scheduling</p>
+    <label for="login-username">Username</label>
+    <input id="login-username" autocomplete="username" required>
+    <label for="login-password">Password</label>
+    <input id="login-password" type="password" autocomplete="current-password" required>
+    <div class="error" id="login-error"></div>
+    <button class="btn full" type="submit">Log In</button>
+  </form>
+</div>
+
+<!-- ============ FORCE PASSWORD CHANGE ============ -->
+<div class="overlay" id="force-pw-overlay" hidden>
+  <form class="card" id="force-pw-form">
+    <h2>Set a New Password</h2>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;">This is a temporary password. Choose a new one to continue (8+ characters).</p>
+    <label for="force-current">Temporary Password</label>
+    <input id="force-current" type="password" required>
+    <label for="force-new">New Password</label>
+    <input id="force-new" type="password" required minlength="8">
+    <div class="error" id="force-pw-error"></div>
+    <button class="btn full" type="submit">Set Password &amp; Continue</button>
+  </form>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" hidden>
+  <div class="header">
+    <div>
+      <h1>The Tobacco Center</h1>
+      <div class="sub">Employee Scheduling</div>
+    </div>
+    <div class="header-right">
+      <span id="user-name"></span>
+      <span class="role-badge" id="user-role"></span>
+      <button class="btn secondary small" id="change-pw-btn">Change Password</button>
+      <button class="btn secondary small" id="logout-btn">Log Out</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-view="schedule">Schedule</div>
+    <div class="tab" data-view="timeoff">Time Off</div>
+    <div class="tab" data-view="swaps">Shift Swaps</div>
+    <div class="tab admin-only" data-view="employees" hidden>Employees</div>
+    <div class="tab admin-only" data-view="log" hidden>Activity Log</div>
+  </div>
+
+  <div class="container">
+
+    <!-- ---- SCHEDULE ---- -->
+    <div class="view active" id="view-schedule">
+      <div class="card admin-only" hidden id="add-shift-card">
+        <h2 id="shift-form-title">Add a Shift</h2>
+        <form id="shift-form">
+          <input type="hidden" id="shift-editing-id">
+          <div class="form-grid">
+            <div><label for="shift-employee">Employee</label><select id="shift-employee" required></select></div>
+            <div><label for="shift-date">Date</label><input type="date" id="shift-date" required></div>
+            <div><label for="shift-start">Start</label><input type="time" id="shift-start" required></div>
+            <div><label for="shift-end">End</label><input type="time" id="shift-end" required></div>
+            <div><label for="shift-notes">Notes</label><input id="shift-notes" placeholder="optional"></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn" type="submit" id="shift-submit-btn">Add Shift</button>
+            <button class="btn secondary" type="button" id="shift-cancel-btn" hidden>Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="week-nav">
+          <button class="btn secondary small" id="week-prev">&larr; Prev Week</button>
+          <span class="label" id="week-label"></span>
+          <button class="btn secondary small" id="week-next">Next Week &rarr;</button>
+          <button class="btn secondary small" id="week-today">This Week</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Time</th><th>Employee</th><th>Notes</th><th></th></tr></thead>
+            <tbody id="shifts-table"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="shifts-empty" hidden>No shifts scheduled this week.</div>
+      </div>
+    </div>
+
+    <!-- ---- TIME OFF ---- -->
+    <div class="view" id="view-timeoff">
+      <div class="row">
+        <div class="card">
+          <h2>My Vacation Balance</h2>
+          <div class="stat-row">
+            <div class="stat"><div class="val" id="vac-allowance">–</div><div class="lbl">Allowance</div></div>
+            <div class="stat"><div class="val" id="vac-used">–</div><div class="lbl">Used</div></div>
+            <div class="stat"><div class="val" id="vac-pending">–</div><div class="lbl">Pending</div></div>
+            <div class="stat"><div class="val" id="vac-remaining">–</div><div class="lbl">Remaining</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Request Time Off</h2>
+          <form id="timeoff-form">
+            <div class="form-grid">
+              <div><label for="to-start">Start Date</label><input type="date" id="to-start" required></div>
+              <div><label for="to-end">End Date</label><input type="date" id="to-end" required></div>
+              <div style="grid-column: span 2;"><label for="to-reason">Reason</label><input id="to-reason" placeholder="optional"></div>
+            </div>
+            <div class="error" id="timeoff-error"></div>
+            <button class="btn" type="submit">Submit Request</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>My Requests</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th><th></th></tr></thead>
+            <tbody id="my-timeoff-table"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="my-timeoff-empty" hidden>No time off requests yet.</div>
+      </div>
+
+      <div class="card admin-only" hidden id="all-timeoff-card">
+        <h2>All Requests (Admin)</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Employee</th><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th><th></th></tr></thead>
+            <tbody id="all-timeoff-table"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="all-timeoff-empty" hidden>No requests yet.</div>
+      </div>
+    </div>
+
+    <!-- ---- SWAPS ---- -->
+    <div class="view" id="view-swaps">
+      <div class="card">
+        <h2>Offer One of My Shifts</h2>
+        <form id="swap-form">
+          <div class="form-grid">
+            <div><label for="swap-shift">My Shift</label><select id="swap-shift" required></select></div>
+            <div><label for="swap-coworker">Give it to</label><select id="swap-coworker" required></select></div>
+          </div>
+          <div class="error" id="swap-error"></div>
+          <button class="btn" type="submit">Request Swap</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Waiting on Me</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Shift</th><th>From</th><th></th></tr></thead>
+            <tbody id="incoming-swaps-table"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="incoming-swaps-empty" hidden>Nothing needs your response.</div>
+      </div>
+
+      <div class="card">
+        <h2>My Swap Requests</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Shift</th><th>From</th><th>To</th><th>Status</th><th></th></tr></thead>
+            <tbody id="my-swaps-table"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="my-swaps-empty" hidden>No swap requests yet.</div>
+      </div>
+
+      <div class="card admin-only" hidden id="all-swaps-card">
+        <h2>All Swaps (Admin)</h2>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">A swap needs the coworker to accept before you can approve it.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Shift</th><th>From</th><th>To</th><th>Status</th><th></th></tr></thead>
+            <tbody id="all-swaps-table"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="all-swaps-empty" hidden>No swap requests yet.</div>
+      </div>
+    </div>
+
+    <!-- ---- EMPLOYEES (admin) ---- -->
+    <div class="view" id="view-employees">
+      <div id="employee-credential-banner"></div>
+      <div class="card">
+        <h2>Add Employee</h2>
+        <form id="employee-form">
+          <div class="form-grid">
+            <div><label for="emp-name">Full Name</label><input id="emp-name" required></div>
+            <div><label for="emp-username">Username</label><input id="emp-username" required></div>
+            <div><label for="emp-email">Email</label><input id="emp-email" type="email" placeholder="optional"></div>
+            <div><label for="emp-role">Role</label><select id="emp-role"><option value="employee">Employee</option><option value="admin">Admin</option></select></div>
+            <div><label for="emp-allowance">Vacation Days / Year</label><input id="emp-allowance" type="number" min="0" step="0.5" value="0"></div>
+          </div>
+          <div class="error" id="employee-error"></div>
+          <button class="btn" type="submit">Add Employee</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>All Employees</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Vacation Days/Yr</th><th>Active</th><th></th></tr></thead>
+            <tbody id="employees-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- ACTIVITY LOG (admin) ---- -->
+    <div class="view" id="view-log">
+      <div class="card">
+        <h2>Activity Log</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>When</th><th>Who</th><th>Action</th><th>Details</th></tr></thead>
+            <tbody id="log-table"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="log-empty" hidden>No activity yet.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_BASE = "https://ttc-schedule-api.williamsportcigars.workers.dev";
+
+let state = {
+  token: localStorage.getItem('ttc_sched_token') || null,
+  employee: JSON.parse(localStorage.getItem('ttc_sched_employee') || 'null'),
+  employees: [],
+  coworkers: [],
+  shifts: [],
+  weekStart: startOfWeek(new Date()),
+};
+
+// ---------- date helpers ----------
+function startOfWeek(d) {
+  const date = new Date(d);
+  const day = date.getDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  date.setDate(date.getDate() + diff);
+  date.setHours(0,0,0,0);
+  return date;
+}
+function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function fmtISO(d) { return d.toISOString().slice(0,10); }
+function fmtNice(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+}
+function fmtTime(t) {
+  const [h, m] = t.split(':').map(Number);
+  const ap = h >= 12 ? 'PM' : 'AM';
+  const h12 = ((h + 11) % 12) + 1;
+  return `${h12}:${String(m).padStart(2,'0')} ${ap}`;
+}
+function fmtWhen(iso) {
+  const d = new Date(iso.replace(' ', 'T') + 'Z');
+  return d.toLocaleString();
+}
+
+// ---------- API helper ----------
+async function api(path, opts = {}) {
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+  if (state.token) headers['Authorization'] = 'Bearer ' + state.token;
+  let res;
+  try {
+    res = await fetch(API_BASE + path, Object.assign({}, opts, { headers }));
+  } catch (e) {
+    throw new Error('Could not reach the scheduling server. Check your connection.');
+  }
+  let data = null;
+  try { data = await res.json(); } catch {}
+  if (res.status === 401) {
+    clearSession();
+    showLogin();
+    throw new Error((data && data.error) || 'Your session expired — please log in again.');
+  }
+  if (!res.ok) throw new Error((data && data.error) || ('Request failed (' + res.status + ')'));
+  return data;
+}
+
+function toast(message, isErr) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (isErr ? ' err' : '');
+  el.textContent = message;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+// ---------- session ----------
+function clearSession() {
+  state.token = null;
+  state.employee = null;
+  localStorage.removeItem('ttc_sched_token');
+  localStorage.removeItem('ttc_sched_employee');
+}
+function saveSession() {
+  localStorage.setItem('ttc_sched_token', state.token);
+  localStorage.setItem('ttc_sched_employee', JSON.stringify(state.employee));
+}
+function showLogin() {
+  document.getElementById('app').hidden = true;
+  document.getElementById('login-screen').hidden = false;
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = '';
+  try {
+    const data = await api('/api/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+    state.token = data.token;
+    state.employee = data.employee;
+    saveSession();
+    enterApp();
+  } catch (err) {
+    errEl.textContent = err.message;
+  }
+});
+
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  try { await api('/api/logout', { method: 'POST' }); } catch {}
+  clearSession();
+  showLogin();
+});
+
+document.getElementById('change-pw-btn').addEventListener('click', () => {
+  document.getElementById('force-current').placeholder = 'Current password';
+  document.getElementById('force-pw-overlay').hidden = false;
+});
+
+document.getElementById('force-pw-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('force-pw-error');
+  errEl.textContent = '';
+  const current_password = document.getElementById('force-current').value;
+  const new_password = document.getElementById('force-new').value;
+  try {
+    await api('/api/change-password', { method: 'POST', body: JSON.stringify({ current_password, new_password }) });
+    document.getElementById('force-pw-overlay').hidden = true;
+    document.getElementById('force-pw-form').reset();
+    state.employee.must_change_password = false;
+    saveSession();
+    toast('Password updated.');
+  } catch (err) {
+    errEl.textContent = err.message;
+  }
+});
+
+// ---------- tabs ----------
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('view-' + tab.dataset.view).classList.add('active');
+  });
+});
+
+// ---------- app bootstrap ----------
+async function enterApp() {
+  document.getElementById('login-screen').hidden = true;
+  document.getElementById('app').hidden = false;
+  document.getElementById('user-name').textContent = state.employee.name;
+  document.getElementById('user-role').textContent = state.employee.role;
+  const isAdmin = state.employee.role === 'admin';
+  document.querySelectorAll('.admin-only').forEach(el => { el.hidden = !isAdmin; });
+
+  if (state.employee.must_change_password) {
+    document.getElementById('force-pw-overlay').hidden = false;
+  }
+
+  try {
+    await loadCoworkers();
+    if (isAdmin) await loadEmployees();
+    await loadWeek();
+    await loadTimeOff();
+    await loadSwaps();
+    if (isAdmin) await loadLog();
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+// ---------- schedule ----------
+function renderWeekLabel() {
+  const end = addDays(state.weekStart, 6);
+  document.getElementById('week-label').textContent =
+    state.weekStart.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' – ' +
+    end.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+async function loadWeek() {
+  renderWeekLabel();
+  const start = fmtISO(state.weekStart);
+  const end = fmtISO(addDays(state.weekStart, 6));
+  const data = await api('/api/shifts?start=' + start + '&end=' + end);
+  state.shifts = data.shifts;
+  renderShifts();
+  renderSwapShiftOptions();
+}
+
+function renderShifts() {
+  const tbody = document.getElementById('shifts-table');
+  const isAdmin = state.employee.role === 'admin';
+  tbody.innerHTML = '';
+  document.getElementById('shifts-empty').hidden = state.shifts.length > 0;
+  state.shifts.forEach(s => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${fmtNice(s.shift_date)}</td>
+      <td>${fmtTime(s.start_time)} – ${fmtTime(s.end_time)}</td>
+      <td>${escapeHtml(s.employee_name)}${s.employee_id === state.employee.id ? ' <span style="color:var(--mint)">(you)</span>' : ''}</td>
+      <td>${escapeHtml(s.notes || '')}</td>
+      <td></td>`;
+    const actionTd = tr.lastElementChild;
+    if (isAdmin) {
+      const editBtn = mkBtn('Edit', 'secondary small', () => startEditShift(s));
+      const delBtn = mkBtn('Delete', 'danger small', () => deleteShift(s.id));
+      actionTd.append(editBtn, ' ', delBtn);
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+function mkBtn(label, cls, onClick) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'btn ' + cls;
+  b.textContent = label;
+  b.addEventListener('click', onClick);
+  return b;
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+document.getElementById('week-prev').addEventListener('click', () => { state.weekStart = addDays(state.weekStart, -7); loadWeek(); });
+document.getElementById('week-next').addEventListener('click', () => { state.weekStart = addDays(state.weekStart, 7); loadWeek(); });
+document.getElementById('week-today').addEventListener('click', () => { state.weekStart = startOfWeek(new Date()); loadWeek(); });
+
+function populateShiftEmployeeSelect() {
+  const sel = document.getElementById('shift-employee');
+  sel.innerHTML = state.employees.map(e => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('');
+}
+
+function startEditShift(s) {
+  document.getElementById('shift-form-title').textContent = 'Edit Shift';
+  document.getElementById('shift-editing-id').value = s.id;
+  document.getElementById('shift-employee').value = s.employee_id;
+  document.getElementById('shift-date').value = s.shift_date;
+  document.getElementById('shift-start').value = s.start_time;
+  document.getElementById('shift-end').value = s.end_time;
+  document.getElementById('shift-notes').value = s.notes || '';
+  document.getElementById('shift-submit-btn').textContent = 'Save Changes';
+  document.getElementById('shift-cancel-btn').hidden = false;
+  document.getElementById('add-shift-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetShiftForm() {
+  document.getElementById('shift-form').reset();
+  document.getElementById('shift-editing-id').value = '';
+  document.getElementById('shift-form-title').textContent = 'Add a Shift';
+  document.getElementById('shift-submit-btn').textContent = 'Add Shift';
+  document.getElementById('shift-cancel-btn').hidden = true;
+}
+document.getElementById('shift-cancel-btn').addEventListener('click', resetShiftForm);
+
+document.getElementById('shift-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('shift-editing-id').value;
+  const payload = {
+    employee_id: Number(document.getElementById('shift-employee').value),
+    shift_date: document.getElementById('shift-date').value,
+    start_time: document.getElementById('shift-start').value,
+    end_time: document.getElementById('shift-end').value,
+    notes: document.getElementById('shift-notes').value,
+  };
+  try {
+    if (id) {
+      await api('/api/shifts/' + id, { method: 'PATCH', body: JSON.stringify(payload) });
+      toast('Shift updated.');
+    } else {
+      await api('/api/shifts', { method: 'POST', body: JSON.stringify(payload) });
+      toast('Shift added.');
+    }
+    resetShiftForm();
+    await loadWeek();
+  } catch (err) {
+    toast(err.message, true);
+  }
+});
+
+async function deleteShift(id) {
+  if (!confirm('Delete this shift?')) return;
+  try {
+    await api('/api/shifts/' + id, { method: 'DELETE' });
+    toast('Shift deleted.');
+    await loadWeek();
+  } catch (err) {
+    toast(err.message, true);
+  }
+}
+
+// ---------- time off ----------
+async function loadTimeOff() {
+  const data = await api('/api/timeoff');
+  renderMyTimeOff(data.requests);
+  const me = await api('/api/me');
+  renderVacationBalance(me.vacation);
+
+  if (state.employee.role === 'admin') {
+    renderAllTimeOff(data.requests);
+  }
+}
+
+function renderVacationBalance(v) {
+  document.getElementById('vac-allowance').textContent = v.allowance;
+  document.getElementById('vac-used').textContent = v.used;
+  document.getElementById('vac-pending').textContent = v.pending;
+  document.getElementById('vac-remaining').textContent = v.remaining;
+}
+
+function statusBadge(status) {
+  return `<span class="badge ${status}">${status}</span>`;
+}
+
+function renderMyTimeOff(requests) {
+  const tbody = document.getElementById('my-timeoff-table');
+  const mine = requests.filter(r => r.employee_id === state.employee.id);
+  tbody.innerHTML = '';
+  document.getElementById('my-timeoff-empty').hidden = mine.length > 0;
+  mine.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${fmtNice(r.start_date)} – ${fmtNice(r.end_date)}</td>
+      <td>${r.days_requested}</td>
+      <td>${escapeHtml(r.reason || '')}</td>
+      <td>${statusBadge(r.status)}</td>
+      <td></td>`;
+    if (r.status === 'pending') {
+      tr.lastElementChild.appendChild(mkBtn('Cancel', 'secondary small', () => cancelTimeOff(r.id)));
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+function renderAllTimeOff(requests) {
+  const card = document.getElementById('all-timeoff-card');
+  if (card.hidden) return;
+  const tbody = document.getElementById('all-timeoff-table');
+  tbody.innerHTML = '';
+  document.getElementById('all-timeoff-empty').hidden = requests.length > 0;
+  requests.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(r.employee_name)}</td>
+      <td>${fmtNice(r.start_date)} – ${fmtNice(r.end_date)}</td>
+      <td>${r.days_requested}</td>
+      <td>${escapeHtml(r.reason || '')}</td>
+      <td>${statusBadge(r.status)}</td>
+      <td></td>`;
+    if (r.status === 'pending') {
+      const approveBtn = mkBtn('Approve', 'small', () => decideTimeOff(r.id, 'approved'));
+      const denyBtn = mkBtn('Deny', 'danger small', () => decideTimeOff(r.id, 'denied'));
+      tr.lastElementChild.append(approveBtn, ' ', denyBtn);
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById('timeoff-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('timeoff-error');
+  errEl.textContent = '';
+  const payload = {
+    start_date: document.getElementById('to-start').value,
+    end_date: document.getElementById('to-end').value,
+    reason: document.getElementById('to-reason').value,
+  };
+  try {
+    await api('/api/timeoff', { method: 'POST', body: JSON.stringify(payload) });
+    document.getElementById('timeoff-form').reset();
+    toast('Time off requested.');
+    await loadTimeOff();
+  } catch (err) {
+    errEl.textContent = err.message;
+  }
+});
+
+async function cancelTimeOff(id) {
+  try {
+    await api('/api/timeoff/' + id + '/cancel', { method: 'POST' });
+    toast('Request cancelled.');
+    await loadTimeOff();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function decideTimeOff(id, decision) {
+  try {
+    await api('/api/timeoff/' + id + '/decide', { method: 'POST', body: JSON.stringify({ decision }) });
+    toast('Request ' + decision + '.');
+    await loadTimeOff();
+  } catch (err) { toast(err.message, true); }
+}
+
+// ---------- swaps ----------
+async function loadCoworkers() {
+  const data = await api('/api/coworkers');
+  state.coworkers = data.coworkers;
+  document.getElementById('swap-coworker').innerHTML =
+    state.coworkers.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+}
+
+function renderSwapShiftOptions() {
+  const sel = document.getElementById('swap-shift');
+  const mine = state.shifts.filter(s => s.employee_id === state.employee.id);
+  sel.innerHTML = mine.map(s =>
+    `<option value="${s.id}">${fmtNice(s.shift_date)} · ${fmtTime(s.start_time)}–${fmtTime(s.end_time)}</option>`
+  ).join('') || '<option value="">No shifts of yours in this week</option>';
+}
+
+async function loadSwaps() {
+  const mineRes = await api('/api/swaps');
+  const swaps = mineRes.swaps;
+  renderMySwaps(swaps);
+  renderIncomingSwaps(swaps);
+  if (state.employee.role === 'admin') {
+    renderAllSwaps(swaps);
+  }
+}
+
+function swapLabel(s) {
+  return `${fmtNice(s.shift_date)} · ${fmtTime(s.start_time)}–${fmtTime(s.end_time)}`;
+}
+
+function renderIncomingSwaps(swaps) {
+  const tbody = document.getElementById('incoming-swaps-table');
+  const incoming = swaps.filter(s => s.to_employee_id === state.employee.id && s.status === 'pending');
+  tbody.innerHTML = '';
+  document.getElementById('incoming-swaps-empty').hidden = incoming.length > 0;
+  incoming.forEach(s => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${swapLabel(s)}</td><td>${escapeHtml(s.from_name)}</td><td></td>`;
+    const acceptBtn = mkBtn('Accept', 'small', () => respondSwap(s.id, 'accepted'));
+    const declineBtn = mkBtn('Decline', 'danger small', () => respondSwap(s.id, 'declined'));
+    tr.lastElementChild.append(acceptBtn, ' ', declineBtn);
+    tbody.appendChild(tr);
+  });
+}
+
+function renderMySwaps(swaps) {
+  const tbody = document.getElementById('my-swaps-table');
+  const mine = swaps.filter(s => s.from_employee_id === state.employee.id || s.to_employee_id === state.employee.id);
+  tbody.innerHTML = '';
+  document.getElementById('my-swaps-empty').hidden = mine.length > 0;
+  mine.forEach(s => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${swapLabel(s)}</td>
+      <td>${escapeHtml(s.from_name)}</td>
+      <td>${escapeHtml(s.to_name)}</td>
+      <td>${statusBadge(s.status)}</td>
+      <td></td>`;
+    if (s.status === 'pending' && s.from_employee_id === state.employee.id) {
+      tr.lastElementChild.appendChild(mkBtn('Cancel', 'secondary small', () => cancelSwap(s.id)));
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+function renderAllSwaps(swaps) {
+  const card = document.getElementById('all-swaps-card');
+  if (card.hidden) return;
+  const tbody = document.getElementById('all-swaps-table');
+  tbody.innerHTML = '';
+  document.getElementById('all-swaps-empty').hidden = swaps.length > 0;
+  swaps.forEach(s => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${swapLabel(s)}</td>
+      <td>${escapeHtml(s.from_name)}</td>
+      <td>${escapeHtml(s.to_name)}</td>
+      <td>${statusBadge(s.status)}</td>
+      <td></td>`;
+    if (s.status === 'accepted') {
+      const approveBtn = mkBtn('Approve', 'small', () => decideSwap(s.id, 'approved'));
+      const denyBtn = mkBtn('Deny', 'danger small', () => decideSwap(s.id, 'denied'));
+      tr.lastElementChild.append(approveBtn, ' ', denyBtn);
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById('swap-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('swap-error');
+  errEl.textContent = '';
+  const shift_id = Number(document.getElementById('swap-shift').value);
+  const to_employee_id = Number(document.getElementById('swap-coworker').value);
+  if (!shift_id) { errEl.textContent = 'Pick one of your shifts first.'; return; }
+  try {
+    await api('/api/swaps', { method: 'POST', body: JSON.stringify({ shift_id, to_employee_id }) });
+    toast('Swap requested.');
+    await loadSwaps();
+  } catch (err) {
+    errEl.textContent = err.message;
+  }
+});
+
+async function respondSwap(id, decision) {
+  try {
+    await api('/api/swaps/' + id + '/respond', { method: 'POST', body: JSON.stringify({ decision }) });
+    toast('Swap ' + decision + '.');
+    await loadSwaps();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function decideSwap(id, decision) {
+  try {
+    await api('/api/swaps/' + id + '/decide', { method: 'POST', body: JSON.stringify({ decision }) });
+    toast('Swap ' + decision + '.');
+    await loadSwaps();
+    await loadWeek();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function cancelSwap(id) {
+  try {
+    await api('/api/swaps/' + id + '/cancel', { method: 'POST' });
+    toast('Swap cancelled.');
+    await loadSwaps();
+  } catch (err) { toast(err.message, true); }
+}
+
+// ---------- employees (admin) ----------
+async function loadEmployees() {
+  const data = await api('/api/employees');
+  state.employees = data.employees;
+  populateShiftEmployeeSelect();
+  renderEmployees();
+}
+
+function renderEmployees() {
+  const tbody = document.getElementById('employees-table');
+  tbody.innerHTML = '';
+  state.employees.forEach(e => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(e.name)}</td>
+      <td>${escapeHtml(e.username)}</td>
+      <td>${e.role}</td>
+      <td>${e.vacation_days_allowance}</td>
+      <td>${e.active ? 'Yes' : 'No'}</td>
+      <td></td>`;
+    const actionTd = tr.lastElementChild;
+    actionTd.append(
+      mkBtn('Edit', 'secondary small', () => editEmployeeInline(e, tr)),
+      ' ',
+      mkBtn('Reset Password', 'secondary small', () => resetEmployeePassword(e.id, e.name, e.username)),
+      ' ',
+      mkBtn(e.active ? 'Deactivate' : 'Activate', 'secondary small', () => toggleEmployeeActive(e))
+    );
+    tbody.appendChild(tr);
+  });
+}
+
+function editEmployeeInline(e, tr) {
+  tr.innerHTML = '';
+  const nameTd = document.createElement('td');
+  const nameInput = document.createElement('input'); nameInput.value = e.name; nameInput.style.marginBottom = '0';
+  nameTd.appendChild(nameInput);
+
+  const userTd = document.createElement('td'); userTd.textContent = e.username;
+
+  const roleTd = document.createElement('td');
+  const roleSel = document.createElement('select'); roleSel.style.marginBottom = '0';
+  roleSel.innerHTML = `<option value="employee">employee</option><option value="admin">admin</option>`;
+  roleSel.value = e.role;
+  roleTd.appendChild(roleSel);
+
+  const allowTd = document.createElement('td');
+  const allowInput = document.createElement('input'); allowInput.type = 'number'; allowInput.step = '0.5'; allowInput.min = '0';
+  allowInput.value = e.vacation_days_allowance; allowInput.style.marginBottom = '0';
+  allowTd.appendChild(allowInput);
+
+  const activeTd = document.createElement('td'); activeTd.textContent = e.active ? 'Yes' : 'No';
+
+  const actionTd = document.createElement('td');
+  const saveBtn = mkBtn('Save', 'small', async () => {
+    try {
+      await api('/api/employees/' + e.id, {
+        method: 'PATCH',
+        body: JSON.stringify({ name: nameInput.value, role: roleSel.value, vacation_days_allowance: Number(allowInput.value) }),
+      });
+      toast('Employee updated.');
+      await loadEmployees();
+    } catch (err) { toast(err.message, true); }
+  });
+  const cancelBtn = mkBtn('Cancel', 'secondary small', renderEmployees);
+  actionTd.append(saveBtn, ' ', cancelBtn);
+
+  tr.append(nameTd, userTd, roleTd, allowTd, activeTd, actionTd);
+}
+
+async function toggleEmployeeActive(e) {
+  try {
+    await api('/api/employees/' + e.id, { method: 'PATCH', body: JSON.stringify({ active: !e.active }) });
+    toast(e.active ? 'Employee deactivated.' : 'Employee activated.');
+    await loadEmployees();
+  } catch (err) { toast(err.message, true); }
+}
+
+function showCredentialBanner(name, username, password) {
+  const el = document.getElementById('employee-credential-banner');
+  el.innerHTML = `<div class="banner"><span class="close" onclick="this.parentElement.remove()">&times;</span>
+    Give <strong>${escapeHtml(name)}</strong> (username <code>${escapeHtml(username)}</code>) this temporary password —
+    it's shown once and they'll be asked to set their own on first login: <code>${escapeHtml(password)}</code></div>`;
+}
+
+document.getElementById('employee-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('employee-error');
+  errEl.textContent = '';
+  const payload = {
+    name: document.getElementById('emp-name').value,
+    username: document.getElementById('emp-username').value,
+    email: document.getElementById('emp-email').value,
+    role: document.getElementById('emp-role').value,
+    vacation_days_allowance: Number(document.getElementById('emp-allowance').value),
+  };
+  try {
+    const data = await api('/api/employees', { method: 'POST', body: JSON.stringify(payload) });
+    document.getElementById('employee-form').reset();
+    showCredentialBanner(data.employee.name, data.employee.username, data.temporary_password);
+    await loadEmployees();
+    await loadCoworkers();
+  } catch (err) {
+    errEl.textContent = err.message;
+  }
+});
+
+async function resetEmployeePassword(id, name, username) {
+  if (!confirm('Reset the password for ' + name + '? Their current password will stop working immediately.')) return;
+  try {
+    const data = await api('/api/employees/' + id + '/reset-password', { method: 'POST' });
+    showCredentialBanner(name, username, data.temporary_password);
+  } catch (err) { toast(err.message, true); }
+}
+
+// ---------- activity log (admin) ----------
+async function loadLog() {
+  const data = await api('/api/log?limit=200');
+  renderLog(data.log);
+}
+
+function renderLog(entries) {
+  const tbody = document.getElementById('log-table');
+  tbody.innerHTML = '';
+  document.getElementById('log-empty').hidden = entries.length > 0;
+  entries.forEach(e => {
+    let details = '';
+    if (e.details) {
+      try { details = Object.entries(JSON.parse(e.details)).map(([k,v]) => `${k}: ${v}`).join(', '); }
+      catch { details = e.details; }
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${fmtWhen(e.created_at)}</td>
+      <td>${escapeHtml(e.actor_name || 'system')}</td>
+      <td>${escapeHtml(e.action)}</td>
+      <td style="color:var(--muted);font-size:0.8rem;">${escapeHtml(details)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ---------- boot ----------
+if (state.token && state.employee) {
+  enterApp();
+} else {
+  showLogin();
+}
+</script>
+</body>
+</html>

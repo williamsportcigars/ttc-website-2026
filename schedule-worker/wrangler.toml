@@ -1,0 +1,8 @@
+name = "ttc-schedule-api"
+main = "src/worker.js"
+compatibility_date = "2026-09-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ttc_schedule"
+database_id = "feffa7bf-ecd2-4b86-a10a-5760d8014954"
