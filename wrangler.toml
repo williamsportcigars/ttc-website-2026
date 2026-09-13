@@ -1,0 +1,14 @@
+name = "ttc-website-2026"
+compatibility_date = "2026-09-01"
+
+# Fully static — serves the whole repo root (index.html, podcast.html, the
+# humidor pages, etc.) as-is. No wrangler.toml existed for this Worker
+# before, which is presumably why it was being deployed with flags
+# (--name / --assets) instead of a config file. This file lets a plain
+# `wrangler deploy` from the repo root do the same thing.
+#
+# schedule-worker/ and podcast-worker/ are excluded below (see
+# .assetsignore) — each of those is its own separate Worker deployment
+# with its own wrangler.toml, not part of this site's asset bucket.
+[assets]
+directory = "."

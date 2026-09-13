@@ -1,0 +1,9 @@
+# Each of these has its own separate Worker + wrangler.toml (see their
+# READMEs) — they are not part of the main site's static assets, and
+# schedule-worker/ in particular contains source code and a D1 schema
+# that shouldn't be publicly fetchable from thetobaccocenter.com.
+schedule-worker/
+podcast-worker/
+
+.git
+.DS_Store
