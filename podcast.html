@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Podcast | The Tobacco Center</title>
-<meta name="description" content="The Tobacco Center Podcast — long-form cigar talk, pairings, and industry conversation hosted by Gray Hogan. Coming soon on Spotify, Apple Podcasts, and YouTube.">
+<title>Th3rd Rule Podcast | The Tobacco Center</title>
+<meta name="description" content="The Th3rd Rule Podcast — long-form cigar talk, pairings, and industry conversation hosted by Gray Hogan. Episode 1 with Dan Winkleman, coming soon on Spotify, Apple Podcasts, and YouTube.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
@@ -38,8 +38,10 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
 .pod-status{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-sans);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light);border:1px solid rgba(201,168,76,0.35);padding:6px 16px;margin-bottom:1.5rem}
 .pod-status::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.pod-hero h1{font-family:var(--font-display);font-size:clamp(2.6rem,6vw,5rem);font-weight:900;line-height:1.05;color:var(--warm-white);max-width:800px;margin:0 auto 1.25rem}
+.pod-kicker{display:block;font-family:var(--font-sans);font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(224,254,248,0.45);margin-bottom:1rem}
+.pod-hero h1{font-family:var(--font-display);font-size:clamp(2.6rem,6vw,5rem);font-weight:900;line-height:1.05;color:var(--warm-white);max-width:800px;margin:0 auto 0.5rem}
 .pod-hero h1 em{color:var(--mint);font-style:italic}
+.pod-hero .pod-tag{display:block;font-family:var(--font-sans);font-size:1.1rem;letter-spacing:0.45em;text-transform:uppercase;color:var(--gold-light);margin:0.5rem 0 1.75rem}
 .hero-sub{font-family:var(--font-body);font-size:1.05rem;color:rgba(224,254,248,0.62);max-width:560px;margin:0 auto 2.25rem;line-height:1.85}
 .pod-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem}
 .pod-platforms{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap}
@@ -115,9 +117,11 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
 </nav>
 
 <section class="pod-hero">
-  <div class="pod-status">In Production</div>
-  <h1>The Tobacco Center <em>Podcast.</em></h1>
-  <p class="hero-sub">The long-form conversation that doesn't fit in a 60-second Short — cigar reviews, pairings, industry guests, and lounge stories from a nearly 50-year-old Williamsport institution. Hosted by Gray Hogan.</p>
+  <div class="pod-status">Episode 1 Filmed &middot; Coming Soon</div>
+  <span class="pod-kicker">The Tobacco Center Presents</span>
+  <h1>Th<em>3</em>rd Rule</h1>
+  <span class="pod-tag">Podcast</span>
+  <p class="hero-sub">The long-form conversation that doesn't fit in a 60-second Short — cigar reviews, pairings, industry guests, and lounge stories from a nearly 50-year-old Williamsport institution. Hosted by Gray Hogan. Episode 1 is in the can, with lounge regular Dan Winkleman.</p>
   <div class="pod-ctas">
     <a href="http://eepurl.com/jEkdTk" target="_blank" rel="noopener" class="btn-primary">Get Notified at Launch</a>
     <a href="https://www.youtube.com/@TheTobaccocenter/" target="_blank" rel="noopener" class="btn-ghost">Watch on YouTube</a>
@@ -170,7 +174,7 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
   <div class="mk-inner">
     <div class="mk-head">
       <h2>Sponsor the <em>show.</em></h2>
-      <span class="mk-note">Media kit &middot; data as of Aug 2026</span>
+      <span class="mk-note">Media kit &middot; data as of Sep 2026</span>
     </div>
 
     <div class="mk-stats">
@@ -184,7 +188,7 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
       <div class="mk-col">
         <h4>Why This Show</h4>
         <p>The Tobacco Center has been part of Williamsport since 1977 — new ownership in 2025 brought new energy without losing the address or the regulars. The YouTube channel (@TheTobaccoCenter) already shows the format travels: individual Shorts have pulled views far beyond the subscriber base, into an audience that's mostly 25&ndash;44 &mdash; prime cigar-buying demographic.</p>
-        <p>The podcast extends that same audience into long-form — the format sponsors and listeners actually stick around for.</p>
+        <p>The Th3rd Rule Podcast extends that same audience into long-form — the format sponsors and listeners actually stick around for.</p>
       </div>
       <div class="mk-col">
         <h4>Sponsorship Formats</h4>
@@ -220,7 +224,7 @@ var episodes = [
 function renderEpisodes() {
   var grid = document.getElementById('episode-grid');
   if (!episodes.length) {
-    grid.innerHTML = '<div class="ep-empty">First episode is being recorded. <a href="http://eepurl.com/jEkdTk" target="_blank" rel="noopener">Join the Insider List</a> to hear it before anyone else.</div>';
+    grid.innerHTML = '<div class="ep-empty">Episode 1 is filmed and in the edit bay. <a href="http://eepurl.com/jEkdTk" target="_blank" rel="noopener">Join the Insider List</a> to hear it first.</div>';
     return;
   }
   grid.innerHTML = episodes.map(function (e) {
