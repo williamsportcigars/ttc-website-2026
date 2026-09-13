@@ -1,0 +1,9 @@
+name = "ttc-podcast"
+compatibility_date = "2026-09-01"
+
+# Fully static — no API, no D1, no worker script. Serves public/index.html
+# (a copy of ../podcast.html) at "/" for any request. This is what lets a
+# custom domain (e.g. podcast.thetobaccocenter.com) attached to this Worker
+# serve the page directly, with no separate hosting step needed.
+[assets]
+directory = "./public"
