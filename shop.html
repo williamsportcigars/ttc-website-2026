@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Online | The Tobacco Center | Williamsport PA</title>
+<meta name="description" content="Order premium cigars online from The Tobacco Center — Williamsport's only boutique cigar lounge. Ships to PA and NH. Age verification required.">
+<link rel="canonical" href="https://www.thetobaccocenter.com/shop.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#001b16;--forest:#033d33;--jungle:#022e27;
+  --teal:#0d6354;--mint:#259f8a;--mint-pale:#e0fef8;
+  --gold:#c9a84c;--gold-light:#e8c76a;
+  --warm-white:#f7fffe;
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-sans:'Josefin Sans',sans-serif;
+}
+body{font-family:var(--font-sans);background:var(--black);color:white;min-height:100vh}
+
+/* NAV */
+.site-nav{background:var(--black);border-bottom:1px solid rgba(77,191,138,0.2);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:var(--font-display);color:var(--mint);font-size:14px;letter-spacing:0.06em;text-decoration:none;font-weight:700;text-transform:uppercase}
+.nav-logo span{font-style:italic;font-weight:400;color:rgba(168,230,200,0.5);font-size:10px;display:block}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-back{font-size:11px;color:rgba(224,254,248,0.4);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase}
+.nav-back:hover{color:var(--mint)}
+.cart-btn{display:flex;align-items:center;gap:6px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:7px 14px;border-radius:5px;cursor:pointer;font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;transition:all 0.2s}
+.cart-btn:hover{background:rgba(201,168,76,0.2);border-color:var(--gold)}
+.cart-count{background:var(--gold);color:var(--black);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+
+/* AGE GATE */
+#age-gate{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--black);z-index:999;display:flex;align-items:center;justify-content:center;padding:2rem}
+.age-box{max-width:420px;width:100%;text-align:center}
+.age-box h2{font-family:var(--font-display);font-size:2rem;color:var(--warm-white);margin-bottom:0.5rem}
+.age-box p{color:rgba(255,255,255,0.4);font-size:13px;margin-bottom:2rem;line-height:1.7}
+.age-actions{display:flex;gap:12px;justify-content:center}
+.btn-age-yes{background:var(--gold);color:var(--black);padding:12px 28px;border:none;border-radius:5px;font-family:var(--font-sans);font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer}
+.btn-age-no{background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);padding:12px 28px;border-radius:5px;font-family:var(--font-sans);font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+
+/* HERO */
+.shop-hero{padding:4rem 2rem 2.5rem;border-bottom:1px solid rgba(37,159,138,0.1)}
+.eyebrow{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--mint);display:block;margin-bottom:0.75rem}
+.shop-hero h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--warm-white);line-height:1.1;margin-bottom:0.5rem}
+.shop-hero h1 em{color:var(--mint);font-style:italic}
+.shop-hero p{color:rgba(255,255,255,0.4);font-size:13px;line-height:1.7;max-width:540px}
+.shipping-badges{display:flex;gap:8px;margin-top:1.25rem;flex-wrap:wrap}
+.badge{font-size:10px;padding:4px 10px;border-radius:3px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700}
+.badge-mint{background:rgba(37,159,138,0.12);border:1px solid rgba(37,159,138,0.25);color:var(--mint)}
+.badge-gold{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);color:var(--gold)}
+
+/* CONTROLS */
+.controls{display:flex;align-items:center;gap:12px;padding:1rem 2rem;border-bottom:1px solid rgba(37,159,138,0.08);flex-wrap:wrap}
+.controls input,.controls select{padding:8px 12px;background:var(--forest);border:1px solid rgba(37,159,138,0.2);color:white;font-family:var(--font-sans);font-size:12px;border-radius:5px;outline:none}
+.controls input{flex:1;min-width:180px}
+.controls input:focus,.controls select:focus{border-color:var(--mint)}
+.controls select option{background:var(--forest)}
+.result-count{font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:0.08em;margin-left:auto}
+
+/* GRID */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;padding:1.5rem 2rem;max-width:1400px;margin:0 auto}
+
+/* CARD */
+.cigar-card{background:var(--forest);border:1px solid rgba(37,159,138,0.12);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:all 0.2s;cursor:pointer}
+.cigar-card:hover{border-color:rgba(37,159,138,0.35);transform:translateY(-2px)}
+.img-box{width:100%;aspect-ratio:1;background:rgba(0,0,0,0.25);overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative}
+.img-box img{width:100%;height:100%;object-fit:contain;image-rendering:auto}
+.no-img{font-family:var(--font-display);font-style:italic;font-size:0.55rem;color:rgba(255,255,255,0.1);text-align:center;padding:1rem}
+.out-badge{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.5);font-size:9px;padding:3px 7px;border-radius:3px;letter-spacing:0.08em;text-transform:uppercase}
+.card-body{padding:0.875rem;display:flex;flex-direction:column;gap:6px;flex:1}
+.strength-row{display:flex;align-items:center;gap:6px}
+.strength-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-mild{background:#a8d5a2}.dot-medium{background:#f0c060}.dot-medium-full{background:#e07820}.dot-full{background:#b03020}.dot-flavored{background:#7060c0}
+.strength-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.cigar-name{font-family:var(--font-display);font-size:0.875rem;font-weight:700;color:var(--warm-white);line-height:1.3}
+.cigar-specs{font-size:10px;color:rgba(37,159,138,0.65);line-height:1.6}
+.cigar-specs span{display:block}
+.cigar-price{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--gold);margin-top:auto;padding-top:4px}
+.qty-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+.qty-btn{width:26px;height:26px;border-radius:4px;border:1px solid rgba(37,159,138,0.25);background:transparent;color:var(--mint);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);transition:all 0.15s}
+.qty-btn:hover{background:rgba(37,159,138,0.1);border-color:var(--mint)}
+.qty-display{font-size:13px;font-weight:700;color:white;min-width:20px;text-align:center}
+.add-btn{flex:1;padding:7px;background:var(--mint);color:var(--black);border:none;border-radius:5px;font-family:var(--font-sans);font-weight:700;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.add-btn:hover{background:#1d8070}
+.add-btn.added{background:var(--gold);color:var(--black)}
+.add-btn:disabled{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.2);cursor:not-allowed}
+
+/* CART DRAWER */
+.cart-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200}
+.cart-overlay.open{display:block}
+.cart-drawer{position:fixed;top:0;right:-420px;width:420px;max-width:100vw;height:100%;background:#022e27;border-left:1px solid rgba(37,159,138,0.2);z-index:201;display:flex;flex-direction:column;transition:right 0.3s ease}
+.cart-drawer.open{right:0}
+.cart-header{padding:1.25rem 1.5rem;border-bottom:1px solid rgba(37,159,138,0.15);display:flex;align-items:center;justify-content:space-between}
+.cart-header h3{font-family:var(--font-display);font-size:1.2rem;color:var(--warm-white)}
+.cart-close{background:none;border:none;color:rgba(255,255,255,0.4);font-size:20px;cursor:pointer;padding:4px}
+.cart-close:hover{color:white}
+.cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem}
+.cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(37,159,138,0.1)}
+.cart-item-img{width:56px;height:56px;background:rgba(0,0,0,0.2);border-radius:5px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.cart-item-img img{width:100%;height:100%;object-fit:contain}
+.cart-item-body{flex:1;min-width:0}
+.cart-item-name{font-size:13px;font-weight:700;color:var(--warm-white);line-height:1.3;margin-bottom:3px}
+.cart-item-price{font-size:12px;color:var(--gold)}
+.cart-item-qty{display:flex;align-items:center;gap:6px;margin-top:6px}
+.cart-item-remove{background:none;border:none;color:rgba(255,100,100,0.5);font-size:11px;cursor:pointer;padding:2px 0;font-family:var(--font-sans);letter-spacing:0.05em;text-transform:uppercase}
+.cart-item-remove:hover{color:rgba(255,100,100,0.8)}
+.cart-empty{text-align:center;padding:3rem 1rem;color:rgba(255,255,255,0.2);font-family:var(--font-display);font-style:italic}
+.cart-footer{padding:1.25rem 1.5rem;border-top:1px solid rgba(37,159,138,0.15)}
+.cart-subtotal{display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px}
+.cart-total{display:flex;justify-content:space-between;font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--warm-white);margin-bottom:1rem}
+.cart-total span{color:var(--gold)}
+.cart-note{font-size:10px;color:rgba(255,255,255,0.2);margin-bottom:1rem;line-height:1.6;text-align:center}
+.checkout-btn{width:100%;padding:14px;background:var(--gold);color:var(--black);border:none;border-radius:6px;font-family:var(--font-sans);font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:background 0.2s}
+.checkout-btn:hover{background:var(--gold-light)}
+.checkout-btn:disabled{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.2);cursor:not-allowed}
+
+/* CHECKOUT MODAL */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:300;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:#022e27;border:1px solid rgba(37,159,138,0.25);border-radius:12px;padding:2rem;width:100%;max-width:540px;margin:auto}
+.modal h3{font-family:var(--font-display);font-size:1.4rem;color:var(--warm-white);margin-bottom:1.5rem}
+.form-section{margin-bottom:1.5rem}
+.form-section-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--mint);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px}
+.form-section-label::after{content:'';flex:1;height:1px;background:rgba(37,159,138,0.12)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-row.full{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+.form-group input,.form-group select{padding:10px 12px;background:rgba(0,0,0,0.2);border:1px solid rgba(37,159,138,0.2);color:white;font-family:var(--font-sans);font-size:13px;border-radius:5px;outline:none;transition:border-color 0.15s}
+.form-group input:focus,.form-group select:focus{border-color:var(--mint)}
+.form-group input::placeholder{color:rgba(255,255,255,0.2)}
+.form-group select option{background:#022e27}
+.form-error{font-size:11px;color:rgba(255,100,100,0.8);margin-top:2px}
+.age-verify-box{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:1rem;margin-bottom:1rem}
+.age-verify-box p{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:8px}
+.age-checkbox{display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5}
+.age-checkbox input{margin-top:2px;accent-color:var(--gold)}
+.modal-order-summary{background:rgba(0,0,0,0.2);border-radius:6px;padding:1rem;margin-bottom:1.5rem}
+.summary-row{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:6px}
+.summary-row.total{font-size:14px;font-weight:700;color:var(--warm-white);border-top:1px solid rgba(37,159,138,0.12);padding-top:8px;margin-top:4px}
+.summary-row.total span{color:var(--gold)}
+.modal-actions{display:flex;gap:10px}
+.btn-submit{flex:1;padding:12px;background:var(--gold);color:var(--black);border:none;border-radius:5px;font-family:var(--font-sans);font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer}
+.btn-submit:disabled{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.2);cursor:not-allowed}
+.btn-cancel{padding:12px 16px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.35);border-radius:5px;font-family:var(--font-sans);font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer}
+
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:3rem 1rem}
+.success-screen.show{display:block}
+.success-icon{font-size:3rem;margin-bottom:1rem}
+.success-screen h3{font-family:var(--font-display);font-size:1.5rem;color:var(--mint);margin-bottom:0.5rem;font-style:italic}
+.success-screen p{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.7;margin-bottom:0.5rem}
+.order-number{font-family:var(--font-sans);font-size:11px;letter-spacing:0.15em;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);padding:8px 16px;border-radius:4px;display:inline-block;margin:1rem 0}
+
+/* COMPLIANCE BANNER */
+.compliance-bar{background:rgba(201,168,76,0.06);border-top:1px solid rgba(201,168,76,0.12);padding:0.75rem 2rem;text-align:center;font-size:11px;color:rgba(255,255,255,0.25);line-height:1.6}
+
+footer{text-align:center;padding:2rem;border-top:1px solid rgba(37,159,138,0.08);color:rgba(255,255,255,0.15);font-size:11px}
+footer a{color:var(--mint);text-decoration:none}
+
+@media(max-width:600px){
+  .shop-grid{grid-template-columns:repeat(2,1fr);padding:1rem;gap:0.75rem}
+  .cart-drawer{width:100%;right:-100%}
+  .modal{padding:1.25rem}
+  .form-row{grid-template-columns:1fr}
+  .shop-hero{padding:2rem 1rem 1.5rem}
+  .shipping-badges{gap:6px}
+  .badge{font-size:9px;padding:3px 8px}
+  .controls{padding:0.75rem 1rem;gap:8px}
+  .controls input{min-width:140px}
+  .nav-right .nav-back{display:none}
+}
+
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;cursor:pointer;padding:8px;background:none;border:none;z-index:200;flex-shrink:0}
+.nav-hamburger span{display:block;width:24px;height:2px;background:var(--mint);border-radius:2px;transition:all 0.3s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav-mobile{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--black);z-index:150;overflow-y:auto;padding:2rem 1.5rem;flex-direction:column}
+.nav-mobile.open{display:flex}
+.nav-mobile a{font-size:15px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.65);text-decoration:none;padding:1.1rem 0;border-bottom:1px solid rgba(37,159,138,0.12);display:flex;align-items:center;justify-content:space-between}
+.nav-mobile a::after{content:'→';color:rgba(37,159,138,0.35)}
+.nav-mobile-title{font-family:var(--font-display);font-size:1.1rem;color:var(--mint);font-weight:700;text-transform:uppercase;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(37,159,138,0.2);letter-spacing:0.06em}
+.nav-hl-teal{color:#259f8a!important}
+.nav-hl-gold{color:#c9a84c!important}
+@media(max-width:800px){.nav-hamburger{display:flex}}
+</style>
+</head>
+<body>
+
+<!-- AGE GATE -->
+<div id="age-gate">
+  <div class="age-box">
+    <div style="font-family:var(--font-display);font-size:clamp(1.8rem,5vw,2.5rem);font-weight:900;color:var(--warm-white);margin-bottom:0.5rem">The Tobacco Center</div>
+    <div style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--mint);margin-bottom:1.5rem">Online Shop</div>
+    <h2>Are you 21 or older?</h2>
+    <p>You must be 21 years of age or older to purchase tobacco products. Adult signature required at delivery.</p>
+    <div class="age-actions">
+      <button class="btn-age-yes" onclick="confirmAge()">Yes, I'm 21+</button>
+      <a href="https://google.com" class="btn-age-no">No, Exit</a>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo">The Tobacco Center <span>tabacarius qui curat</span></a>
+  <div class="nav-right">
+    <a href="virtual_humidor.html" class="nav-back">← Humidor</a>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 Cart <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="shop-hero">
+  <span class="eyebrow">Online Shop</span>
+  <h1>Ship It to <em>Your Door.</em></h1>
+  <p>Premium boutique cigars shipped directly to Pennsylvania and New Hampshire. Adult signature required at delivery. All orders ship via UPS or FedEx.</p>
+  <div class="shipping-badges">
+    <span class="badge badge-mint">Ships to PA & NH</span>
+    <span class="badge badge-mint">No Cigar Tax</span>
+    <span class="badge badge-mint">Age Verified Delivery</span>
+    <span class="badge badge-gold">The Third Rule Available</span>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="Search by name, wrapper, strength..." oninput="filterItems()">
+  <select id="strengthFilter" onchange="filterItems()">
+    <option value="">All Strengths</option>
+    <option>Mild</option>
+    <option>Medium</option>
+    <option>Medium-Full</option>
+    <option>Full</option>
+    <option>Flavored</option>
+  </select>
+  <span class="result-count" id="result-count"></span>
+</div>
+
+<!-- GRID -->
+<div class="shop-grid" id="shop-grid">
+  <div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(255,255,255,0.2);font-family:var(--font-display);font-style:italic">Loading inventory...</div>
+</div>
+
+<!-- COMPLIANCE -->
+<div class="compliance-bar">
+  ⚠️ Must be 21+ to purchase. Adult Signature Required at delivery. Ships to PA and NH only. We comply with all PACT Act requirements. No USPS shipments. By placing an order you certify you are 21 years of age or older.
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">Your cart is empty.</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-subtotal"><span>Items</span><span id="cart-item-count">0</span></div>
+    <div class="cart-total"><span>Total</span><span id="cart-total">$0.00</span></div>
+    <div class="cart-note">No tax on cigars in PA or NH. Shipping calculated at checkout. Adult signature required at delivery.</div>
+    <button class="checkout-btn" id="checkout-btn" onclick="openCheckout()" disabled>Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal">
+    <!-- ORDER FORM -->
+    <div id="order-form">
+      <h3>Complete Your Order</h3>
+
+      <!-- Order Summary -->
+      <div class="modal-order-summary" id="modal-summary"></div>
+
+      <!-- Contact -->
+      <div class="form-section">
+        <div class="form-section-label">Contact</div>
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" id="f-fname" placeholder="John"></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="f-lname" placeholder="Smith"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>Email</label><input type="email" id="f-email" placeholder="john@email.com"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>Phone</label><input type="tel" id="f-phone" placeholder="(570) 555-1234"></div>
+        </div>
+      </div>
+
+      <!-- Shipping -->
+      <div class="form-section">
+        <div class="form-section-label">Shipping Address</div>
+        <div class="form-row full">
+          <div class="form-group"><label>Address</label><input type="text" id="f-addr" placeholder="123 Main St"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>Address Line 2</label><input type="text" id="f-addr2" placeholder="Apt, Suite, etc. (optional)"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>City</label><input type="text" id="f-city" placeholder="Williamsport"></div>
+          <div class="form-group">
+            <label>State</label>
+            <select id="f-state">
+              <option value="">Select State</option>
+              <option value="PA">Pennsylvania (PA)</option>
+              <option value="NH">New Hampshire (NH)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>ZIP Code</label><input type="text" id="f-zip" placeholder="17701" maxlength="5"></div>
+          <div class="form-group"><label>Country</label><input type="text" value="United States" readonly style="opacity:0.4"></div>
+        </div>
+      </div>
+
+      <!-- Payment placeholder -->
+      <div class="form-section">
+        <div class="form-section-label">Payment</div>
+        <div style="background:rgba(0,0,0,0.2);border:1px solid rgba(37,159,138,0.15);border-radius:6px;padding:1rem;text-align:center;color:rgba(255,255,255,0.3);font-size:12px;line-height:1.7">
+          <div style="font-size:1.5rem;margin-bottom:8px">💳</div>
+          Payment processor coming soon.<br>
+          <strong style="color:rgba(255,255,255,0.5)">To place your order now, call (570) 322-7766</strong><br>
+          or email gray@thetobaccocenter.com
+        </div>
+      </div>
+
+      <!-- Age Verification -->
+      <div class="age-verify-box">
+        <p>By placing this order you certify that you are 21 years of age or older. Adult Signature will be required at delivery. The carrier will verify your age.</p>
+        <label class="age-checkbox">
+          <input type="checkbox" id="age-check">
+          I confirm I am 21 years of age or older and accept the age verification requirement at delivery.
+        </label>
+      </div>
+
+      <div id="form-error" style="color:rgba(255,100,100,0.8);font-size:12px;margin-bottom:12px;display:none"></div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeCheckout()">Cancel</button>
+        <button class="btn-submit" id="submit-btn" onclick="submitOrder()">Place Order →</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">✓</div>
+      <h3>Order Received.</h3>
+      <p>Thank you for your order! Gray will review it and contact you within 1 business day to arrange payment and confirm shipping.</p>
+      <div class="order-number" id="order-number"></div>
+      <p style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:1rem">Questions? Call (570) 322-7766 or email gray@thetobaccocenter.com</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 The Tobacco Center LLC · 21 W Church St, Williamsport, PA 17701 · (570) 322-7766</p>
+  <p style="margin-top:6px"><a href="index.html">← Back to Site</a> &nbsp;·&nbsp; <a href="virtual_humidor.html">Virtual Humidor</a></p>
+</footer>
+
+<script>
+var API = 'https://ttc-inv-api.williamsportcigars.workers.dev';
+var cart = {};
+var allItems = [];
+
+var DOT = {
+  'Mild':'dot-mild','Medium':'dot-medium','Medium-Full':'dot-medium-full',
+  'Full':'dot-full','Flavored':'dot-flavored'
+};
+
+// ── AGE GATE ─────────────────────────────────────────────────────────────────
+function confirmAge() {
+  sessionStorage.setItem('ttc_age_ok', '1');
+  document.getElementById('age-gate').style.display = 'none';
+}
+if (sessionStorage.getItem('ttc_age_ok')) {
+  document.getElementById('age-gate').style.display = 'none';
+}
+
+// ── LOAD INVENTORY ────────────────────────────────────────────────────────────
+async function loadInventory() {
+  try {
+    var r = await fetch(API + '/');
+    var items = await r.json();
+    // Only show items with a price > 0
+    allItems = items.filter(function(i) {
+      return typeof i.price === 'number' && i.price > 0 && i.quantity > 0;
+    });
+    renderItems(allItems);
+  } catch(e) {
+    document.getElementById('shop-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(255,255,255,0.2);font-family:var(--font-display);font-style:italic">Could not load inventory. Please try again or call (570) 322-7766.</div>';
+  }
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderItems(items) {
+  var grid = document.getElementById('shop-grid');
+  var cnt = document.getElementById('result-count');
+  if (cnt) cnt.textContent = items.length + ' cigars';
+  if (!items.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(255,255,255,0.2);font-family:var(--font-display);font-style:italic">No cigars match your search.</div>';
+    return;
+  }
+  grid.innerHTML = items.map(function(item) {
+    var d = item.details || {};
+    var strength = d.strength || 'Medium';
+    var dotClass = DOT[strength] || 'dot-medium';
+    var imgHtml = d.image
+      ? '<img src="' + d.image + '" loading="lazy" alt="' + item.name + '" onerror="this.parentElement.innerHTML=\'<div class=no-img>TTC</div>\'">'
+      : '<div class="no-img">The Tobacco Center</div>';
+    var price = '$' + item.price.toFixed(2);
+    var inCart = cart[item.id] || 0;
+    var specs = '';
+    if (d.wrapper) specs += '<span><strong>W:</strong> ' + d.wrapper + '</span>';
+    if (d.binder)  specs += '<span><strong>B:</strong> ' + d.binder  + '</span>';
+    if (d.strength) specs += '<span>' + d.strength + '</span>';
+
+    return '<div class="cigar-card" id="card-' + item.id + '">' +
+      '<div class="img-box">' + imgHtml + '</div>' +
+      '<div class="card-body">' +
+        '<div class="strength-row"><div class="strength-dot ' + dotClass + '"></div><div class="strength-label">' + strength + '</div></div>' +
+        '<div class="cigar-name">' + item.name + '</div>' +
+        (specs ? '<div class="cigar-specs">' + specs + '</div>' : '') +
+        '<div class="cigar-price">' + price + '</div>' +
+        '<div class="qty-row">' +
+          '<button class="qty-btn" onclick="adjustQty(\'' + item.id + '\',-1)">−</button>' +
+          '<span class="qty-display" id="qty-' + item.id + '">' + (inCart || 1) + '</span>' +
+          '<button class="qty-btn" onclick="adjustQty(\'' + item.id + '\',1)">+</button>' +
+          '<button class="add-btn" id="add-' + item.id + '" onclick="addToCart(\'' + item.id + '\')">' +
+            (inCart > 0 ? '✓ Added' : '+ Add to Cart') +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterItems() {
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  var s = document.getElementById('strengthFilter').value;
+  var filtered = allItems.filter(function(i) {
+    var d = i.details || {};
+    var matchQ = !q || i.name.toLowerCase().includes(q) ||
+      (d.wrapper && d.wrapper.toLowerCase().includes(q)) ||
+      (d.strength && d.strength.toLowerCase().includes(q));
+    var matchS = !s || (d.strength && d.strength === s);
+    return matchQ && matchS;
+  });
+  renderItems(filtered);
+}
+
+// ── CART ──────────────────────────────────────────────────────────────────────
+function adjustQty(id, delta) {
+  var el = document.getElementById('qty-' + id);
+  if (!el) return;
+  var current = parseInt(el.textContent) || 1;
+  var next = Math.max(1, current + delta);
+  el.textContent = next;
+}
+
+function addToCart(id) {
+  var item = allItems.find(function(i){return i.id===id;});
+  if (!item) return;
+  var qty = parseInt(document.getElementById('qty-' + id).textContent) || 1;
+  cart[id] = (cart[id] || 0) + qty;
+  var btn = document.getElementById('add-' + id);
+  if (btn) { btn.textContent = '✓ Added'; btn.classList.add('added'); }
+  updateCartUI();
+}
+
+function removeFromCart(id) {
+  delete cart[id];
+  var btn = document.getElementById('add-' + id);
+  if (btn) { btn.textContent = '+ Add to Cart'; btn.classList.remove('added'); }
+  updateCartUI();
+}
+
+function updateCartQty(id, delta) {
+  if (!cart[id]) return;
+  cart[id] = Math.max(1, cart[id] + delta);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  var total = 0;
+  var count = 0;
+  var html = '';
+
+  Object.keys(cart).forEach(function(id) {
+    var item = allItems.find(function(i){return i.id===id;});
+    if (!item || !cart[id]) return;
+    var qty = cart[id];
+    var subtotal = item.price * qty;
+    total += subtotal;
+    count += qty;
+    var d = item.details || {};
+    var imgHtml = d.image
+      ? '<img src="' + d.image + '" onerror="this.style.display=\'none\'">'
+      : '';
+    html += '<div class="cart-item">' +
+      '<div class="cart-item-img">' + imgHtml + '</div>' +
+      '<div class="cart-item-body">' +
+        '<div class="cart-item-name">' + item.name + '</div>' +
+        '<div class="cart-item-price">$' + item.price.toFixed(2) + ' each</div>' +
+        '<div class="cart-item-qty">' +
+          '<button class="qty-btn" onclick="updateCartQty(\'' + id + '\',-1);updateCartUI()" style="width:22px;height:22px;font-size:12px">−</button>' +
+          '<span style="font-size:12px;font-weight:700;min-width:24px;text-align:center">' + qty + '</span>' +
+          '<button class="qty-btn" onclick="updateCartQty(\'' + id + '\',1);updateCartUI()" style="width:22px;height:22px;font-size:12px">+</button>' +
+          '<span style="font-size:11px;color:rgba(255,255,255,0.5);margin-left:4px">= $' + subtotal.toFixed(2) + '</span>' +
+        '</div>' +
+        '<button class="cart-item-remove" onclick="removeFromCart(\'' + id + '\')">Remove</button>' +
+      '</div>' +
+    '</div>';
+  });
+
+  var cartItemsEl = document.getElementById('cart-items');
+  cartItemsEl.innerHTML = html || '<div class="cart-empty">Your cart is empty.</div>';
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('cart-item-count').textContent = count + ' item' + (count !== 1 ? 's' : '');
+  document.getElementById('cart-total').textContent = '$' + total.toFixed(2);
+  document.getElementById('checkout-btn').disabled = count === 0;
+}
+
+function openCart() {
+  document.getElementById('cart-overlay').classList.add('open');
+  document.getElementById('cart-drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('cart-drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── CHECKOUT ──────────────────────────────────────────────────────────────────
+function openCheckout() {
+  closeCart();
+  // Build summary
+  var html = '';
+  var total = 0;
+  Object.keys(cart).forEach(function(id) {
+    var item = allItems.find(function(i){return i.id===id;});
+    if (!item) return;
+    var subtotal = item.price * cart[id];
+    total += subtotal;
+    html += '<div class="summary-row"><span>' + item.name + ' × ' + cart[id] + '</span><span>$' + subtotal.toFixed(2) + '</span></div>';
+  });
+  html += '<div class="summary-row total"><span>Total</span><span>$' + total.toFixed(2) + '</span></div>';
+  html += '<div style="font-size:10px;color:rgba(255,255,255,0.2);margin-top:6px">No tax on cigars · Shipping calculated after order confirmation</div>';
+  document.getElementById('modal-summary').innerHTML = html;
+  document.getElementById('checkout-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckout() {
+  document.getElementById('checkout-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function submitOrder() {
+  // Validate
+  var fname = document.getElementById('f-fname').value.trim();
+  var lname = document.getElementById('f-lname').value.trim();
+  var email = document.getElementById('f-email').value.trim();
+  var phone = document.getElementById('f-phone').value.trim();
+  var addr  = document.getElementById('f-addr').value.trim();
+  var city  = document.getElementById('f-city').value.trim();
+  var state = document.getElementById('f-state').value;
+  var zip   = document.getElementById('f-zip').value.trim();
+  var ageOk = document.getElementById('age-check').checked;
+  var errEl = document.getElementById('form-error');
+
+  if (!fname || !lname || !email || !addr || !city || !state || !zip) {
+    errEl.textContent = 'Please fill in all required fields.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!ageOk) {
+    errEl.textContent = 'You must confirm you are 21 or older.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!['PA','NH'].includes(state)) {
+    errEl.textContent = 'We currently only ship to Pennsylvania and New Hampshire.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  errEl.style.display = 'none';
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Placing Order...';
+
+  // Build order
+  var orderItems = Object.keys(cart).map(function(id) {
+    var item = allItems.find(function(i){return i.id===id;});
+    return { id: id, name: item ? item.name : id, qty: cart[id], price: item ? item.price : 0 };
+  });
+  var total = orderItems.reduce(function(s,i){return s + i.price * i.qty;}, 0);
+  var orderNum = 'TTC-' + Date.now().toString(36).toUpperCase();
+
+  var orderData = {
+    orderNumber: orderNum,
+    customer: { firstName: fname, lastName: lname, email: email, phone: phone },
+    shipping: { address: addr, address2: document.getElementById('f-addr2').value.trim(), city: city, state: state, zip: zip },
+    items: orderItems,
+    total: total,
+    timestamp: new Date().toISOString()
+  };
+
+  // Save to KV via worker
+  try {
+    await fetch(API + '/order', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ order: orderData })
+    });
+  } catch(e) {}
+
+  // Show success
+  document.getElementById('order-number').textContent = 'Order #' + orderNum;
+  document.getElementById('order-form').style.display = 'none';
+  document.getElementById('success-screen').classList.add('show');
+
+  // Reset cart
+  cart = {};
+  updateCartUI();
+}
+
+// Close checkout on overlay click
+document.getElementById('checkout-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeCheckout();
+});
+
+loadInventory();
+</script>
+<script>
+function toggleMobileNav(){
+  var btn=document.getElementById('nav-hamburger');
+  var menu=document.getElementById('nav-mobile');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+  document.body.style.overflow=menu.classList.contains('open')?'hidden':'';
+}
+</script>
+</body>
+</html>
