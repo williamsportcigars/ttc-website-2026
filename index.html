@@ -177,6 +177,20 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
 .cotm-cta h2 em { color: var(--mint); font-style: italic; }
 .cotm-cta p { color: rgba(253,252,248,0.62); max-width: 480px; margin: 0 auto 2rem; font-size: 0.95rem; }
 
+/* ======= TRS EMAIL MODAL ======= */
+.trs-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,27,22,0.72); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+.trs-modal-overlay.open { display: flex; }
+.trs-modal { background: var(--warm-white); max-width: 420px; width: 100%; padding: 2.5rem 2rem 2rem; position: relative; border-top: 3px solid var(--mint); }
+.trs-modal-close { position: absolute; top: 0.75rem; right: 1rem; background: none; border: none; font-size: 1.5rem; line-height: 1; color: var(--text-muted); cursor: pointer; }
+.trs-modal-close:hover { color: var(--black); }
+.trs-modal h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; color: var(--black); margin-bottom: 0.5rem; }
+.trs-modal > p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+.trs-modal-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.trs-modal-form input { background: #fff; border: 1px solid var(--border); padding: 12px 14px; color: var(--text); font-family: var(--font-body); font-size: 0.9rem; outline: none; border-radius: 3px; width: 100%; }
+.trs-modal-form input:focus { border-color: var(--teal); }
+.trs-modal-form button { margin-top: 0.5rem; }
+.trs-modal-msg { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.05em; line-height: 1.5; color: #b03020; display: none; }
+
 /* ======= EVENTS ======= */
 #events { background: var(--warm-white); }
 .events-hero { background: var(--jungle); padding: 7rem 4rem 5rem; min-height: 38vh; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
@@ -815,8 +829,26 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
     <a href="http://eepurl.com/jEkdTk" target="_blank" rel="noopener" class="btn-primary">Get on the List</a>
     &nbsp;&nbsp;
     <a href="#contact" class="btn-ghost">Call Us to Join</a>
+    &nbsp;&nbsp;
+    <button type="button" class="btn-ghost" onclick="openTrsModal()">Email to Join</button>
   </div>
 </section>
+
+<!-- ════════ TRS EMAIL MODAL ════════ -->
+<div class="trs-modal-overlay" id="trs-modal-overlay" onclick="if(event.target===this)closeTrsModal()">
+  <div class="trs-modal">
+    <button type="button" class="trs-modal-close" onclick="closeTrsModal()" aria-label="Close">&times;</button>
+    <h3>Join the Third Rule Society</h3>
+    <p>Fill in your info below and we'll open an email to us with your details — we'll take it from there.</p>
+    <div class="trs-modal-form">
+      <input type="text" id="trs-modal-name" placeholder="Your name">
+      <input type="tel" id="trs-modal-phone" placeholder="Phone number">
+      <input type="email" id="trs-modal-email" placeholder="Email address">
+      <div id="trs-modal-msg" class="trs-modal-msg"></div>
+      <button type="button" class="btn-primary" onclick="submitTrsModal()">Send Email</button>
+    </div>
+  </div>
+</div>
 
 <!-- ════════ EVENTS ════════ -->
 <section class="page-section" id="events">
@@ -1098,6 +1130,33 @@ async function submitCotmLead() {
     btnEl.textContent = 'Hold my spot';
   }
   btnEl.disabled = false;
+}
+
+function openTrsModal() {
+  document.getElementById('trs-modal-msg').style.display = 'none';
+  document.getElementById('trs-modal-overlay').classList.add('open');
+}
+function closeTrsModal() {
+  document.getElementById('trs-modal-overlay').classList.remove('open');
+}
+function submitTrsModal() {
+  var nameEl = document.getElementById('trs-modal-name');
+  var phoneEl = document.getElementById('trs-modal-phone');
+  var emailEl = document.getElementById('trs-modal-email');
+  var msgEl = document.getElementById('trs-modal-msg');
+  var name = nameEl.value.trim();
+  var phone = phoneEl.value.trim();
+  var email = emailEl.value.trim();
+  if (!name || !phone) {
+    msgEl.textContent = 'Please enter your name and phone number.';
+    msgEl.style.display = 'block';
+    return;
+  }
+  var subject = 'I want to be part of the Third Rule Society';
+  var body = 'Name: ' + name + '\nPhone: ' + phone + '\nEmail: ' + (email || 'n/a');
+  var mailto = 'mailto:williamsportcigars@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  window.location.href = mailto;
+  closeTrsModal();
 }
 </script>
 </body>
