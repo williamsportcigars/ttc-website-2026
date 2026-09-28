@@ -1,0 +1,745 @@
+<title>Cigar Compliance Atlas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #eef1ee;
+    --surface: #ffffff;
+    --surface-2: #e3e8e3;
+    --ink: #182420;
+    --ink-soft: #55645d;
+    --ink-faint: #7c8a83;
+    --border: #cfd7cf;
+    --accent: #2c5f57;
+    --accent-soft: #d9e6e2;
+    --brass: #8a6a30;
+    --good: #2f7d4f;
+    --good-soft: #dcefdf;
+    --warn: #a8631c;
+    --warn-soft: #f3e6d1;
+    --bad: #a83a2b;
+    --bad-soft: #f6dcd6;
+    --restricted: #3f5d7d;
+    --restricted-soft: #dde6ee;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121815;
+      --surface: #1a2119;
+      --surface-2: #222a22;
+      --ink: #e8ece8;
+      --ink-soft: #aab5ac;
+      --ink-faint: #7e8a82;
+      --border: #34403a;
+      --accent: #7bbcae;
+      --accent-soft: #1f3733;
+      --brass: #d2ac6b;
+      --good: #7bc797;
+      --good-soft: #1d3324;
+      --warn: #e0a35c;
+      --warn-soft: #3a2c16;
+      --bad: #e2897b;
+      --bad-soft: #3b1f1a;
+      --restricted: #93b5d6;
+      --restricted-soft: #1e2b3a;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121815;
+    --surface: #1a2119;
+    --surface-2: #222a22;
+    --ink: #e8ece8;
+    --ink-soft: #aab5ac;
+    --ink-faint: #7e8a82;
+    --border: #34403a;
+    --accent: #7bbcae;
+    --accent-soft: #1f3733;
+    --brass: #d2ac6b;
+    --good: #7bc797;
+    --good-soft: #1d3324;
+    --warn: #e0a35c;
+    --warn-soft: #3a2c16;
+    --bad: #e2897b;
+    --bad-soft: #3b1f1a;
+    --restricted: #93b5d6;
+    --restricted-soft: #1e2b3a;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, sans-serif;
+    padding-inline: 16px;
+    padding-block: 20px 48px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; margin: 0; text-wrap: balance; }
+  code, .mono, .num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  a { color: var(--accent); }
+
+  header.page {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 20px;
+    margin-bottom: 6px;
+  }
+  header.page h1 { font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.1rem); }
+  header.page .tagline { color: var(--ink-soft); font-size: 0.92rem; max-width: 46ch; }
+  header.page .updated { font-size: 0.78rem; color: var(--ink-faint); white-space: nowrap; }
+
+  .disclaimer {
+    background: var(--warn-soft);
+    border: 1px solid var(--warn);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--ink);
+    margin: 16px 0 22px;
+  }
+  .disclaimer strong.lead { color: var(--warn); font-family: "Fraunces", serif; font-size: 0.95rem; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .stat .n { font-family: "IBM Plex Mono"; font-size: 1.5rem; font-weight: 600; line-height: 1.1; }
+  .stat .l { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); margin-top: 3px; }
+  .stat.legal .n { color: var(--good); }
+  .stat.restricted .n { color: var(--restricted); }
+  .stat.needs .n { color: var(--warn); }
+  .stat.banned .n { color: var(--bad); }
+
+  .controls {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 5;
+    background: var(--bg);
+    padding-block: 10px;
+    margin-bottom: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .controls input, .controls select, .controls button {
+    font: inherit;
+    font-size: 0.86rem;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .controls input { flex: 1 1 180px; min-width: 140px; }
+  .controls select { flex: 0 0 auto; }
+  .controls button.ghost {
+    background: transparent;
+    color: var(--accent);
+    border-color: var(--accent);
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+  .controls button.ghost:hover { background: var(--accent-soft); }
+  .count-line { font-size: 0.78rem; color: var(--ink-faint); margin: 6px 2px 14px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 16px; font-size: 0.76rem; color: var(--ink-soft); margin: 2px 2px 16px; }
+  .legend .sw { display: inline-flex; align-items: center; gap: 5px; }
+  .legend .dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+
+  ul.rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+
+  .row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .row-head {
+    display: grid;
+    grid-template-columns: 2.1rem 1fr auto auto auto 1.1rem;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .row-head:hover { background: var(--surface-2); }
+  .rank { font-family: "IBM Plex Mono"; color: var(--ink-faint); font-size: 0.8rem; text-align: right; }
+  .state-name { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; min-width: 0; }
+  .state-name .sn { font-family: "Fraunces", serif; font-weight: 600; font-size: 1.02rem; }
+  .home-tag {
+    font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.05em;
+    background: var(--accent-soft); color: var(--accent); border-radius: 4px; padding: 1px 6px;
+    font-family: "Public Sans";
+  }
+  .tax-figure { font-family: "IBM Plex Mono"; color: var(--brass); font-weight: 600; font-size: 0.9rem; white-space: nowrap; }
+
+  .pill {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .pill.legal { background: var(--good-soft); color: var(--good); }
+  .pill.restricted { background: var(--restricted-soft); color: var(--restricted); }
+  .pill.needs { background: var(--warn-soft); color: var(--warn); }
+  .pill.banned { background: var(--bad-soft); color: var(--bad); }
+
+  .score-wrap { display: flex; align-items: center; gap: 6px; }
+  .score-bar { width: 46px; height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+  .score-bar > i { display: block; height: 100%; border-radius: 3px; }
+  .score-num { font-family: "IBM Plex Mono"; font-size: 0.82rem; font-weight: 600; width: 1.4em; text-align: right; }
+
+  .chev { transition: transform 0.15s ease; color: var(--ink-faint); justify-self: center; }
+  .row.open .chev { transform: rotate(90deg); }
+
+  .row-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.18s ease;
+  }
+  .row.open .row-body { grid-template-rows: 1fr; }
+  .row-body > div { overflow: hidden; }
+  .detail {
+    padding: 4px 14px 16px 3.6rem;
+    display: grid;
+    gap: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .field .k { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 3px; }
+  .field .v { font-size: 0.87rem; line-height: 1.55; }
+  .field .v strong { color: var(--ink); }
+  .source-line { font-size: 0.78rem; color: var(--ink-faint); }
+  .source-line .mono { color: var(--ink-soft); }
+
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .row-head {
+      grid-template-columns: 1.6rem 1fr auto 1.1rem;
+      grid-template-areas: "rank name score chev" "tax tax pill pill";
+      row-gap: 6px;
+    }
+    .rank { grid-area: rank; }
+    .state-name { grid-area: name; }
+    .score-wrap { grid-area: score; }
+    .chev { grid-area: chev; }
+    .tax-figure { grid-area: tax; }
+    .pill { grid-area: pill; justify-self: end; }
+    .detail { padding-left: 14px; }
+  }
+
+  section.foot {
+    margin-top: 40px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+  }
+  section.foot h2 { font-size: 1.1rem; margin-bottom: 10px; }
+  section.foot ol, section.foot ul { padding-left: 1.2em; font-size: 0.86rem; line-height: 1.6; color: var(--ink-soft); }
+  section.foot li strong { color: var(--ink); }
+  details.methodology { margin-top: 18px; }
+  details.methodology summary {
+    cursor: pointer; font-family: "Fraunces", serif; font-weight: 600; font-size: 1.05rem; color: var(--ink);
+    padding: 4px 0;
+  }
+  details.methodology .m-body { font-size: 0.85rem; color: var(--ink-soft); line-height: 1.6; padding-top: 8px; }
+  details.methodology .m-body p { margin: 0 0 10px; }
+
+  footer.final {
+    margin-top: 26px;
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="page">
+    <h1>Cigar Compliance Atlas</h1>
+    <div class="updated">Pulled 2026‑09‑19 / 2026‑09‑27 / 2026‑09‑28</div>
+  </header>
+  <div class="tagline">State‑by‑state cigar excise tax, remote‑seller licensing, and direct‑to‑consumer shipping legality for The Tobacco Center's CONUS expansion, ranked lowest to highest tax burden.</div>
+
+  <div class="disclaimer">
+    <strong class="lead">Compliance research draft — not legal advice.</strong>
+    This is a planning draft, not a legal opinion. Several figures below are marked <em>Needs Confirmation</em> because they could not be verified against a directly‑fetched primary source. Get sign‑off from a tobacco‑compliance attorney or compliance service before filing any state registration, tax account, or license application on the strength of this page.
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="controls">
+    <input id="search" type="search" placeholder="Search state…" autocomplete="off" />
+    <select id="statusFilter">
+      <option value="all">All statuses</option>
+      <option value="legal">Legal</option>
+      <option value="restricted">Restricted</option>
+      <option value="needs">Needs confirmation</option>
+      <option value="banned">Banned</option>
+    </select>
+    <select id="sortBy">
+      <option value="tax">Sort: tax burden (low→high)</option>
+      <option value="score">Sort: efficacy score (high→low)</option>
+      <option value="name">Sort: state A→Z</option>
+    </select>
+    <button class="ghost" id="toggleAll" type="button">Expand all</button>
+  </div>
+
+  <div class="legend">
+    <span class="sw"><span class="dot" style="background:var(--good)"></span>Legal</span>
+    <span class="sw"><span class="dot" style="background:var(--restricted)"></span>Restricted</span>
+    <span class="sw"><span class="dot" style="background:var(--warn)"></span>Needs confirmation</span>
+    <span class="sw"><span class="dot" style="background:var(--bad)"></span>Banned</span>
+    <span class="sw">Score = 1–9 efficacy estimate (tax + licensing cost + legal certainty + rough market size)</span>
+  </div>
+
+  <div class="count-line" id="countLine"></div>
+
+  <ul class="rows" id="rows"></ul>
+
+  <section class="foot">
+    <h2>Jurisdictions still needing follow‑up before any filing</h2>
+    <p style="font-size:0.86rem;color:var(--ink-soft);margin:0 0 12px;">Most of the original priority list closed out in a 2026‑09‑28 verification pass — most notably <strong>Maryland</strong>, which moved from the single highest‑risk state in the first draft (taxed at what looked like 70%, DTC status unresolved) to one of the more favorable ones (confirmed 15% premium‑cigar rate, plus a dedicated $25/yr Remote Tobacco Seller License). What's genuinely still open:</p>
+    <ol>
+      <li><strong>New York</strong> — the exact "cigarette" definition operative within §1399‑LL itself (as opposed to the parallel cigarette/cigar language found elsewhere in Article 13‑F) is still not pinned down. This determines whether the common‑carrier shipping ban reaches cigars.</li>
+      <li><strong>Minnesota</strong> — the claimed $0.65/cigar inflation‑adjusted cap could not be corroborated against any Minnesota‑domain source on a second dedicated search; rely on the statutory $0.50 cap and treat $0.65 as a likely aggregator artifact.</li>
+      <li><strong>Maryland</strong> — the core legality question is now resolved favorably, but the Remote Tobacco Seller License's bond requirement (if any) and the practical mechanics of MD Workers' Compensation compliance for an out‑of‑state, no‑employee‑in‑MD business are unconfirmed. Contact ATCC (443‑300‑6990) directly.</li>
+      <li><strong>Delaware</strong> — HB 215's final floor passage and gubernatorial signature are unconfirmed (though the premium‑cigar rate is stable at 30% either way); confirm the license‑fee increase ($200→$400) before budgeting for DE entry.</li>
+      <li><strong>Connecticut</strong> — HB 7275 is still in committee, not enacted, but its current draft has no premium‑cigar exemption; monitor closely, as passage would flip CT to banned.</li>
+      <li><strong>Tennessee</strong> — SB 2086 is still pending, not enacted; monitor, as passage would flip TN to banned.</li>
+      <li><strong>Kansas</strong> — DTC legality is now well‑supported by the absence of any cigar‑specific restriction in K.S.A. 79‑3333, but this is an inference, not an affirmative statutory permission; get final confirmation from KS DOR (785‑368‑8222).</li>
+      <li><strong>Arkansas</strong> — no longer "needs confirmation": the physical‑presence + AR‑wholesaler double bar is confirmed in the regulation's own text. Treat as closed (non‑viable absent an AR storefront), not open.</li>
+      <li><strong>Utah, South Dakota, Nebraska, Illinois, Colorado</strong> — each has a confirmed, scheduled 2027 rule change. Build a 2027 compliance‑calendar review into any state‑entry plan for these five.</li>
+    </ol>
+
+    <details class="methodology">
+      <summary>Methodology &amp; limitations</summary>
+      <div class="m-body">
+        <p><strong>Research method.</strong> All 49 jurisdictions were researched via automated web search against primary government sources (state Departments of Revenue/Taxation, Comptrollers, ABC/tobacco‑enforcement agencies), cross‑checked across multiple queries per state. In several sessions, direct fetching of the underlying <code>.gov</code> pages was blocked by network policy, so those findings rely on search‑engine synthesis of primary sources rather than a full direct read. A compliance reviewer should open every cited source directly before relying on this page operationally.</p>
+        <p><strong>Aggregator errors caught and corrected:</strong> a claim that "Georgia bans internet tobacco sales" traced to law governing the country of Georgia, not the U.S. state, and was discarded; a Minnesota cap figure ($0.65) traced to what appears to be an Ohio source and remains unconfirmed after a second dedicated check; a North Carolina $400 permit‑fee claim could not be corroborated against the statutory $25 figure and was discarded in its favor; a West Virginia "51%" and "7%" rate claim were both superseded by the confirmed current 12% statute text; a Maryland "70% flat rate" claim was corrected to a three‑tier structure (30% general OTP / 15% premium cigars / 70% non‑premium cigars) once the actual bulletin was reviewed directly.</p>
+        <p><strong>Second‑pass verification (2026‑09‑28):</strong> the priority follow‑up list from the first draft was worked through directly — West Virginia's rate, Kentucky's premium‑cigar cut, Rhode Island's mail‑shipment statute, Arkansas's physical‑presence bar, New Jersey's tax bill, Massachusetts's cap question, and Kansas's licensing mechanics are now resolved (see each row above). Maryland's correction was the most consequential: it moved from the highest‑risk state in the project to one of the more favorable ones.</p>
+        <p><strong>The $10‑wholesale benchmark</strong> used to rank tax burden is a modeling convenience only — percentage, percentage‑with‑cap, and flat‑per‑cigar structures are normalized onto one axis by applying each state's formula to a hypothetical $10.00 wholesale‑price cigar. Recompute against each SKU's real invoice cost before pricing or remitting tax.</p>
+        <p><strong>Rates change often.</strong> Confirmed 2025–2026 changes include Maine (43%→75%), Illinois (36%→45%, further change in 2027), Ohio's inflation‑indexed cap ($0.65→$0.67), new remote‑seller laws in Nevada and Nebraska, a second SD license and a CO rate rise both effective 2027, Utah's DTC ban repeal effective 2027, and pending bills in DE, NJ, CT, TN, NY, and WV. Re‑pull this page shortly before any state‑by‑state launch.</p>
+        <p><strong>Efficacy scores</strong> are directional judgment calls, not a validated model — they weigh confirmed legality, licensing cost/complexity, tax burden, and rough population‑based market‑size potential for slow, zero‑paid‑advertising sales. They do not incorporate real sales data, competitor density, or logistics cost.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer class="final">Prepared for The Tobacco Center (Williamsport, PA). Produced by an AI research process — not reviewed by a licensed attorney. Not legal advice.</footer>
+</div>
+
+<script>
+(function(){
+  var DATA = [
+    {rank:1, state:"District of Columbia", home:false, tax:"$0.00", score:8, status:"legal",
+     basis:`Premium cigars (≥$2.00 retail/cigar) <strong>excluded entirely</strong> from DC's OTP tax base (D.C. Code §47‑2001, §47‑2401). Non‑premium cigars taxed at 64% of wholesale (TY2026, eff. 10/1/2025).`,
+     license:`DLCP Basic Business License, Cigarette Wholesale/Retail endorsement; $99/2‑yr or $198/4‑yr; out‑of‑state wholesalers expressly permitted (§47‑2404); no bond identified (unconfirmed absence — verify with DLCP). Also OTR "remote seller" tax registration (Form FR‑500), quarterly FR‑1000Q.`,
+     statusText:`<strong>Legal</strong> for non‑flavored premium cigars; flavored cigars banned (DC's flavor ban reaches online/mail‑order). Carrier adult‑signature requirement: needs confirmation.`,
+     source:`otr.cfo.dc.gov, dlcp.dc.gov, code.dccouncil.gov (2026‑09‑27)`},
+
+    {rank:2, state:"Florida", home:false, tax:"$0.00", score:8, status:"needs",
+     basis:`Fla. Stat. §210.25(11) <strong>explicitly excludes cigars</strong> from the "tobacco products" definition — no excise tax on cigars at all.`,
+     license:`FL DBPR/ABT Cigar Wholesale Dealer/Distributor permit (distinct from OTP Form 6005); fee ~$25 unconfirmed for the cigar‑only tier; $1,000 bond (Form ABT‑6032) required for OTP wholesalers — unclear if required for a cigar‑only, zero‑tax dealer.`,
+     statusText:`<strong>Needs confirmation</strong> (leans legal/regulated) — no cigar‑specific DTC ban found; unclear whether a pure DTC retailer fits FL's "wholesaler" (sells‑to‑retailers) license category.`,
+     source:`flsenate.gov, myfloridalicense.com (2026‑09‑19)`},
+
+    {rank:3, state:"New Hampshire", home:false, tax:"$0.00", score:5, status:"needs",
+     basis:`"Premium cigars" (hand‑made, all‑natural leaf, hand‑wrapped, kept in a humidor — RSA 78:1) are <strong>excluded from "tobacco products" altogether</strong> — effectively 0%. Non‑premium/OTP taxed at 65.03% of wholesale.`,
+     license:`Form DP‑31 (NH DRA) + bond via Form CD‑18 (amount unconfirmed); as of Oct 2025, NH retailers may buy only from NH Liquor Commission–licensed wholesalers — unclear if this accommodates a remote DTC seller with no NH premises.`,
+     statusText:`<strong>Needs confirmation</strong> — no statute found either banning or authorizing DTC cigar shipping into NH; the RSA 78:1 "kept in a humidor" language is unusual and its scope for shipped/boxed cigars is unconfirmed.`,
+     source:`revenue.nh.gov, enforcement.liquor.nh.gov (2026‑09‑19)`},
+
+    {rank:4, state:"Pennsylvania", home:true, tax:"$0.00", score:9, status:"legal",
+     basis:`PA's OTP statute covers other tobacco products "<strong>except cigars</strong>" — confirmed zero excise tax on cigars.`,
+     license:`Per PA DOR guidance, no PA tobacco license is needed to sell large/premium cigars (license requirement is tied to taxed products).`,
+     statusText:`<strong>Legal</strong> — no PA‑specific DTC ban found; cigars are also excluded from the federal PACT Act's registration/reporting regime.`,
+     source:`pa.gov (Dept. of Revenue), revenue‑pa.custhelp.com (2026‑09‑19)`},
+
+    {rank:5, state:"Texas", home:false, tax:"~$0.0075/cigar", score:9, status:"legal",
+     basis:`Weight‑tiered flat tax: <strong>$7.50 per 1,000 cigars</strong> (~0.75¢/cigar) for cigars >3 lbs/1,000 (the tier most premium hand‑rolled cigars fall into); 1¢/10 cigars for lighter cigars. Tex. Tax Code Ch.155.`,
+     license:`"Remote Retail Seller" permit (Tax Code §155.041, required since 4/1/2024), TX Comptroller, <strong>$180 fee</strong>; monthly report by the 25th; renewal cadence/bond unconfirmed.`,
+     statusText:`<strong>Legal</strong> — explicit, purpose‑built statutory pathway for out‑of‑state cigar/pipe‑tobacco retailers.`,
+     source:`comptroller.texas.gov (2026‑09‑19)`},
+
+    {rank:6, state:"Alabama", home:false, tax:"$0.0405/cigar", score:6, status:"needs",
+     basis:`Flat <strong>$40.50 per 1,000 cigars</strong> (4.05¢/cigar) for cigars >3 lbs/1,000. Ala. Code §40‑25‑2.`,
+     license:`Form TOB‑APP‑NR (non‑resident stamping permit), AL DOR; also a no‑fee AL ABC Board tobacco license per location. Bond unconfirmed for this tier ($25,000/2‑yr found for a different, retailer tier).`,
+     statusText:`<strong>Needs confirmation</strong> — no statute found either way; AL DOR's non‑resident pathway suggests interstate cigar movement is anticipated.`,
+     source:`revenue.alabama.gov (2026‑09‑19)`},
+
+    {rank:7, state:"Oklahoma", home:false, tax:"$0.12/cigar", score:4, status:"needs",
+     basis:`Flat <strong>$120 per 1,000 cigars</strong> (12¢/cigar) for standard cigars >3 lbs/1,000; little cigars taxed separately at 3.6¢ each. 68 O.S. §402 et seq.`,
+     license:`OTC wholesaler/distributing‑agent license, <strong>$250/yr + $25,000 surety bond</strong>. No distinct remote‑seller category found.`,
+     statusText:`<strong>Needs confirmation</strong> — genuine, unresolved gap; OK's mail‑order ban statute (§317.9) is written around cigarettes and doesn't appear to reach cigars, but no affirmative guidance permitting DTC cigar shipping was found either.`,
+     source:`oklahoma.gov (OTC), law.justia.com (2026‑09‑27)`},
+
+    {rank:8, state:"Arizona", home:false, tax:"$0.218/cigar", score:8, status:"legal",
+     basis:`Flat <strong>$0.218/cigar</strong> per the current AZ DOR FAQ (base statute A.R.S. §42‑3052 text reads $0.02/cigar — the $0.218 figure reflects stacked surtax acts; discrepancy needs confirmation).`,
+     license:`AZ Tobacco Distributor License (§42‑3201), <strong>$25/location, annual</strong>; bond unconfirmed for OTP/cigar‑only distributors.`,
+     statusText:`<strong>Legal</strong> — A.R.S. §36‑798.06 (AZ's delivery‑sales ban) <strong>explicitly excludes "pipe tobacco or cigars"</strong> from its coverage — a genuine, favorable statutory carve‑out.`,
+     source:`azdor.gov, azag.gov (2026‑09‑19)`},
+
+    {rank:9, state:"North Carolina", home:false, tax:"$0.30/cigar (capped)", score:8, status:"legal",
+     basis:`12.8% of cost price, <strong>capped at 30¢/cigar</strong>, eff. 7/1/2022. G.S. §105‑113 et seq.`,
+     license:`OTP wholesale dealer license (Form B‑A‑2), NCDOR, <strong>$25 fee</strong> (statutory, incl. nonresident dealers); <strong>bond required</strong>: 2x avg monthly liability, min $2,000 / max $2,000,000.`,
+     statusText:`<strong>Legal</strong> — NC's stricter "delivery sale" reporting statute (§105‑113.4F) explicitly <strong>does not apply to cigars</strong> (only cigarettes/smokeless/vapor).`,
+     source:`ncdor.gov, ncleg.gov (2026‑09‑27)`},
+
+    {rank:10, state:"Virginia", home:false, tax:"$0.30/cigar (capped)", score:8, status:"legal",
+     basis:`20% of manufacturer's price <strong>or 30¢/cigar, whichever is less</strong> — effectively a 30¢ cap above ~$1.50 manufacturer price. Possibly a recurring budget‑cycle provision rather than permanent code — re‑verify each VA budget cycle.`,
+     license:`"Remote Retail Seller's License" (Form RS‑1), VA Tax, <strong>$600 fee, valid 3 years</strong>; economic‑nexus threshold applies (exact figure unconfirmed); bond unclear for this tier.`,
+     statusText:`<strong>Legal</strong> — VA expressly permits mail‑order/internet cigar sales with the RS‑1 license + age verification + adult‑signature delivery + tax remittance. One of the most deliberately built DTC pathways found in this research.`,
+     source:`tax.virginia.gov, law.lis.virginia.gov (2026‑09‑19)`},
+
+    {rank:11, state:"Montana", home:false, tax:"$0.35/cigar (capped)", score:6, status:"legal",
+     basis:`Lesser of 50% of wholesale price <strong>or $0.35/cigar</strong> for statutorily defined "premium cigars" (SB 122, eff. 7/1/2023).`,
+     license:`"Importer" registration, MT DOR — <strong>no fee</strong>; bond unconfirmed.`,
+     statusText:`<strong>Legal</strong> (implied by the no‑fee Importer category) — some risk that filtered/tipped cigars get reclassified as cigarettes under MT rules; verify SKU‑by‑SKU.`,
+     source:`revenue.mt.gov (2026‑09‑19)`},
+
+    {rank:12, state:"Arkansas", home:false, tax:"$0.50/cigar (capped)", score:2, status:"restricted",
+     basis:`Premium cigars: $0.50/cigar + 2% of invoice price, but statewide <strong>cap of $0.50/cigar total</strong>. Ark. Code §26‑57‑1801 et seq.`,
+     license:`Permits under the Tobacco Products Tax Act of 1977 (ATC‑W2 / ATC‑M1).`,
+     statusText:`<strong>Confirmed barred for a no‑presence remote seller.</strong> Full text of 006.01.22 Ark. Code R. §002 §4 (verified this pass): a retailer may sell cigars online only when it <strong>(1) has a physical presence in Arkansas AND (2) purchases from an AR‑permitted wholesaler</strong> — a double bar a PA‑only shipper cannot clear. No longer a suspicion; treat AR as a non‑starter absent an AR storefront.`,
+     source:`law.cornell.edu (006.01.22 Ark. Code R. §002, full text), dfa.arkansas.gov (2026‑09‑28)`},
+
+    {rank:13, state:"Connecticut", home:false, tax:"$0.50/cigar (capped)", score:3, status:"needs",
+     basis:`50% of wholesale price, <strong>capped at $0.50/cigar</strong>, eff. since 7/1/2011. Conn. Gen. Stat. §12‑330c.`,
+     license:`Distributor's License, CT DRS, <strong>$100/yr, annual</strong>; bond unconfirmed.`,
+     statusText:`<strong>Needs confirmation — risk confirmed, not resolved.</strong> The bill is HB 7275 (2026): would ban cigar shipment to CT consumers. An earlier draft carried a premium‑cigar exemption, but <strong>that exemption was removed</strong> in a later revision — if enacted as currently drafted, there would be no carve‑out. Still in committee, not enacted; Cigar Rights of America actively opposing.`,
+     source:`cga.ct.gov (HB 7275 status), halfwheel.com, cigarrights.org (2026‑09‑28)`},
+
+    {rank:14, state:"Idaho", home:false, tax:"$0.50/cigar (capped)", score:7, status:"legal",
+     basis:`40% of wholesale price, <strong>capped at $0.50/cigar</strong>, eff. 7/1/2023. Idaho Code §63‑2552A.`,
+     license:`Idaho Tobacco Tax Permit ("delivery seller" category), Idaho State Tax Commission; fee ~$50 unconfirmed for this tier; bond formula (2x avg tax) unconfirmed for cigars specifically.`,
+     statusText:`<strong>Legal</strong> — Idaho Code §39‑5717 explicitly permits delivery sales with age‑21 warning statements + monthly reporting.`,
+     source:`tax.idaho.gov (2026‑09‑19)`},
+
+    {rank:15, state:"Iowa", home:false, tax:"$0.50/cigar (capped)", score:5, status:"needs",
+     basis:`50% of wholesale price, <strong>capped at $0.50/cigar</strong>, Iowa Code §453A.43 (a proposed 55%/$0.55 hike was reported but not confirmed enacted).`,
+     license:`Distributor's license, Iowa DOR, <strong>$50–100/yr + $1,000 bond</strong>; a related licensing rule (r.657‑17.3) was rescinded 7/16/2025 — effect on structure unclear.`,
+     statusText:`<strong>Needs confirmation</strong> — no clear cigar‑specific delivery‑sale statute found.`,
+     source:`revenue.iowa.gov (2026‑09‑19)`},
+
+    {rank:16, state:"Louisiana", home:false, tax:"$0.50/cigar (flat, temporary)", score:5, status:"needs",
+     basis:`Tiered by invoice price; for cigars invoiced ≥$2,500/1,000 (premium tier), a <strong>flat $0.50/cigar</strong> applies <strong>Jan 1, 2026 – Dec 31, 2027</strong> (may revert/change after sunset — re‑check).`,
+     license:`LA Wholesale/Tobacco Dealer Permit, LA Office of Alcohol &amp; Tobacco Control (ATC, not DOR), <strong>$75/yr</strong>; bond unconfirmed.`,
+     statusText:`<strong>Needs confirmation</strong> — not addressed in sources found; two agencies (DOR for tax, ATC for permits) likely both apply.`,
+     source:`revenue.louisiana.gov, atc.louisiana.gov (2026‑09‑19)`},
+
+    {rank:17, state:"Michigan", home:false, tax:"$0.50/cigar (capped)", score:5, status:"needs",
+     basis:`Cigars <strong>≥$1.5625/cigar wholesale</strong> taxed flat <strong>$0.50/cigar</strong> (the tier a $10‑wholesale premium cigar falls into); below that threshold, 32% of wholesale. MCL Act 327 of 1993.`,
+     license:`Wholesaler/Unclassified Acquirer of Tobacco Products License, MI Treasury; bond ~3 months of estimated tax liability (percentage‑based); fee unconfirmed.`,
+     statusText:`<strong>Needs confirmation</strong> — not addressed in sources found.`,
+     source:`michigan.gov (2026‑09‑19)`},
+
+    {rank:18, state:"Minnesota", home:false, tax:"$0.50/cigar (capped)", score:4, status:"needs",
+     basis:`Lesser of 95% of wholesale price <strong>or $0.50/premium cigar</strong>, Minn. Stat. §297F.05 — <strong>re‑confirmed this pass</strong>. A separately‑claimed inflation‑adjusted $0.65 figure could not be corroborated against any Minnesota‑domain source in a second dedicated search; treat $0.65 as an aggregator artifact and rely on the statutory $0.50 cap.`,
+     license:`Tobacco Products Distributor License (Form CT101), MN DOR, <strong>$75 fee, 2‑year term</strong> (even years); no bond confirmed.`,
+     statusText:`<strong>Needs confirmation</strong> — MN has historically been aggressive on restricting internet/mail‑order tobacco sales generally; no direct citation found for cigars specifically either way.`,
+     source:`revenue.state.mn.us (2026‑09‑19, re‑checked 2026‑09‑28)`},
+
+    {rank:19, state:"Nevada", home:false, tax:"$0.50/cigar (capped)", score:6, status:"legal",
+     basis:`30% of wholesale, floor $0.30 / cap $0.50 per cigar for "premium cigars" (AB232, 2023). New overlay: AB471 (eff. 1/1/2026) taxes "actual cost" of cigars at 30% specifically for <strong>remote retail sales</strong> — interaction with the AB232 per‑cigar cap for remote sellers is unresolved.`,
+     license:`New "Remote Retail Seller License" (Form EXC‑F041), NV Dept. of Taxation, eff. 1/1/2026; <strong>$650/yr (prorated) + $1,000 bond</strong>; applies once a seller exceeds $100k NV sales or 200 NV transactions/yr; review can take up to 60 days.`,
+     statusText:`<strong>Legal</strong> via the new explicit Remote Retail Seller framework — but confirm how AB232's per‑cigar cap interacts with AB471's "actual cost" 30% remote‑sale tax before pricing.`,
+     source:`tax.nv.gov (2026‑09‑19)`},
+
+    {rank:20, state:"New Mexico", home:false, tax:"$0.50/cigar (capped)", score:6, status:"legal",
+     basis:`25% of "product value," <strong>capped at $0.50/cigar</strong>. NMSA 1978 §7‑12A‑3.`,
+     license:`Retailer License, NM RLD–ABC Division; <strong>up to $750/location application, $400/location renewal, annual</strong>. A separate distributor registration may also be required (NMSA Ch.7 Art.12A) since the excise tax is imposed on a distributor/first‑purchaser, not the retailer — unresolved double‑licensing risk.`,
+     statusText:`<strong>Legal</strong>, with conditions — NM explicitly defines/regulates "delivery sale" with age verification, rather than banning it.`,
+     source:`tax.newmexico.gov, rld.nm.gov (2026‑09‑19)`},
+
+    {rank:21, state:"Rhode Island", home:false, tax:"$0.50/cigar (capped)", score:7, status:"legal",
+     basis:`80% of wholesale cost, <strong>capped at $0.50/cigar</strong>. R.I. Gen. Laws Title 44 Ch.20.`,
+     license:`Tobacco Products Distributor License (Form TOB‑APP), RI Division of Taxation — explicitly open to out‑of‑state applicants; fee/bond unconfirmed.`,
+     statusText:`<strong>Upgraded to legal, with age‑verification conditions.</strong> Full text of §11‑9‑13.11 reviewed this pass: the operative prohibition and its $1,000 penalty are keyed specifically to sale/shipment <strong>to an individual under 21</strong> — it functions as an age‑verification/enforcement statute (PACT‑Act‑style), not a blanket ban on mail‑order sales to adults, as originally feared.`,
+     source:`law.justia.com (R.I. Gen. Laws §11‑9‑13.11, full text reviewed), tax.ri.gov (2026‑09‑28)`},
+
+    {rank:22, state:"South Carolina", home:false, tax:"$0.50/cigar (uncapped, scales with price)", score:4, status:"needs",
+     basis:`5% of manufacturer's price — same rate as general OTP; SC's statutory definition doesn't break cigars out separately. Exact subsection (commonly cited S.C. Code §12‑21‑620) unconfirmed.`,
+     license:`Wholesaler/distributor license + separate retail tobacco license, SCDOR; no distinct out‑of‑state/nonresident tobacco category confirmed; fee/renewal/bond all unknown.`,
+     statusText:`<strong>Needs confirmation</strong> — an uncorroborated non‑.gov source claims SC tobacco sales "must only be sold in a direct face‑to‑face exchange" (would effectively ban DTC); could not confirm or find this on a SCDOR .gov page.`,
+     source:`dor.sc.gov (2026‑09‑19)`},
+
+    {rank:23, state:"Wisconsin", home:false, tax:"$0.50/cigar (capped)", score:7, status:"legal",
+     basis:`71% of "actual cost to the distributor/remote retail seller" (acquisition‑cost basis), <strong>capped at $0.50/cigar</strong>. Wis. Stat. §139.76(1p).`,
+     license:`"Remote Retail Seller Permit" (Form CTV‑200), WI DOR; requires independent third‑party age verification; bond up to 3x avg monthly liability; exact fee/renewal cadence unconfirmed.`,
+     statusText:`<strong>Legal</strong> — WI statute affirmatively defines and permits "remote retail sale" of cigars, a deliberate legislative framework (2023 Act), not a silent gap.`,
+     source:`docs.legis.wisconsin.gov, revenue.wi.gov (2026‑09‑19)`},
+
+    {rank:24, state:"Kentucky", home:false, tax:"$0.60/cigar (rate cut, confirmed)", score:6, status:"needs",
+     basis:`<strong>Corrected this pass</strong>: HB 757 was in fact signed into law by Gov. Beshear, cutting the premium‑cigar rate from 15% to <strong>6% of wholesale price</strong>, effective July 1, 2026 (already in force). "Premium cigar" is now statutorily defined as a cigar weighing more than 6 lbs/1,000 units. KRS 138.140.`,
+     license:`Tobacco/Vapor Products Distributor License, KY DOR, <strong>$500/yr</strong>, due July 1. Eff. 1/1/2026, KY ABC (not DOR) took over tobacco retail licensing — interaction with remote/DTC sellers unclear.`,
+     statusText:`<strong>Needs confirmation</strong> — the tax‑rate question is now resolved, but no definitive DTC shipping‑legality statute/guidance was found either way.`,
+     source:`halfwheel.com, cigarrights.org, apps.legislature.ky.gov (26RS HB 757 enrolled text) (2026‑09‑28)`},
+
+    {rank:25, state:"Washington", home:false, tax:"$0.65/cigar (capped)", score:1, status:"banned",
+     basis:`95% of taxable sales price, <strong>capped at $0.65/cigar</strong>. RCW 82.26 / WAC 458‑20‑185.`,
+     license:`Cigarette/Tobacco Products distributor endorsement, WA DOR (~$650 app + $115/add'l location, $5,000 bond referenced for cigarette wholesalers — largely moot given the ban below).`,
+     statusText:`<strong>Banned.</strong> RCW 70.155.140 makes it illegal to ship most tobacco products ordered by phone/mail/internet directly to individual WA consumers — a direct, dispositive ban independent of licensing.`,
+     source:`dor.wa.gov, atg.wa.gov (2026‑09‑19)`},
+
+    {rank:26, state:"Tennessee", home:false, tax:"$0.66/cigar (uncapped, scales with price)", score:4, status:"needs",
+     basis:`6.6% of wholesale cost price, no cigar‑specific carve‑out/cap found — taxed identically to other OTP. TN DOR Tobacco Tax Manual.`,
+     license:`Tobacco Distributor License, <strong>$100/location</strong>; non‑residents licensed only if TN receives <strong>reciprocal privileges from the applicant's home state</strong> (verify against PA law); TN resident agent required.`,
+     statusText:`<strong>Needs confirmation</strong> — the specific bill is <strong>SB 2086</strong> ("Tobacco Product Retail Licensing Act"), which would force all tobacco/vapor sales in‑person and ban DTC cigar shipment; confirmed still pending/introduced, not enacted as of this pull. Do not assume current legality holds without a direct current‑code check closer to launch.`,
+     source:`wapp.capitol.tn.gov (SB 2086/HB 0968 status), halfwheel.com (2026‑09‑28)`},
+
+    {rank:27, state:"Ohio", home:false, tax:"$0.67/cigar (capped, inflation‑indexed)", score:7, status:"legal",
+     basis:`Lesser of 17% of wholesale price <strong>or an inflation‑adjusted per‑cigar cap</strong> — $0.65/cigar through 6/30/2026, <strong>$0.67/cigar effective 7/1/2026</strong> (R.C. 5743.63).`,
+     license:`Two paths: (1) OTP Distributor License (Form OTP‑1), $1,000/location/yr — for distributing to OH retailers; (2) "Seller of Tobacco/Vapor Products to Consumer" registration (R.C. 5743.62) — the actual DTC‑to‑consumer mechanism, monthly filing, bond unconfirmed.`,
+     statusText:`<strong>Legal</strong> — OH's criminal shipping ban (R.C. 2927.023) is scoped only to cigarettes/vapor/e‑smoking devices; R.C. 5743.62 explicitly taxes cigars "delivered to Ohio customers," confirming DTC is a lawful, regulated channel.`,
+     source:`tax.ohio.gov, codes.ohio.gov (2026‑09‑27)`},
+
+    {rank:28, state:"Indiana", home:false, tax:"$1.00/cigar (capped)", score:8, status:"legal",
+     basis:`30% of wholesale price, <strong>capped at $1.00/cigar</strong>. Indiana Code §6‑7‑2‑7.`,
+     license:`"Remote Seller Distributor's License" (IC §6‑7‑2‑8.5) — purpose‑built for out‑of‑state sellers; <strong>$25 fee</strong> (app &amp; renewal) + <strong>$1,000 bond</strong>; applies once economic‑nexus threshold met (>$100k sales or ≥200 transactions/yr).`,
+     statusText:`<strong>Legal</strong> — explicitly an e‑commerce/remote‑seller licensing framework. The cleanest, most DTC‑friendly framework found in this entire project.`,
+     source:`law.justia.com (Indiana Code), in.gov/dor (2026‑09‑19)`},
+
+    {rank:29, state:"Kansas", home:false, tax:"$1.00/cigar (uncapped)", score:6, status:"legal",
+     basis:`Confirmed 10% of wholesale sales price, K.S.A. 79‑3371 — a genuinely uniform rate with no cigar‑specific carve‑out found (a valid, confirmed finding, not a gap).`,
+     license:`<strong>Fully resolved this pass.</strong> Nonresident Tobacco Products Distributor's License (Form TB‑84), Kansas DOR, <strong>$25 fee</strong> + Tobacco Products Distributor's Tax Bond (Form TB‑85), <strong>minimum $1,000 per place of business</strong>; must appoint the KS Secretary of State as agent for service of process (Form TB‑144); monthly reports due the 20th of the following month.`,
+     statusText:`<strong>Leans legal</strong> — KS's mail‑order compliance statute (K.S.A. 79‑3333: age certification, invoicing, package‑marking) is scoped specifically to cigarettes, smokeless tobacco, and roll‑your‑own — it does not mention cigars, and no separate cigar‑specific ban was found. An inference from absence, not an affirmative permission — get final confirmation from KS DOR before relying on it.`,
+     source:`ksrevenue.gov (TB‑84/TB‑85/tb7.pdf), ksrevisor.gov (K.S.A. 79‑3371, 79‑3333) (2026‑09‑28)`},
+
+    {rank:30, state:"Missouri", home:false, tax:"$1.00/cigar (uncapped, low even so)", score:8, status:"legal",
+     basis:`10% of manufacturer's invoice price (before discounts), no cigar‑specific carve‑out/cap — one of the lowest OTP burdens in the country. Mo. Rev. Stat. Ch.149.`,
+     license:`Tobacco Products License (Form 2175), MO DOR; bond = 3x avg monthly liability, min $500; Wholesaler's License $100/yr.`,
+     statusText:`<strong>Legal, with conditions</strong> — MO's Division of Alcohol &amp; Tobacco Control issued an explicit industry circular (2020) confirming DTC delivery is permitted with a retail sales tax license, 21+ verification, adult‑signature delivery, and tax remittance. Genuinely favorable: low tax + explicit regulator guidance.`,
+     source:`dor.mo.gov, atc.dps.mo.gov (2026‑09‑19)`},
+
+    {rank:31, state:"Oregon", home:false, tax:"$1.00/cigar (capped)", score:7, status:"legal",
+     basis:`65% of wholesale sales price, <strong>capped at $1.00/cigar</strong> (Measure 108, eff. 1/1/2021). Correction to a common assumption: no inflation‑indexing mechanism was confirmed for this cap (Oregon's COLA escalator applies to moist snuff, not cigars) — treat as a flat $1.00 cap, not Ohio‑style indexed.`,
+     license:`Distributor's License (ORS 323.712) — <strong>no license fee</strong>; bond ~2x avg monthly/quarterly tax liability (case‑by‑case).`,
+     statusText:`<strong>Legal</strong> — Oregon's hard mail‑order ban (ORS 180.441) covers only cigarettes/vapes/smokeless, <strong>not cigars</strong>; the separate delivery‑sale framework (ORS 323.700–730) governs and permits compliant cigar delivery sales. Some aggregator sources incorrectly conflate these two regimes.`,
+     source:`oregon.gov (Dept. of Revenue), oregon.public.law (2026‑09‑27)`},
+
+    {rank:32, state:"West Virginia", home:false, tax:"$1.20/cigar (confirmed)", score:5, status:"needs",
+     basis:`<strong>Resolved this pass.</strong> Direct current statute text (WV Code §11‑17‑3, page dated April 2026) confirms: "effective July 1, 2016, the excise tax rate is twelve percent (12%) of the wholesale price" of tobacco products other than cigarettes — no cigar‑specific carve‑out. The earlier‑reported "51% effective 7/1/2025" and stale "7%" figures are both wrong; 12% is the current, confirmed rate.`,
+     license:`General WV Business Registration Certificate + tobacco products license/permit, WV State Tax Division; fee/bond for out‑of‑state distributors not confirmed.`,
+     statusText:`<strong>Needs confirmation</strong>, with a favorable clue: WV's delivery‑sales statute (§16‑9E‑2) explicitly <strong>excludes cigars</strong> from its "tobacco product" definition, suggesting no cigar‑specific delivery restriction — but a separate general retail‑licensing requirement may still apply.`,
+     source:`code.wvlegislature.gov/11-17-3/ (current statute text, verified), tax.wv.gov (2026‑09‑28)`},
+
+    {rank:33, state:"Mississippi", home:false, tax:"$1.50/cigar (uncapped)", score:4, status:"needs",
+     basis:`15% of manufacturer's list price — general "other tobacco products" rate, no cigar‑specific carve‑out or cap found.`,
+     license:`General tobacco permit (Miss. Code §27‑69‑5/7), $100/yr; nonresident dealers addressed at §27‑69‑79 (reciprocity with home‑state requirements); bond amount for nonresident permit unconfirmed.`,
+     statusText:`<strong>Needs confirmation</strong> — no explicit statute found either banning or authorizing DTC cigar shipment.`,
+     source:`dor.ms.gov (2026‑09‑19)`},
+
+    {rank:35, state:"Nebraska", home:false, tax:"$2.00/cigar (uncapped)", score:6, status:"legal",
+     basis:`20% of purchase price (first‑owner/wholesale basis), no per‑cigar cap (a proposed $0.50 cap did not pass).`,
+     license:`Currently no special remote‑seller license required. New "Remote Retail Seller" license created by LB212 (signed ~2/9/2026) <strong>takes effect January 1, 2027</strong> for sellers exceeding $100k NE sales or 200 transactions/yr; exact fee/bond unconfirmed.`,
+     statusText:`<strong>Legal</strong> — NE's existing vape/ENDS mail‑order ban (§28‑1429) does not apply to cigars; DTC is legal today and will simply require the new license once LB212 takes effect in 2027.`,
+     source:`revenue.nebraska.gov, nebraskalegislature.gov (2026‑09‑19)`},
+
+    {rank:36, state:"Wyoming", home:false, tax:"$2.00/cigar (uncapped, no confirmed cap)", score:4, status:"needs",
+     basis:`20% of wholesale purchase price, Wyo. Stat. §39‑18‑104; no per‑cigar cap confirmed enacted (one has been proposed/debated).`,
+     license:`Wholesaler License, WY DOR Excise Tax Division, <strong>$10/location</strong> (unusually cheap — may be a general/base fee, not nonresident‑specific); renewal/bond unconfirmed.`,
+     statusText:`<strong>Needs confirmation</strong> — no confirmed currently‑enacted statewide mail‑order ban found (a 2020 bill's enactment status is unresolved).`,
+     source:`law.justia.com (Wyoming Statutes), wyoleg.gov (2026‑09‑19)`},
+
+    {rank:37, state:"Georgia", home:false, tax:"$2.30/cigar (uncapped)", score:7, status:"legal",
+     basis:`23% of wholesale price for "other cigars" (little cigars taxed separately, 2.5¢/10). O.C.G.A. §48‑11‑2.`,
+     license:`"Tobacco Wholesaler/Distributor (Out‑of‑State)" license, GA DOR, ~$20/yr renewal; bond $1,000‑or‑1% of gross sales (renewal figure; initial out‑of‑state bond unconfirmed, may be $5,000).`,
+     statusText:`<strong>Legal</strong> — O.C.G.A. §48‑11‑4.2 authorizes licensed‑dealer delivery to consumers with age‑verification conditions. Note: an aggregator claim that "Georgia bans internet tobacco sales" was traced to law governing the <em>country</em> of Georgia, not the US state — a confirmed aggregator error, discarded here.`,
+     source:`dor.georgia.gov (2026‑09‑19)`},
+
+    {rank:38, state:"North Dakota", home:false, tax:"$2.80/cigar (uncapped, no cap found)", score:5, status:"restricted",
+     basis:`28% of wholesale purchase price, N.D.C.C. §57‑36‑25; no per‑cigar cap found.`,
+     license:`Distributor/wholesaler/manufacturer license, ND Attorney General's Office (Licensing Division) — <strong>$25 fee + $1,000 bond</strong>.`,
+     statusText:`<strong>Restricted / legal‑with‑conditions</strong> — N.D.C.C. Ch.51‑32 is a PACT‑Act‑style conditional framework (age verification, notice, carrier verification), not an outright ban, but whether cigars fall within its "tobacco product" definition is unconfirmed.`,
+     source:`tax.nd.gov, attorneygeneral.nd.gov (2026‑09‑27)`},
+
+    {rank:39, state:"Delaware", home:false, tax:"$3.00/cigar (confirmed stable)", score:5, status:"needs",
+     basis:`Flat 30% of wholesale purchase price today. <strong>Confirmed this pass:</strong> HB 215 (as House Substitute HS 1), which advanced through committee in 2026, explicitly <strong>keeps premium cigars at 30%</strong> while raising the general OTP rate to 40% — final floor passage/signature unconfirmed, but the premium‑cigar number is stable at 30% regardless of the bill's fate. Cigarette tax would rise $2.10→$3.60/pack, license fees $200→$400 (wholesaler)/$50→$100 (retailer) if enacted, effective 9/1/2026 (tax) and 1/1/2027 (fees).`,
+     license:`DE Wholesaler License, Division of Revenue; current fee ~$200; would rise to $400 under HB215 if enacted; bond unconfirmed.`,
+     statusText:`<strong>Needs confirmation</strong> — no explicit DTC statute found either way; broad wholesaler‑licensing framework suggests DTC may be permitted with licensing.`,
+     source:`legis.delaware.gov (HB 215 / HS 1 for HB 215), delawarepublic.org, housedems.delaware.gov (2026‑09‑28)`},
+
+    {rank:40, state:"New Jersey", home:false, tax:"$3.00/cigar (risk removed)", score:5, status:"needs",
+     basis:`30% of wholesale price (price distributor pays manufacturer), N.J.S.A. 54:40B‑3; no per‑cigar cap. <strong>Resolved this pass:</strong> the proposed rate‑hike bill S4820 (would have raised the rate to 50%) was marked "Dead" on January 12, 2026 and did not advance — the 30% rate is no longer under near‑term threat. NJ Tax Court (Apr. 2025, <em>Barrister Cigars</em>) separately clarified the tax base must use actual documented manufacturer price.`,
+     license:`Distributor/Wholesaler license, N.J.S.A. 54:40B, <strong>$350/yr</strong>, renews each March 31; bond "if the Director deems it necessary" (amount unconfirmed).`,
+     statusText:`<strong>Needs confirmation</strong> — no NJ statute banning DTC cigar shipping found, but also no explicit remote‑seller registration pathway (unlike NV/NE/TX) confirmed either.`,
+     source:`billtrack50.com (S4820 status), nj.gov/treasury/taxation (2026‑09‑28)`},
+
+    {rank:41, state:"South Dakota", home:false, tax:"$3.50/cigar (uncapped)", score:6, status:"legal",
+     basis:`35% of wholesale price, general OTP rate applied to cigars, no cigar‑specific cap found.`,
+     license:`Dedicated "Cigar Shipper License" (SDCL Ch.10‑50C) — purpose‑built, <strong>$100/yr</strong>, annual (July–June); adult‑signature required on delivery; bond unconfirmed. A second license ("Retail Nicotine License") will additionally be required starting <strong>January 1, 2027</strong> (SB 221).`,
+     statusText:`<strong>Legal</strong> since January 1, 2022, via explicit statutory carve‑out — SD DOR's own newsroom confirms authorized cigar shippers may ship to SD consumers.`,
+     source:`dor.sd.gov, sdlegislature.gov (2026‑09‑19)`},
+
+    {rank:42, state:"Colorado", home:false, tax:"$3.60/cigar → $4.70 in 2027", score:6, status:"legal",
+     basis:`Premium cigars: 36% of Manufacturer's List Price currently, <strong>rising to 47% effective July 1, 2027</strong> (Prop EE phase‑in). Exact current‑rate composition needs confirmation.`,
+     license:`Distinct "Remote Retail Seller" category (HB23‑1015, eff. 1/1/2024) purpose‑built for out‑of‑state cigar/pipe‑tobacco shippers; CO Tobacco Products Tax License, <strong>~$10/yr</strong>, quarterly filing; bond unconfirmed.`,
+     statusText:`<strong>Legal</strong> — CO's general DTC tobacco‑shipping prohibition has an explicit 2024 carve‑out for cigars/pipe tobacco.`,
+     source:`tax.colorado.gov (2026‑09‑19)`},
+
+    {rank:43, state:"Massachusetts", home:false, tax:"$4.00/cigar (confirmed uncapped)", score:4, status:"needs",
+     basis:`40% of wholesale price, G.L. c.64C §7B. <strong>Confirmed this pass:</strong> direct review of the statute and DOR guidance (TIR 08‑17) found no premium‑cigar per‑cigar cap — 40% is uncapped. Closes the "cap unconfirmed" gap with a negative (no‑cap) finding.`,
+     license:`"Nonresident Cigar Distributor" license (G.L. c.64C §7B) — explicitly for out‑of‑state shippers, but statute language frames it as shipping to <strong>retailers</strong>, not consumers; whether it's the correct vehicle for DTC is unconfirmed. Fee/bond unconfirmed.`,
+     statusText:`<strong>Needs confirmation</strong> — not resolved either way.`,
+     source:`mass.gov (TIR 08‑17, G.L. c.64C §7B, reviewed directly) (2026‑09‑28)`},
+
+    {rank:44, state:"Vermont", home:false, tax:"$4.00/cigar (flat, tiered)", score:1, status:"banned",
+     basis:`Tiered: 92% of wholesale for cigars ≤$2.17 wholesale; <strong>flat $2.00/cigar</strong> for $2.18–$9.99; <strong>flat $4.00/cigar</strong> for ≥$10.00 wholesale (our benchmark tier). 32 V.S.A. §7811.`,
+     license:`Wholesale Cigarette and Tobacco Dealer License (Form CTT‑647), VT Dept. of Taxes (transferring to a new Dept. of Liquor and Lottery 7/1/2027); fee/bond unconfirmed.`,
+     statusText:`<strong>Banned.</strong> 7 V.S.A. §1010 prohibits mail/phone/internet sale of tobacco products directly to individual VT consumers — dispositive regardless of tax/license mechanics.`,
+     source:`tax.vermont.gov, ago.vermont.gov (2026‑09‑19)`},
+
+    {rank:45, state:"Illinois", home:false, tax:"$4.50/cigar today → $0.75 cap in 2027", score:5, status:"needs",
+     basis:`Currently 45% of wholesale price (eff. 7/1/2025, up from 36%) — no carve‑out today. A $0.75/cigar cap plus a new "remote retail seller" category (≥$100k IL sales/yr) both take effect <strong>January 1, 2027</strong> (SB 3019, signed 6/16/2026) — a materially better regime, worth planning toward.`,
+     license:`Current (pre‑2027) remote‑seller licensing requirements unconfirmed — genuine gap.`,
+     statusText:`<strong>Needs confirmation</strong> for the current regime; the 2027 framework is well documented and favorable.`,
+     source:`tax.illinois.gov (2026‑09‑19)`},
+
+    {rank:46, state:"California", home:false, tax:"~$5.11/cigar (uncapped)", score:5, status:"restricted",
+     basis:`54.27% of wholesale cost through 6/30/2026, <strong>51.08% effective 7/1/2026</strong> (current as of this pull), no cigar‑specific cap.`,
+     license:`Cigarette &amp; Tobacco Products Distributor License + Tobacco Products Distributor Tax account + federal PACT Act registration; retail license fee rising to $450 (from $265) for applications from 7/1/2026 on; bond/renewal cadence for an out‑of‑state distributor unconfirmed.`,
+     statusText:`<strong>Legal, but heavily restricted</strong> — CA law (AB 3218/SB 1230) requires delivery sellers to follow all CA/local rules as if selling in‑state, and bars online sale of tobacco not on CA's Unflavored Tobacco List; flavored premium cigars (≥$12 wholesale, exempt in brick‑and‑mortar) may still be illegal to ship DTC — this flavor/delivery gap needs confirmation. Highest overall compliance complexity found in this project.`,
+     source:`cdtfa.ca.gov (2026‑09‑19)`},
+
+    {rank:34, state:"Maryland", home:false, tax:"$1.50/cigar (major correction)", score:8, status:"legal",
+     basis:`<strong>Major correction this pass.</strong> Maryland's OTP Tax Bulletin (TT‑78) shows a three‑tier structure, not one flat rate: general OTP (pipe tobacco, snuff) = 30%; <strong>premium cigars = 15% of wholesale price</strong>; non‑premium/"other" cigars = 70%. SB 362 (2024) raised cigarette and general‑OTP rates but explicitly excluded premium cigars and pipe tobacco from that increase — the favorable 15% premium‑cigar rate is confirmed still in force. "Premium cigar" (Md. Bus. Reg. §16.5‑101 / COMAR 03.02.02.09) = hand‑rolled, whole‑tobacco‑leaf wrapper/binder/filler, no tips/filters/nontobacco mouthpiece — the standard definition TTC's inventory should meet if unflavored/unfiltered.`,
+     license:`<strong>New finding — "Remote Tobacco Seller License"</strong> (ATCC Form 613‑1), issued by the Comptroller's Alcohol, Tobacco &amp; Cannabis Commission, specifically for sellers of premium cigars and pipe tobacco shipping to MD consumers remotely. <strong>$25 annual fee / $30 renewal</strong> — cheap. Requires only proof of an active tobacco license in the applicant's home state (TTC's existing PA license qualifies) and MD Workers' Comp compliance. Only the specific premium‑cigar products identified on the application may ship to MD. Bond: not found — confirm directly with ATCC (443‑300‑6990).`,
+     statusText:`<strong>Upgraded to legal — this was the single highest‑stakes open question in the first draft, and it resolves favorably.</strong> Md. Bus. Reg. §16.5‑217(b)(1) exempts "premium cigars or pipe tobacco" sold by a "licensed other tobacco products retailer or licensed tobacconist" from MD's general mail‑order ban — and the newly found Remote Tobacco Seller License is the out‑of‑state‑accessible license built for exactly this purpose (unlike the county‑Clerk‑issued retailer/tobacconist license, which does appear to require MD premises). A no‑premises PA retailer shipping only qualifying premium cigars looks legal here.`,
+     source:`atcc.maryland.gov (Remote Tobacco Seller License 613‑1, bl_tt78.pdf), law.justia.com (Md. Bus. Reg. §16.5‑217, §16.5‑101; Md. Tax‑Gen. §12‑101) (2026‑09‑28)`},
+
+    {rank:47, state:"Maine", home:false, tax:"$7.50/cigar (uncapped)", score:4, status:"needs",
+     basis:`75% of wholesale price, <strong>up from 43%, effective January 5, 2026</strong> — one of the largest single‑year jumps found in this project. 36 M.R.S. §4403.`,
+     license:`Maine Revenue Services Tobacco Distributor License — statute explicitly includes "remote retail seller" within the taxable "distributor" definition (a promising, purpose‑built‑sounding framework), but exact registration threshold, fee, and bond are unconfirmed.`,
+     statusText:`<strong>Needs confirmation</strong> — ME's statutory language contemplates and regulates "delivery sales"/"remote retail sellers" (suggesting DTC is legal if registered), but no explicit confirmation for cigars vs. an outright ban was found.`,
+     source:`maine.gov/revenue (2026‑09‑19)`},
+
+    {rank:48, state:"New York", home:false, tax:"$7.50/cigar (uncapped)", score:3, status:"restricted",
+     basis:`75% of wholesale price, <strong>no per‑cigar cap under current law</strong> (NY Tax Law §471‑b) — one of the most aggressive cigar tax burdens in the country. Pending bills (S93, S2133/A5284) would add a 50¢ cap — not enacted; do not assume the cap is in effect.`,
+     license:`Appointment as a Distributor of Tobacco Products (Form MT‑202), NY DTF; no stated fee found; monthly return (Form MT‑203) due the 20th; bond likely required but amount unconfirmed.`,
+     statusText:`<strong>Restricted / needs confirmation</strong> — NY Public Health Law §1399‑LL bans common‑carrier shipment of "cigarettes" to unlicensed NY addresses; whether its "cigarette" definition sweeps in large/premium cigars is unconfirmed and is a real compliance risk given NY's aggressive enforcement posture.`,
+     source:`tax.ny.gov, nysenate.gov (2026‑09‑19)`},
+
+    {rank:49, state:"Utah", home:false, tax:"$8.60/cigar today → legal/capped 2027", score:1, status:"banned",
+     basis:`Currently <strong>86% of actual cost, no cap</strong> — the highest cigar excise rate in the country. Effective <strong>January 1, 2027</strong>, the rate stays 86% but becomes <strong>capped at $0.50/cigar for remote sales</strong> (2026 HB447 + SB210).`,
+     license:`Currently no functioning remote‑seller license (DTC is banned). Effective 1/1/2027: license from Utah State Tax Commission, <strong>$500–$1,500 surety bond</strong>, third‑party age verification, adult‑signature delivery, quarterly tax remittance.`,
+     statusText:`<strong>Banned today</strong> (Utah Code §76‑10‑105.1, criminal; §59‑14‑509, civil penalty up to $5,000/violation). Confirmed scheduled repeal effective January 1, 2027 (UCA §59‑14‑902, per Utah DHHS's own tobaccolaws.utah.gov) — "little cigars" remain excluded from the repeal, only standard/premium cigars and pipe tobacco get the new pathway.`,
+     source:`tobaccolaws.utah.gov, tax.utah.gov (2026‑09‑19)`}
+  ];
+
+  var STATUS_LABEL = { legal: "Legal", restricted: "Restricted", needs: "Needs confirmation", banned: "Banned" };
+  var SCORE_COLOR = function(s){
+    if (s >= 8) return "var(--good)";
+    if (s >= 6) return "var(--accent)";
+    if (s >= 4) return "var(--warn)";
+    return "var(--bad)";
+  };
+
+  var rowsEl = document.getElementById("rows");
+  var statsEl = document.getElementById("stats");
+  var countLineEl = document.getElementById("countLine");
+  var searchEl = document.getElementById("search");
+  var statusEl = document.getElementById("statusFilter");
+  var sortEl = document.getElementById("sortBy");
+  var toggleAllBtn = document.getElementById("toggleAll");
+  var allExpanded = false;
+
+  function renderStats(){
+    var counts = { legal:0, restricted:0, needs:0, banned:0 };
+    DATA.forEach(function(d){ counts[d.status]++; });
+    statsEl.innerHTML =
+      '<div class="stat legal"><div class="n">' + counts.legal + '</div><div class="l">Legal</div></div>' +
+      '<div class="stat restricted"><div class="n">' + counts.restricted + '</div><div class="l">Restricted</div></div>' +
+      '<div class="stat needs"><div class="n">' + counts.needs + '</div><div class="l">Needs confirmation</div></div>' +
+      '<div class="stat banned"><div class="n">' + counts.banned + '</div><div class="l">Banned</div></div>';
+  }
+
+  function taxSortKey(d){
+    // parse leading dollar figure for numeric sort; fall back to rank
+    var m = d.tax.match(/\$~?([\d.]+)/);
+    return m ? parseFloat(m[1]) : d.rank;
+  }
+
+  function render(){
+    var q = searchEl.value.trim().toLowerCase();
+    var statusWanted = statusEl.value;
+    var sortMode = sortEl.value;
+
+    var list = DATA.filter(function(d){
+      var matchesQ = !q || d.state.toLowerCase().indexOf(q) !== -1;
+      var matchesStatus = statusWanted === "all" || d.status === statusWanted;
+      return matchesQ && matchesStatus;
+    });
+
+    list.sort(function(a,b){
+      if (sortMode === "score") return b.score - a.score || a.rank - b.rank;
+      if (sortMode === "name") return a.state.localeCompare(b.state);
+      return taxSortKey(a) - taxSortKey(b);
+    });
+
+    countLineEl.textContent = "Showing " + list.length + " of " + DATA.length + " jurisdictions";
+
+    rowsEl.innerHTML = list.map(function(d){
+      return '' +
+      '<li class="row" data-rank="' + d.rank + '">' +
+        '<div class="row-head" role="button" tabindex="0">' +
+          '<span class="rank num">' + d.rank + '</span>' +
+          '<span class="state-name"><span class="sn">' + d.state + '</span>' + (d.home ? '<span class="home-tag">Home state</span>' : '') + '</span>' +
+          '<span class="tax-figure">' + d.tax + '</span>' +
+          '<span class="pill ' + d.status + '">' + STATUS_LABEL[d.status] + '</span>' +
+          '<span class="score-wrap"><span class="score-bar"><i style="width:' + (d.score/9*100) + '%;background:' + SCORE_COLOR(d.score) + '"></i></span><span class="score-num">' + d.score + '</span></span>' +
+          '<svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</div>' +
+        '<div class="row-body"><div><div class="detail">' +
+          '<div class="field"><div class="k">Cigar excise tax — rate &amp; basis</div><div class="v">' + d.basis + '</div></div>' +
+          '<div class="field"><div class="k">Remote seller license &amp; bond</div><div class="v">' + d.license + '</div></div>' +
+          '<div class="field"><div class="k">DTC shipping legal status</div><div class="v">' + d.statusText + '</div></div>' +
+          '<div class="source-line">Source: <span class="mono">' + d.source + '</span></div>' +
+        '</div></div>' +
+      '</li>';
+    }).join("");
+
+    Array.prototype.forEach.call(rowsEl.querySelectorAll(".row-head"), function(head){
+      head.addEventListener("click", function(){
+        head.parentElement.classList.toggle("open");
+      });
+      head.addEventListener("keydown", function(e){
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); head.click(); }
+      });
+    });
+  }
+
+  searchEl.addEventListener("input", render);
+  statusEl.addEventListener("change", render);
+  sortEl.addEventListener("change", render);
+  toggleAllBtn.addEventListener("click", function(){
+    allExpanded = !allExpanded;
+    toggleAllBtn.textContent = allExpanded ? "Collapse all" : "Expand all";
+    Array.prototype.forEach.call(rowsEl.querySelectorAll(".row"), function(r){
+      r.classList.toggle("open", allExpanded);
+    });
+  });
+
+  renderStats();
+  render();
+})();
+</script>
