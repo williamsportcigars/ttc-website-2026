@@ -1,0 +1,443 @@
+<title>Cigar Registration Playbook</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #eef1ee;
+    --surface: #ffffff;
+    --surface-2: #e3e8e3;
+    --ink: #182420;
+    --ink-soft: #55645d;
+    --ink-faint: #7c8a83;
+    --border: #cfd7cf;
+    --accent: #2c5f57;
+    --accent-soft: #d9e6e2;
+    --brass: #8a6a30;
+    --good: #2f7d4f;
+    --good-soft: #dcefdf;
+    --warn: #a8631c;
+    --warn-soft: #f3e6d1;
+    --bad: #a83a2b;
+    --bad-soft: #f6dcd6;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121815;
+      --surface: #1a2119;
+      --surface-2: #222a22;
+      --ink: #e8ece8;
+      --ink-soft: #aab5ac;
+      --ink-faint: #7e8a82;
+      --border: #34403a;
+      --accent: #7bbcae;
+      --accent-soft: #1f3733;
+      --brass: #d2ac6b;
+      --good: #7bc797;
+      --good-soft: #1d3324;
+      --warn: #e0a35c;
+      --warn-soft: #3a2c16;
+      --bad: #e2897b;
+      --bad-soft: #3b1f1a;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121815;
+    --surface: #1a2119;
+    --surface-2: #222a22;
+    --ink: #e8ece8;
+    --ink-soft: #aab5ac;
+    --ink-faint: #7e8a82;
+    --border: #34403a;
+    --accent: #7bbcae;
+    --accent-soft: #1f3733;
+    --brass: #d2ac6b;
+    --good: #7bc797;
+    --good-soft: #1d3324;
+    --warn: #e0a35c;
+    --warn-soft: #3a2c16;
+    --bad: #e2897b;
+    --bad-soft: #3b1f1a;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, sans-serif;
+    padding-inline: 16px;
+    padding-block: 20px 48px;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; margin: 0; text-wrap: balance; }
+  code, .mono, .num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  a { color: var(--accent); }
+
+  header.page {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 20px;
+    margin-bottom: 6px;
+  }
+  header.page h1 { font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.1rem); }
+  header.page .updated { font-size: 0.78rem; color: var(--ink-faint); white-space: nowrap; }
+  .tagline { color: var(--ink-soft); font-size: 0.92rem; max-width: 58ch; margin-bottom: 16px; }
+
+  .disclaimer {
+    background: var(--warn-soft);
+    border: 1px solid var(--warn);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    margin: 0 0 22px;
+  }
+  .disclaimer strong.lead { color: var(--warn); font-family: "Fraunces", serif; font-size: 0.95rem; }
+
+  .progress-bar-wrap {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+    padding: 12px 14px; margin-bottom: 20px;
+  }
+  .progress-track { flex: 1; height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--good); border-radius: 4px; transition: width 0.25s ease; width: 0%; }
+  .progress-label { font-family: "IBM Plex Mono"; font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+
+  section.block { margin-bottom: 28px; }
+  section.block h2 { font-size: 1.15rem; margin-bottom: 8px; }
+  section.block > p.lede { font-size: 0.88rem; color: var(--ink-soft); margin: 0 0 14px; line-height: 1.55; }
+
+  .step-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+  .step-list li {
+    counter-increment: step;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px 12px 44px;
+    position: relative;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .step-list li::before {
+    content: counter(step);
+    position: absolute; left: 12px; top: 12px;
+    width: 22px; height: 22px; border-radius: 5px;
+    background: var(--accent-soft); color: var(--accent);
+    font-family: "IBM Plex Mono"; font-weight: 600; font-size: 0.8rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-list li strong { color: var(--ink); }
+
+  .flag-block {
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+  .flag-block.bad { background: var(--bad-soft); border: 1px solid var(--bad); }
+  .flag-block.warn { background: var(--warn-soft); border: 1px solid var(--warn); }
+  .flag-block .ft { font-family: "Fraunces", serif; font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+  .flag-block.bad .ft { color: var(--bad); }
+  .flag-block.warn .ft { color: var(--warn); }
+  .flag-block ul { margin: 6px 0 0; padding-left: 1.1em; }
+
+  .controls {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 5;
+    background: var(--bg);
+    padding-block: 10px;
+    margin-bottom: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .controls input, .controls select, .controls button {
+    font: inherit;
+    font-size: 0.86rem;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .controls input { flex: 1 1 160px; min-width: 130px; }
+  .controls button.ghost {
+    background: transparent; color: var(--accent); border-color: var(--accent); cursor: pointer;
+  }
+  .controls button.ghost:hover { background: var(--accent-soft); }
+
+  ul.rows { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    gap: 4px 12px;
+    align-items: start;
+  }
+  .row.checked { opacity: 0.55; }
+  .row input[type="checkbox"] {
+    width: 18px; height: 18px; margin-top: 2px; accent-color: var(--good); cursor: pointer;
+  }
+  .row-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; grid-column: 2; }
+  .row-head .sn { font-family: "Fraunces", serif; font-weight: 600; font-size: 1.02rem; }
+  .row-head .score { font-family: "IBM Plex Mono"; font-size: 0.76rem; color: var(--brass); font-weight: 600; }
+  .row-head .tax { font-family: "IBM Plex Mono"; font-size: 0.76rem; color: var(--ink-faint); }
+  .row-fields { grid-column: 2; display: grid; gap: 4px; margin-top: 4px; font-size: 0.85rem; line-height: 1.5; }
+  .row-fields .f k { color: var(--ink-faint); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 6px; }
+  .row-fields .note { color: var(--ink-soft); font-style: italic; }
+  .row-badges { grid-column: 3; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; white-space: nowrap; }
+  .badge { font-family: "IBM Plex Mono"; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; }
+  .badge.fee { background: var(--accent-soft); color: var(--accent); }
+  .badge.bond { background: var(--warn-soft); color: var(--warn); }
+  .badge.nobond { background: var(--good-soft); color: var(--good); }
+
+  .count-line { font-size: 0.78rem; color: var(--ink-faint); margin: 10px 2px 6px; }
+
+  footer.final { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--ink-faint); text-align: center; }
+
+  @media (max-width: 640px) {
+    .row { grid-template-columns: 22px 1fr; }
+    .row-badges { grid-column: 2; flex-direction: row; align-items: center; margin-top: 4px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="page">
+    <h1>Cigar Registration Playbook</h1>
+    <div class="updated">Built 2026‑09‑28</div>
+  </header>
+  <div class="tagline">A working checklist for registering The Tobacco Center to ship cigars into every state where a pathway exists — license names, agencies, fees, and what to do first. Companion to the Cigar Compliance Atlas.</div>
+
+  <div class="disclaimer">
+    <strong class="lead">Compliance research draft — not legal advice.</strong>
+    This is a filing checklist built from research, not a substitute for counsel. Fees and bond amounts marked "unconfirmed" should be verified with the agency before you submit anything. Get sign‑off from a tobacco‑compliance attorney or service before filing in any state.
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label" id="progressLabel">0 / 0 filed</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <button class="ghost" id="resetProgress" type="button" style="font-size:0.76rem;padding:5px 8px;">Reset</button>
+  </div>
+
+  <section class="block">
+    <h2>Before you file anywhere</h2>
+    <p class="lede">Steps that apply regardless of which state you're registering in. Do these once, up front.</p>
+    <ol class="step-list">
+      <li><strong>Confirm your PA license is current and in good standing.</strong> Several states' applications (Maryland's Remote Tobacco Seller License, Tennessee's reciprocity requirement) explicitly ask for proof of an active home‑state tobacco license — have a copy ready to attach.</li>
+      <li><strong>Get a federal EIN</strong> if you don't already file under one, and register for federal PACT Act reporting with the ATF if you ever sell cigarettes, smokeless, RYO, or vapor products alongside cigars (cigars themselves are exempt from PACT Act registration).</li>
+      <li><strong>Check whether the state requires Secretary‑of‑State foreign‑entity registration</strong> before it will issue a tobacco license. A few states (Kansas, Massachusetts's nonresident‑distributor track, others) tie the tobacco application to appointing an in‑state agent for service of process — this is usually a separate, quick filing, but do it first so it doesn't hold up the tobacco license.</li>
+      <li><strong>Set up one age‑verification method that satisfies everyone.</strong> Nearly every state's delivery‑sale statute requires either (a) a commercial/independent third‑party age‑verification service at checkout, or (b) an adult (21+) signature required at delivery, or both. A single compliant checkout flow (e.g. an ID‑verification vendor) plus a carrier delivery option requiring adult signature covers the large majority of states in one setup.</li>
+      <li><strong>Set your shipping method accordingly.</strong> Cigars are exempt from the federal USPS non‑mailability rule, but several states still require a specific delivery method (signature‑required, ID‑checked) regardless of carrier — UPS and FedEx both offer adult‑signature‑required services that satisfy this in every state that asks for it.</li>
+      <li><strong>Decide whether to do this yourself or hand it to a service.</strong> With ~44 separate state filings, most retailers at this scale use a multi‑state tobacco licensing/compliance service (or a tobacco‑compliance attorney) rather than filing each one manually — worth pricing out before you start, especially for the states with bonds attached, since a compliance service can often bundle bonding.</li>
+    </ol>
+  </section>
+
+  <section class="block">
+    <h2>Do not file in these states</h2>
+    <div class="flag-block bad">
+      <div class="ft">Confirmed banned or barred — no license makes these shippable today</div>
+      <ul>
+        <li><strong>Vermont</strong> — 7 V.S.A. §1010 bans mail/phone/internet tobacco sales to consumers outright.</li>
+        <li><strong>Washington</strong> — RCW 70.155.140 bans shipment of most tobacco products directly to consumers.</li>
+        <li><strong>Utah</strong> — banned today (Utah Code §76‑10‑105.1); a licensed pathway opens January 1, 2027 — put this on your calendar, not your current filing list.</li>
+        <li><strong>Arkansas</strong> — its online‑cigar‑sale rule requires both an Arkansas physical presence and sourcing from an AR‑permitted wholesaler; a remote‑only seller cannot qualify.</li>
+        <li><strong>Iowa</strong> — Iowa Code Ch.453A prohibits delivery sales of cigars to consumers outright; only vapor/alternative‑nicotine products have a delivery‑sale permit pathway there.</li>
+      </ul>
+    </div>
+    <div class="flag-block warn">
+      <div class="ft">Call before you file</div>
+      <ul>
+        <li><strong>New Hampshire</strong> — the tax exemption for premium cigars is solid, but the retail‑licensing statute runs on a different, broader "tobacco product" definition with no premium‑cigar carve‑out, and no out‑of‑state "remote seller" license option was found. Call NH DRA (603‑230‑4359) or the NH Liquor Commission to ask directly whether a no‑premises out‑of‑state retailer can be licensed, before filing anything.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>States to register in</h2>
+    <p class="lede">Sorted by efficacy score by default (best opportunities first) — switch to alphabetical if you're working through them geographically. Check a state off once you've filed; your progress is saved in this browser.</p>
+
+    <div class="controls">
+      <input id="search" type="search" placeholder="Search state…" autocomplete="off" />
+      <select id="sortBy">
+        <option value="score">Sort: priority (best first)</option>
+        <option value="name">Sort: state A→Z</option>
+        <option value="fee">Sort: fee (low→high)</option>
+      </select>
+      <select id="filterBy">
+        <option value="all">All states</option>
+        <option value="unfiled">Not yet filed</option>
+        <option value="filed">Already filed</option>
+        <option value="bond">Requires a bond</option>
+        <option value="free">No fee</option>
+      </select>
+    </div>
+
+    <div class="count-line" id="countLine"></div>
+    <ul class="rows" id="rows"></ul>
+  </section>
+
+  <footer class="final">Prepared for The Tobacco Center (Williamsport, PA). Produced by an AI research process — not reviewed by a licensed attorney. Not legal advice. See the full <strong>Cigar Compliance Atlas</strong> for legal‑status detail behind each of these filings.</footer>
+</div>
+
+<script>
+(function(){
+  var STATES = [
+    {state:"District of Columbia", score:8, tax:"$0.00", license:"Basic Business License — Cigarette Wholesale/Retail endorsement", agency:"DC DLCP + OTR", fee:"$99 (2‑yr) or $198 (4‑yr)", bond:"None found", renewal:"2 or 4 yr", contact:"dlcp.dc.gov · otr.cfo.dc.gov (Form FR‑500 tax reg.)", note:"Ship only non‑flavored premium cigars — DC's flavor ban reaches mail order."},
+    {state:"Florida", score:9, tax:"$0.00", license:"Cigar Wholesale Dealer/Distributor permit", agency:"FL DBPR / ABT", fee:"~$25 (unconfirmed for cigar‑only tier)", bond:"Possibly $1,000 — confirm applicability", renewal:"Annual (typical)", contact:"myfloridalicense.com", note:"Zero excise tax on cigars; confirm the permit category fits a pure DTC retailer."},
+    {state:"Texas", score:9, tax:"~$0.0075/cigar", license:"Remote Retail Seller Permit", agency:"TX Comptroller", fee:"$180", bond:"Unconfirmed", renewal:"Confirm cadence", contact:"comptroller.texas.gov — Form AP‑175 family", note:"Purpose‑built for exactly this business model."},
+    {state:"Oklahoma", score:7, tax:"$0.09/cigar", license:"Wholesaler/distributing‑agent license", agency:"Oklahoma Tax Commission", fee:"$250/yr", bond:"$25,000 surety", renewal:"Annual", contact:"oklahoma.gov (OTC)", note:"No distinct remote‑seller category found — this is the standard wholesaler license. OK exempts tobacco from general sales tax once excise is paid."},
+    {state:"Arizona", score:8, tax:"$0.218/cigar", license:"Tobacco Distributor License", agency:"AZ DOR", fee:"$25/location, annual", bond:"Unconfirmed for cigar‑only", renewal:"Annual", contact:"azdor.gov — apply via AZ Luxury Tax Online", note:"Cigars are explicitly carved out of AZ's delivery‑sales ban."},
+    {state:"North Carolina", score:8, tax:"$0.30/cigar (capped)", license:"OTP Wholesale Dealer License (Form B‑A‑2)", agency:"NCDOR", fee:"$25", bond:"2x avg monthly liability, min $2,000/max $2,000,000", renewal:"~Biennial", contact:"ncdor.gov", note:"Exempt from NC's stricter delivery‑sale reporting regime."},
+    {state:"Virginia", score:8, tax:"$0.30/cigar (capped)", license:"Remote Retail Seller's License (Form RS‑1)", agency:"Virginia Tax", fee:"$600 / 3 years", bond:"Unclear for this tier", renewal:"Triennial", contact:"tax.virginia.gov", note:"One of the most deliberately built DTC pathways found in this project."},
+    {state:"Kentucky", score:8, tax:"$0.60/cigar", license:"Tobacco/Vapor Products Distributor License", agency:"KY DOR", fee:"$500/yr, due July 1", bond:"Unconfirmed", renewal:"Annual", contact:"revenue.ky.gov", note:"Premium cigars excluded entirely from KY's shipping‑restriction statute."},
+    {state:"Ohio", score:7, tax:"$0.67/cigar (capped)", license:"\"Seller of Tobacco/Vapor Products to Consumer\" registration (R.C. 5743.62)", agency:"Ohio Dept. of Taxation", fee:"No distinct fee found for this registration (separate $1,000/yr OTP Distributor License exists for wholesale distribution)", bond:"Unconfirmed", renewal:"Monthly filing", contact:"tax.ohio.gov", note:"This registration — not the $1,000 distributor license — is the DTC‑specific pathway."},
+    {state:"Indiana", score:8, tax:"$1.00/cigar (capped)", license:"Remote Seller Distributor's License (IC §6‑7‑2‑8.5)", agency:"Indiana DOR", fee:"$25", bond:"$1,000", renewal:"Annual", contact:"in.gov/dor", note:"Cleanest, most purpose‑built framework found in this entire project."},
+    {state:"Missouri", score:8, tax:"$1.00/cigar", license:"Tobacco Products License (Form 2175) + Wholesaler's License", agency:"MO DOR", fee:"$100/yr (wholesaler)", bond:"3x avg monthly liability, min $500", renewal:"Annual", contact:"dor.mo.gov", note:"ATC's own 2020 circular explicitly confirms DTC delivery is permitted."},
+    {state:"Oregon", score:7, tax:"$1.00/cigar (capped)", license:"Distributor's License (ORS 323.712)", agency:"Oregon Dept. of Revenue", fee:"No license fee", bond:"~2x avg monthly/quarterly tax liability", renewal:"Confirm cadence", contact:"oregon.gov", note:"Oregon's hard mail‑order ban doesn't reach cigars — only cigarettes/vapes/smokeless."},
+    {state:"West Virginia", score:7, tax:"$1.20/cigar", license:"Business Registration Certificate + tobacco products license/permit", agency:"WV State Tax Division", fee:"Unconfirmed", bond:"Unconfirmed for out‑of‑state distributors", renewal:"Confirm cadence", contact:"tax.wv.gov", note:"Cigars are excluded from WV's delivery‑sales compliance statute entirely."},
+    {state:"Maryland", score:8, tax:"$1.50/cigar", license:"Remote Tobacco Seller License (ATCC Form 613‑1)", agency:"MD Comptroller — ATCC", fee:"$25/yr, $30 renewal", bond:"Unconfirmed — ask when applying", renewal:"Annual", contact:"atcc.maryland.gov · 443‑300‑6990", note:"Only the specific premium‑cigar products listed on the application may ship to MD — list your full catalog."},
+    {state:"Georgia", score:7, tax:"$2.30/cigar", license:"Tobacco Wholesaler/Distributor (Out‑of‑State) license", agency:"GA DOR", fee:"~$20/yr renewal", bond:"$1,000‑or‑1% of gross sales (renewal); initial may be $5,000 — confirm", renewal:"Annual", contact:"dor.georgia.gov", note:""},
+    {state:"South Dakota", score:6, tax:"$3.50/cigar", license:"Cigar Shipper License (SDCL Ch.10‑50C)", agency:"SD Dept. of Revenue", fee:"$100/yr (Jul–Jun)", bond:"Unconfirmed", renewal:"Annual", contact:"dor.sd.gov", note:"A second \"Retail Nicotine License\" will also be required starting 1/1/2027."},
+    {state:"Colorado", score:6, tax:"$3.60/cigar → $4.70 in 2027", license:"Remote Retail Seller category + CO Tobacco Products Tax License", agency:"CO Dept. of Revenue", fee:"~$10/yr", bond:"Unconfirmed", renewal:"Quarterly filing", contact:"tax.colorado.gov", note:"Rate rises to 47% of MLP on 7/1/2027 — re‑check pricing then."},
+    {state:"Massachusetts", score:8, tax:"$4.00/cigar (uncapped)", license:"None required for pure DTC sales to individual residents", agency:"MA DOR", fee:"$0 — no license needed", bond:"N/A", renewal:"N/A", contact:"mass.gov (voluntary registration only if you want to collect the excise yourself)", note:"MA DOR's own guidance: liability shifts to the consumer for a no‑premises internet retailer. Best licensing outcome in the project."},
+    {state:"Nevada", score:6, tax:"$0.50/cigar (capped)", license:"Remote Retail Seller License (Form EXC‑F041)", agency:"NV Dept. of Taxation", fee:"$650/yr (prorated by month)", bond:"$1,000", renewal:"Annual", contact:"tax.nv.gov", note:"Review can take up to 60 days — file early, before you need it live."},
+    {state:"New Mexico", score:6, tax:"$0.50/cigar (capped)", license:"Retailer License", agency:"NM RLD — ABC Division", fee:"Up to $750/location (app), $400/location (renewal)", bond:"Unconfirmed", renewal:"Annual", contact:"rld.nm.gov", note:"May also require a separate distributor registration (NMSA Ch.7 Art.12A) — confirm before relying on the retailer license alone."},
+    {state:"Wisconsin", score:7, tax:"$0.50/cigar (capped)", license:"Remote Retail Seller Permit (Form CTV‑200)", agency:"WI Dept. of Revenue", fee:"Unconfirmed", bond:"Up to 3x avg monthly liability", renewal:"Confirm cadence", contact:"revenue.wi.gov", note:"Requires an independent third‑party age‑verification service."},
+    {state:"Idaho", score:7, tax:"$0.50/cigar (capped)", license:"Tobacco Tax Permit — \"delivery seller\" category", agency:"Idaho State Tax Commission", fee:"~$50 (unconfirmed)", bond:"~2x avg tax (unconfirmed for cigars)", renewal:"Confirm cadence", contact:"tax.idaho.gov", note:""},
+    {state:"Rhode Island", score:7, tax:"$0.50/cigar (capped)", license:"Tobacco Products Distributor License (Form TOB‑APP)", agency:"RI Division of Taxation", fee:"Unconfirmed", bond:"Unconfirmed", renewal:"Confirm cadence", contact:"tax.ri.gov", note:"Explicitly open to out‑of‑state applicants."},
+    {state:"Connecticut", score:5, tax:"$0.50/cigar (capped)", license:"Distributor's License", agency:"CT DRS", fee:"$100/yr", bond:"Unconfirmed", renewal:"Annual", contact:"portal.ct.gov/drs", note:"Monitor HB 7275 — a pending bill would ban cigar shipment to CT with no premium exemption."},
+    {state:"South Carolina", score:6, tax:"$0.50/cigar", license:"Wholesaler/distributor license + retail tobacco license", agency:"SCDOR", fee:"Unconfirmed", bond:"Unconfirmed", renewal:"Confirm cadence", contact:"dor.sc.gov", note:"Remote sales require independent third‑party age verification + signature‑required delivery."},
+    {state:"Minnesota", score:7, tax:"$0.50/cigar (capped)", license:"Tobacco Products Distributor License (Form CT101)", agency:"MN Dept. of Revenue", fee:"$75 / 2‑yr term (even years)", bond:"Unconfirmed", renewal:"Biennial", contact:"revenue.state.mn.us", note:""},
+    {state:"Louisiana", score:7, tax:"$0.50/cigar (temporary flat rate through 2027)", license:"Wholesale/Tobacco Dealer Permit", agency:"LA Office of Alcohol & Tobacco Control", fee:"$75/yr", bond:"Unconfirmed", renewal:"Annual", contact:"atc.louisiana.gov", note:"Two agencies apply — ATC for the permit, LDR for tax."},
+    {state:"Michigan", score:7, tax:"$0.50/cigar (capped)", license:"Wholesaler / Unclassified Acquirer of Tobacco Products License", agency:"MI Dept. of Treasury", fee:"Unconfirmed", bond:"~3 months of estimated tax liability", renewal:"Confirm cadence", contact:"michigan.gov/treasury", note:"MI's remote‑sale statute explicitly contemplates cigar mail/catalog/internet sales."},
+    {state:"Alabama", score:7, tax:"$0.0405/cigar", license:"Form TOB‑APP‑NR (non‑resident stamping permit) + no‑fee AL ABC Board tobacco license", agency:"AL DOR + AL ABC Board", fee:"No fee found for the ABC license; TOB‑APP‑NR fee unconfirmed", bond:"Unconfirmed for this tier", renewal:"Confirm cadence", contact:"revenue.alabama.gov", note:""},
+    {state:"Wyoming", score:6, tax:"$2.00/cigar", license:"Wholesaler License", agency:"WY Dept. of Revenue — Excise Tax Division", fee:"$10/location", bond:"Unconfirmed", renewal:"Confirm cadence", contact:"wyoleg.gov", note:"Cheapest license fee found anywhere in this project."},
+    {state:"Montana", score:6, tax:"$0.35/cigar (capped)", license:"\"Importer\" registration", agency:"MT Dept. of Revenue", fee:"No fee", bond:"Unconfirmed", renewal:"Confirm cadence", contact:"revenue.mt.gov — apply via eStop Business Licenses portal", note:"Watch for filtered/tipped SKUs risking reclassification as cigarettes."},
+    {state:"Nebraska", score:6, tax:"$2.00/cigar", license:"None required yet — Remote Retail Seller license (LB212) starts 1/1/2027", agency:"NE Dept. of Revenue", fee:"N/A until 2027", bond:"N/A until 2027", renewal:"N/A", contact:"revenue.nebraska.gov", note:"Legal to ship today with no special license; plan to register once LB212 takes effect."},
+    {state:"Kansas", score:6, tax:"$1.00/cigar", license:"Nonresident Tobacco Products Distributor's License (Form TB‑84)", agency:"Kansas Dept. of Revenue", fee:"$25", bond:"Form TB‑85 bond, min $1,000/location", renewal:"Confirm cadence", contact:"ksrevenue.gov · 785‑368‑8222", note:"Also file Form TB‑144 to appoint the KS Secretary of State as agent for service of process."},
+    {state:"Illinois", score:6, tax:"$4.50/cigar today → $0.75 cap in 2027", license:"No distinct remote‑seller category found for the current regime — confirm with IL DOR", agency:"Illinois Dept. of Revenue", fee:"Unconfirmed", bond:"Unconfirmed", renewal:"N/A", contact:"tax.illinois.gov", note:"A dedicated remote‑seller license + $0.75 cap start 1/1/2027 — re‑file/adjust then."},
+    {state:"New Jersey", score:7, tax:"$3.00/cigar", license:"Distributor/Wholesaler license", agency:"NJ Div. of Taxation", fee:"$350/yr, renews March 31", bond:"\"If the Director deems necessary\" — confirm", renewal:"Annual", contact:"nj.gov/treasury/taxation", note:"Adult (21+) signature required at residential delivery, effective 7/11/2026."},
+    {state:"Delaware", score:7, tax:"$3.00/cigar", license:"Wholesaler License", agency:"DE Division of Revenue", fee:"~$200 (may rise to $400 if HB 215 is enacted)", bond:"Unconfirmed", renewal:"Confirm cadence", contact:"revenue.delaware.gov", note:""},
+    {state:"Tennessee", score:6, tax:"$0.66/cigar", license:"Tobacco Distributor License", agency:"TN Dept. of Revenue", fee:"$100/location", bond:"Unconfirmed", renewal:"Confirm cadence", contact:"tn.gov/revenue", note:"Requires reciprocity with your home state (verify PA↔TN) and a TN resident agent. Monitor SB 2086."},
+    {state:"North Dakota", score:5, tax:"$2.80/cigar", license:"Distributor/wholesaler/manufacturer license", agency:"ND Attorney General's Office", fee:"$25", bond:"$1,000", renewal:"Confirm cadence", contact:"attorneygeneral.nd.gov", note:"PACT‑Act‑style age‑verification/notice/carrier requirements apply."},
+    {state:"Mississippi", score:6, tax:"$1.50/cigar", license:"General tobacco permit", agency:"MS Dept. of Revenue", fee:"$100/yr", bond:"Unconfirmed for nonresident tier", renewal:"Annual", contact:"dor.ms.gov", note:"Reciprocity provision (§27‑69‑79) — check what MS requires in return from PA."},
+    {state:"Maine", score:6, tax:"$7.50/cigar", license:"Tobacco Distributor License — \"remote retail seller\" category", agency:"Maine Revenue Services", fee:"Unconfirmed", bond:"Unconfirmed", renewal:"Confirm cadence", contact:"maine.gov/revenue", note:"Premium cigars are explicitly exempt from ME's general delivery‑sale ban."},
+    {state:"California", score:5, tax:"~$5.11/cigar", license:"Cigarette & Tobacco Products Distributor License + Distributor Tax account + federal PACT Act registration", agency:"CDTFA", fee:"$450 (retail license, from 7/1/2026)", bond:"Unconfirmed", renewal:"Confirm cadence", contact:"cdtfa.ca.gov", note:"Do not ship flavored cigars (≥$12 wholesale) without separate legal review of CA's flavor‑ban/delivery rules."},
+    {state:"New York", score:4, tax:"$7.50/cigar", license:"Appointment as a Distributor of Tobacco Products (Form MT‑202)", agency:"NY Dept. of Taxation & Finance", fee:"No stated fee found", bond:"Likely required — confirm amount", renewal:"Monthly return (Form MT‑203)", contact:"tax.ny.gov", note:"Confirm §1399‑LL's \"cigarette\" definition doesn't reach cigars before shipping — still an open question."},
+    {state:"New Hampshire", score:4, tax:"$0.00", license:"Uncertain — see \"call before you file\" above", agency:"NH DRA + NH Liquor Commission", fee:"Unknown", bond:"Unknown", renewal:"Unknown", contact:"revenue.nh.gov · enforcement.liquor.nh.gov", note:"HOLD — do not file until you've confirmed a licensing path exists for an out‑of‑state, no‑premises retailer."}
+  ];
+
+  var rowsEl = document.getElementById("rows");
+  var countLineEl = document.getElementById("countLine");
+  var searchEl = document.getElementById("search");
+  var sortEl = document.getElementById("sortBy");
+  var filterEl = document.getElementById("filterBy");
+  var progressLabel = document.getElementById("progressLabel");
+  var progressFill = document.getElementById("progressFill");
+
+  var STORAGE_KEY = "ttc-registration-playbook-v1";
+
+  function loadDone(){
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
+  function saveDone(done){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(done)); } catch(e){}
+  }
+  var done = loadDone();
+
+  function feeSortKey(s){
+    var m = s.fee.match(/\$([\d,]+)/);
+    if (!m) return 0;
+    return parseFloat(m[1].replace(/,/g, ""));
+  }
+
+  function updateProgress(){
+    var total = STATES.length;
+    var filed = STATES.filter(function(s){ return done[s.state]; }).length;
+    progressLabel.textContent = filed + " / " + total + " filed";
+    progressFill.style.width = (total ? (filed/total*100) : 0) + "%";
+  }
+
+  function render(){
+    var q = searchEl.value.trim().toLowerCase();
+    var sortMode = sortEl.value;
+    var filterMode = filterEl.value;
+
+    var list = STATES.filter(function(s){
+      if (q && s.state.toLowerCase().indexOf(q) === -1) return false;
+      if (filterMode === "unfiled" && done[s.state]) return false;
+      if (filterMode === "filed" && !done[s.state]) return false;
+      if (filterMode === "bond" && (/^unconfirmed$/i.test(s.bond) || /none|n\/a/i.test(s.bond))) return false;
+      if (filterMode === "free" && s.fee.indexOf("$0") === -1 && !/no (license )?fee/i.test(s.fee)) return false;
+      return true;
+    });
+
+    list.sort(function(a,b){
+      if (sortMode === "name") return a.state.localeCompare(b.state);
+      if (sortMode === "fee") return feeSortKey(a) - feeSortKey(b);
+      return b.score - a.score;
+    });
+
+    countLineEl.textContent = "Showing " + list.length + " of " + STATES.length + " states";
+
+    rowsEl.innerHTML = list.map(function(s){
+      var checked = !!done[s.state];
+      var bondBadge = (/unconfirmed/i.test(s.bond))
+        ? '<span class="badge bond">bond?</span>'
+        : (/none|no bond|n\/a/i.test(s.bond) ? '<span class="badge nobond">no bond</span>' : '<span class="badge bond">bond</span>');
+      return '' +
+      '<li class="row' + (checked ? ' checked' : '') + '" data-state="' + s.state.replace(/"/g,"&quot;") + '">' +
+        '<input type="checkbox" ' + (checked ? 'checked' : '') + ' aria-label="Mark ' + s.state + ' as filed" />' +
+        '<div class="row-head"><span class="sn">' + s.state + '</span><span class="score">score ' + s.score + '</span><span class="tax">' + s.tax + '</span></div>' +
+        '<div class="row-fields">' +
+          '<div class="f"><k>License</k>' + s.license + '</div>' +
+          '<div class="f"><k>Agency</k>' + s.agency + '</div>' +
+          '<div class="f"><k>Contact</k>' + s.contact + '</div>' +
+          (s.note ? '<div class="f note">' + s.note + '</div>' : '') +
+        '</div>' +
+        '<div class="row-badges"><span class="badge fee">' + s.fee + '</span>' + bondBadge + '</div>' +
+      '</li>';
+    }).join("");
+
+    Array.prototype.forEach.call(rowsEl.querySelectorAll(".row"), function(row){
+      var cb = row.querySelector("input[type=checkbox]");
+      cb.addEventListener("change", function(){
+        var st = row.getAttribute("data-state");
+        if (cb.checked) { done[st] = true; } else { delete done[st]; }
+        saveDone(done);
+        row.classList.toggle("checked", cb.checked);
+        updateProgress();
+      });
+    });
+  }
+
+  searchEl.addEventListener("input", render);
+  sortEl.addEventListener("change", render);
+  filterEl.addEventListener("change", render);
+  document.getElementById("resetProgress").addEventListener("click", function(){
+    done = {};
+    saveDone(done);
+    render();
+    updateProgress();
+  });
+
+  render();
+  updateProgress();
+})();
+</script>
