@@ -191,6 +191,13 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
 .cigar-card h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--black); margin-bottom: 0.5rem; line-height: 1.3; }
 .cigar-meta { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem; }
 .cigar-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.8; }
+.cotm-archive { padding: 0 4rem 5rem; }
+.cotm-archive h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--black); margin-bottom: 1.5rem; }
+.archive-list { display: flex; flex-direction: column; gap: 0.9rem; }
+.archive-row { display: grid; grid-template-columns: 90px 1fr; gap: 1rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+.archive-row strong { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+.archive-row span { color: var(--text-muted); line-height: 1.6; }
+@media (max-width: 700px) { .archive-row { grid-template-columns: 1fr; gap: 0.25rem; } }
 .cotm-cta { background: var(--dark); padding: 5rem 4rem; text-align: center; position: relative; overflow: hidden; }
 .cotm-cta h2 { font-family: var(--font-display); font-size: clamp(1.8rem,3.5vw,3rem); font-weight: 900; color: var(--warm-white); margin-bottom: 1rem; line-height: 1.2; }
 .cotm-cta h2 em { color: var(--mint); font-style: italic; }
@@ -282,6 +289,7 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
   .value-strip,.tr-home,.cotm-home,.testimonials,.hours-bar,.about-body,.cotm-perks,.contact-grid,.tr-story { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 2rem; }
   .hero,.about-hero,.cotm-hero,.events-hero,.contact-hero,.insider-hero,.tr-hero { padding: 5rem 1.5rem 3rem; }
   .events-grid,.cotm-selection { padding: 3rem 1.5rem; }
+  .cotm-archive { padding: 0 1.5rem 3rem; }
   .mission-strip,.events-note,.cotm-cta,.tr-cta { padding: 3rem 1.5rem; }
   .site-footer { padding: 2rem 1.5rem; }
   .hours-bar h2 { grid-column: 1; }
@@ -852,15 +860,31 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
   </div>
 
   <div class="cotm-selection">
-    <span class="eyebrow dark-teal">September 2026 Selection</span>
-    <h2>The Knockout Collection</h2>
-    <p>Two LCA exclusives built around a skull-eyed maduro and a newspaper-wrapped puro, plus three boutique releases that don't pull punches — a 20th-anniversary tribute, a mellow Connecticut gateway smoke, and an all-Nicaraguan puro built with Guy Fieri himself.</p>
+    <span class="eyebrow dark-teal">October 2026 Selection</span>
+    <h2>The Land of Oz</h2>
+    <p>Two LCA exclusives — a berry-kissed Rosé wrapper and a dark San Andrés maduro built for hot chocolate lovers — join two fresh-off-PCA releases from Oz Family Cigars and a Connecticut Broadleaf from Crowned Heads that's anything but plain. Follow the yellow brick road.</p>
     <div class="cigar-grid">
-      <div class="cigar-card"><h3>Killer Cameroon</h3><div class="cigar-meta">Privada/LCA Exclusive · LCA #151</div><p>The gamble that became a rule — a dark, almost-black Cameroon wrapper coaxed from Estelí soil. Box-pressed with a pigtail foot; dark raisin, black tea, and charred oak.</p></div>
-      <div class="cigar-card"><h3>Newsboys</h3><div class="cigar-meta">Privada/LCA Exclusive · LCA #152</div><p>The newspaper cigar concept, refined — individually numbered, wrapped around an oily hybrid Connecticut Broadleaf with a security hologram reveal. Mocha, espresso, and red pepper.</p></div>
-      <div class="cigar-card"><h3>601 Blue Label Maduro</h3><div class="cigar-meta">20th Anniversary · Espinosa</div><p>A landmark tribute to one of Espinosa's oldest blends, originally crafted by Don &quot;Pepin&quot; Garcia in 2006. Espresso, dark chocolate, and a caramel finish.</p></div>
-      <div class="cigar-card"><h3>Espinosa Crema — Rabito</h3><div class="cigar-meta">The Gateway Smoke · Mild-Medium</div><p>Erik Espinosa's mellow side — a golden Ecuadorian Connecticut Shade wrapper over Nicaraguan binder and filler. Cream, cedar, and toasted nuts.</p></div>
-      <div class="cigar-card"><h3>Espinosa Knuckle Sandwich</h3><div class="cigar-meta">Puro Nicaragua · Espinosa x Guy Fieri</div><p>The all-Nicaraguan puro in the Knuckle Sandwich line — wrapper, binder, and filler all sourced from the same country. Cedar, leather, and black pepper.</p></div>
+      <div class="cigar-card"><h3>Coco Berry</h3><div class="cigar-meta">Privada/LCA Exclusive · LCA #154</div><p>A hybrid Rosé wrapper, sun-grown for intensity with just enough shade to stay balanced. Dark chocolate, espresso, red pepper, and a sweet berry finish.</p></div>
+      <div class="cigar-card"><h3>Mexican Chocolate</h3><div class="cigar-meta">Privada/LCA Exclusive · LCA #153</div><p>An extremely dark Mexican San Andrés wrapper, box-pressed. Sweet molasses, cocoa, red pepper, cedar, and espresso.</p></div>
+      <div class="cigar-card"><h3>Oz Family Maracana Gordo</h3><div class="cigar-meta">Brazilian Arapiraca · Medium-Full</div><p>My Father's first cigar built around a Brazilian Arapiraca wrapper — a modern take on the CAO Brazilia. Dark chocolate, roasted coffee, cedar, and baking spices.</p></div>
+      <div class="cigar-card"><h3>Oz Family Karatoba Robusto Extra</h3><div class="cigar-meta">Ecuadorian Sumatra</div><p>A rugged, earthy volcano-inspired blend that opens big and settles into a rich, savory profile with a maple-syrup finish.</p></div>
+      <div class="cigar-card"><h3>Crowned Heads Broadway Toro</h3><div class="cigar-meta">Connecticut Broadleaf</div><p>Chocolate, cream, earth, and mixed fruit up front, with white pepper on the retrohale. Earth and pepper carry it through the final third.</p></div>
+    </div>
+  </div>
+
+  <div class="cotm-archive">
+    <span class="eyebrow dark-teal">Past Selections</span>
+    <h3>Every Month So Far</h3>
+    <div class="archive-list">
+      <div class="archive-row"><strong>Dec 2025</strong><span>The Appreciation Collection — LCA Red Ryder 2025, LCA+ D'Crossier Lumina, New World Dorado, K Decadencia No. 1, RoMa Craft CroMagnon (PA Broadleaf)</span></div>
+      <div class="archive-row"><strong>Feb 2026</strong><span>The Heavy Hitters Collection — LCA Culebra, LCA Super Sea Monkey, Powstanie San Andres, K-Fire by Karen Berger</span></div>
+      <div class="archive-row"><strong>Mar 2026</strong><span>Luck of the Leaf — LCA Milk Shake (Lake Edition), The Purple People Eater, LFD Double Claro Candela, Arturo Fuente Candela Lonsdale, RoMa Craft Fomorian</span></div>
+      <div class="archive-row"><strong>Apr 2026</strong><span>The Boutique Powerhouse Collection — Stolen Throne Crook of the Crown, LCA Year of Ed, LCA The G.O.A.T., Cavalier Genève Paca 3yr, Tradecraft Azorian Corona Gorda</span></div>
+      <div class="archive-row"><strong>May 2026</strong><span>Privada/LCA Cajun Microwave #143, Privada/LCA BBQ Pig 2026 #142, Crowned Heads Tennessee Waltz, Crowned Heads La Imperiosa Magicos, Chip's Mystery Pick</span></div>
+      <div class="archive-row"><strong>Jun 2026</strong><span>Privada Not Brian LCA #144, Bucket de Pepe LCA #145, Casa Magna D. Magnus II Tiberius, JDN Antaño CT, Quesada España</span></div>
+      <div class="archive-row"><strong>Jul 2026</strong><span>One-Year Anniversary Edition — Privada Moon Traveler LCA #146, Fuego LCA #148, W.A. Fireworks LCA #147, King Musa El Negro Maduro Toro, King Musa Empire</span></div>
+      <div class="archive-row"><strong>Aug 2026</strong><span>The Grand Slam Collection — Apex LCA #149, Supermarket Sushi LCA #150, Fable Fourth Prime Mersenne, Guaimaro Robusto, Dissident bLoc Lonsdale</span></div>
+      <div class="archive-row"><strong>Sep 2026</strong><span>The Knockout Collection — Killer Cameroon LCA #151, Newsboys LCA #152, 601 Blue Label Maduro 20th Anniversary, Espinosa Crema Rabito, Espinosa Knuckle Sandwich Puro Nicaragua</span></div>
     </div>
   </div>
 
