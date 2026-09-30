@@ -316,6 +316,12 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
   .nav-links { display: none !important; }
   .site-nav > img { display: none; }
 }
+/* The full desktop nav needs ~1120px; below that, use the hamburger menu instead of wrapping */
+.nav-links a { white-space: nowrap; }
+@media (max-width: 1150px) {
+  .nav-hamburger { display: flex; }
+  .nav-links { display: none !important; }
+}
 </style>
 
   <!-- ═══════════════════════════════════════
@@ -598,6 +604,7 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
   <a href="#events" onclick="closeMobileNav()">Events</a>
   <a href="#contact" onclick="closeMobileNav()">Visit Us</a>
   <a href="#insider" onclick="closeMobileNav()">Insiders</a>
+  <a href="podcast.html">Podcast</a>
   <a href="/graveyard.html" class="nav-highlight-gold">⚰️ The Graveyard</a>
   <a href="/support.html" class="nav-highlight-teal">🤝 Support the Shop</a>
 </div>
