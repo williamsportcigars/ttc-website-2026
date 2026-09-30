@@ -1,0 +1,14 @@
+name = "ttc-locator"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = false
+
+routes = [
+  { pattern = "locator.thetobaccocenter.com", custom_domain = true }
+]
+
+[[kv_namespaces]]
+binding = "TTC_LOCATOR_KV"
+id = "64f47c642d594794b31729af0fa4941a"
+
+# Secret (not stored here): AUTH_TOKEN — set with `wrangler secret put AUTH_TOKEN`

@@ -136,6 +136,25 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
 .tr-cta h2 em { color: var(--mint); font-style: italic; }
 .tr-cta p { color: rgba(253,252,248,0.62); max-width: 480px; margin: 0 auto 2rem; font-size: 0.95rem; }
 
+/* ======= LOCATOR ======= */
+#locator { background: var(--warm-white); }
+.locator-hero { background: var(--jungle); padding: 6rem 4rem 4rem; text-align: center; }
+.locator-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem,4.5vw,3.6rem); font-weight: 900; color: var(--warm-white); line-height: 1.1; max-width: 700px; margin: 0 auto; }
+.locator-hero h1 em { color: var(--mint); font-style: italic; }
+.locator-hero p { color: rgba(253,252,248,0.62); max-width: 560px; margin: 1rem auto 0; }
+.locator-panel { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
+.locator-search input { width: 100%; padding: 16px 20px; font-family: var(--font-body); font-size: 1rem; border: 1px solid var(--border); border-radius: 4px; outline: none; }
+.locator-search input:focus { border-color: var(--teal); }
+.locator-status { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin: 1rem 0; text-align: center; }
+.locator-list { display: flex; flex-direction: column; gap: 1rem; }
+.locator-card { border: 1px solid var(--border); background: var(--cream); padding: 1.25rem 1.5rem; border-radius: 4px; }
+.locator-card h4 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--black); margin: 0 0 0.4rem; }
+.locator-card .loc-addr { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+.locator-card .loc-meta { margin-top: 0.5rem; font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.05em; }
+.locator-card .loc-meta a { color: var(--teal); text-decoration: none; margin-right: 1rem; }
+.locator-card .loc-meta a:hover { text-decoration: underline; }
+.locator-note { text-align: center; padding: 0 1.5rem 4rem; font-size: 0.9rem; color: var(--text-muted); }
+
 /* ======= ABOUT ======= */
 #about { background: var(--warm-white); }
 .about-hero { background: var(--dark); padding: 7rem 4rem 5rem; min-height: 48vh; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
@@ -172,10 +191,31 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
 .cigar-card h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--black); margin-bottom: 0.5rem; line-height: 1.3; }
 .cigar-meta { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem; }
 .cigar-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.8; }
+.cotm-archive { padding: 0 4rem 5rem; }
+.cotm-archive h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--black); margin-bottom: 1.5rem; }
+.archive-list { display: flex; flex-direction: column; gap: 0.9rem; }
+.archive-row { display: grid; grid-template-columns: 90px 1fr; gap: 1rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+.archive-row strong { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+.archive-row span { color: var(--text-muted); line-height: 1.6; }
+@media (max-width: 700px) { .archive-row { grid-template-columns: 1fr; gap: 0.25rem; } }
 .cotm-cta { background: var(--dark); padding: 5rem 4rem; text-align: center; position: relative; overflow: hidden; }
 .cotm-cta h2 { font-family: var(--font-display); font-size: clamp(1.8rem,3.5vw,3rem); font-weight: 900; color: var(--warm-white); margin-bottom: 1rem; line-height: 1.2; }
 .cotm-cta h2 em { color: var(--mint); font-style: italic; }
 .cotm-cta p { color: rgba(253,252,248,0.62); max-width: 480px; margin: 0 auto 2rem; font-size: 0.95rem; }
+
+/* ======= TRS EMAIL MODAL ======= */
+.trs-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,27,22,0.72); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+.trs-modal-overlay.open { display: flex; }
+.trs-modal { background: var(--warm-white); max-width: 420px; width: 100%; padding: 2.5rem 2rem 2rem; position: relative; border-top: 3px solid var(--mint); }
+.trs-modal-close { position: absolute; top: 0.75rem; right: 1rem; background: none; border: none; font-size: 1.5rem; line-height: 1; color: var(--text-muted); cursor: pointer; }
+.trs-modal-close:hover { color: var(--black); }
+.trs-modal h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; color: var(--black); margin-bottom: 0.5rem; }
+.trs-modal > p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+.trs-modal-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.trs-modal-form input { background: #fff; border: 1px solid var(--border); padding: 12px 14px; color: var(--text); font-family: var(--font-body); font-size: 0.9rem; outline: none; border-radius: 3px; width: 100%; }
+.trs-modal-form input:focus { border-color: var(--teal); }
+.trs-modal-form button { margin-top: 0.5rem; }
+.trs-modal-msg { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.05em; line-height: 1.5; color: #b03020; display: none; }
 
 /* ======= EVENTS ======= */
 #events { background: var(--warm-white); }
@@ -249,6 +289,7 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
   .value-strip,.tr-home,.cotm-home,.testimonials,.hours-bar,.about-body,.cotm-perks,.contact-grid,.tr-story { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 2rem; }
   .hero,.about-hero,.cotm-hero,.events-hero,.contact-hero,.insider-hero,.tr-hero { padding: 5rem 1.5rem 3rem; }
   .events-grid,.cotm-selection { padding: 3rem 1.5rem; }
+  .cotm-archive { padding: 0 1.5rem 3rem; }
   .mission-strip,.events-note,.cotm-cta,.tr-cta { padding: 3rem 1.5rem; }
   .site-footer { padding: 2rem 1.5rem; }
   .hours-bar h2 { grid-column: 1; }
@@ -532,6 +573,7 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
   <ul class="nav-links">
     <li><a href="#home">Home</a></li>
     <li><a href="#thirdrule">The Third Rule</a></li>
+    <li><a href="#locator">Find It Near You</a></li>
     <li><a href="/virtual_humidor.html" style="background:rgba(37,159,138,0.12);border:1px solid rgba(37,159,138,0.35);padding:4px 12px;border-radius:4px;color:#259f8a;">Humidor</a></li>
     <li><a href="#contact">Visit Us</a></li>
     <li><a href="podcast.html">Podcast</a></li>
@@ -549,6 +591,7 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
   <a href="/virtual_humidor.html" class="nav-highlight-teal">🌿 Virtual Humidor</a>
   <a href="/customer_humidor.html" class="nav-highlight-gold">⭐ My Humidor</a>
   <a href="#thirdrule" onclick="closeMobileNav()">The Third Rule</a>
+  <a href="#locator" onclick="closeMobileNav()">Find It Near You</a>
   <a href="#about" onclick="closeMobileNav()">About Us</a>
   <a href="#cotm" onclick="closeMobileNav()">COTM Club</a>
   <a href="#events" onclick="closeMobileNav()">Events</a>
@@ -616,6 +659,7 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
       </div>
       <a href="#thirdrule" class="btn-primary">The Full Story →</a>
       <a href="/virtual_humidor.html" class="btn-primary" style="margin-left:10px;background:transparent;border:1px solid rgba(37,159,138,0.5);color:var(--mint)">Browse The Vault →</a>
+      <p style="margin-top:1.25rem;font-size:0.85rem;"><a href="#locator" style="color:var(--mint);text-decoration:underline;">Now wholesaling statewide — find The Third Rule near you →</a></p>
     </div>
     <div class="tr-box" style="position:relative">
       <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10">
@@ -705,8 +749,8 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
         "Developing 'The Third Rule' was an exercise in precision. I wanted a cigar that reflected the discipline and standards of my Navy background while offering a profile that truly stands out in a humidor. Having Karen Berger bring those ideas to life at her factory was an incredible experience."
         <cite>— Gray Hogan, Owner &amp; Navy Veteran, The Tobacco Center</cite>
       </div>
-      <p>Named after The Tobacco Center's 3rd Lounge Rule — the heart of what makes this place what it is — The Third Rule is a Tobacco Center exclusive. It will not be found in online catalogs or other retailers. You have to come in. We wouldn't have it any other way.</p>
-      <p><strong>Available in singles and bundles starting April 24th.</strong></p>
+      <p>Named after The Tobacco Center's 3rd Lounge Rule — the heart of what makes this place what it is — The Third Rule was born right here, exclusive to us from day one. It's since grown beyond our humidor: The Third Rule is now wholesaled to select tobacco shops across Pennsylvania, so more smokers can get their hands on it.</p>
+      <p><strong>Available in singles and bundles.</strong> <a href="#locator" style="color:var(--mint);text-decoration:underline;">Find a store near you →</a></p>
     </div>
     <div>
       <div class="tr-sidebar-card">
@@ -718,7 +762,7 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
           <tr><td>Binder</td><td>Nicaraguan Oscuro</td></tr>
           <tr><td>Filler</td><td>Double Ligero, Estelí, Nicaragua</td></tr>
           <tr><td>Formats</td><td>Singles &amp; Bundles</td></tr>
-          <tr><td>Availability</td><td>Exclusive — The Tobacco Center only</td></tr>
+          <tr><td>Availability</td><td>The Tobacco Center + select PA retailers</td></tr>
         </table>
       </div>
       <div class="tr-sidebar-card">
@@ -726,20 +770,41 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
         <p>Known as the "Queen of Cigars," Karen Berger is a world-renowned blender and the driving force behind K. by Karen Berger. Based in Estelí, Nicaragua, she is one of the few women leading a major cigar operation — celebrated for her mastery of traditional Nicaraguan tobacco.</p>
       </div>
       <div class="tr-sidebar-card">
-        <h4>Exclusively Here</h4>
-        <p>The Third Rule will not be found in online catalogs or at other retailers. It is available only at The Tobacco Center, 21 W Church St, Williamsport, PA.</p>
+        <h4>Now Wholesaling Statewide</h4>
+        <p>Born at The Tobacco Center, 21 W Church St, Williamsport, PA — and now carried by select tobacco shops across Pennsylvania. <a href="#locator" style="color:var(--mint);">See where to find it →</a></p>
       </div>
     </div>
   </div>
 
   <div class="tr-cta">
     <svg class="leaf" style="left:-2%;bottom:-8%;width:28%;opacity:0.07;" viewBox="0 0 400 520" fill="none"><path d="M200 25 C125 60 35 165 40 295 C45 425 140 510 245 495 C350 480 415 370 405 245 C395 120 285 25 200 25Z" fill="#4dbf8a"/><path d="M200 25 L200 495" stroke="#4dbf8a" stroke-width="3"/></svg>
-    <span class="eyebrow">You Can Only Get It Here</span>
+    <span class="eyebrow">Now Available Across Pennsylvania</span>
     <h2>The Third Rule Is <em>Waiting for You.</em></h2>
-    <p>Singles and bundles available in-store at The Tobacco Center. Stop in, ask for it by name, and let us walk you through the humidor.</p>
-    <a href="#contact" class="btn-primary">Find Us · 21 W Church St</a>
+    <p>Singles and bundles available in-store at The Tobacco Center, and now at select tobacco shops statewide. Stop in, ask for it by name, or find a location near you.</p>
+    <a href="#locator" class="btn-primary">Find a Store Near You</a>
     &nbsp;&nbsp;
-    <a href="#insider" class="btn-ghost">Join the Insider List</a>
+    <a href="#contact" class="btn-ghost">Or Visit Us · 21 W Church St</a>
+  </div>
+</section>
+
+<!-- ════════ THIRD RULE LOCATOR ════════ -->
+<section class="page-section" id="locator">
+  <div class="locator-hero">
+    <span class="eyebrow">Find The Third Rule</span>
+    <h1>Now Available <em>Across Pennsylvania.</em></h1>
+    <p>The Third Rule started as a Tobacco Center exclusive — now it's carried by select tobacco shops statewide. Search by city or zip to find a location near you.</p>
+  </div>
+
+  <div class="locator-panel">
+    <div class="locator-search">
+      <input type="text" id="locator-search" placeholder="Search by city or zip code…" oninput="filterLocatorStores()">
+    </div>
+    <div id="locator-status" class="locator-status"></div>
+    <div id="locator-list" class="locator-list"></div>
+  </div>
+
+  <div class="locator-note">
+    <p>Own a shop that wants to carry The Third Rule? <a href="#contact" style="color:var(--mint);text-decoration:underline;">Get in touch</a> about becoming a wholesale account.</p>
   </div>
 </section>
 
@@ -796,15 +861,31 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
   </div>
 
   <div class="cotm-selection">
-    <span class="eyebrow dark-teal">May 2026 Selection</span>
-    <h2>The Boutique Powerhouse Collection</h2>
-    <p>A masterclass in modern boutique blending — high-scoring releases from Stolen Throne and Foundation, alongside exclusive LCA drops representing the new school of tobacco.</p>
+    <span class="eyebrow dark-teal">October 2026 Selection</span>
+    <h2>The Land of Oz</h2>
+    <p>Two LCA exclusives — a berry-kissed Rosé wrapper and a dark San Andrés maduro built for hot chocolate lovers — join two fresh-off-PCA releases from Oz Family Cigars and a Connecticut Broadleaf from Crowned Heads that's anything but plain. Follow the yellow brick road.</p>
     <div class="cigar-grid">
-      <div class="cigar-card"><h3>Stolen Throne Crook of the Crown</h3><div class="cigar-meta">The Flagship</div><p>Rich and complex. Heavy notes of dark chocolate, earth, and creamy spice. One of the most talked-about boutique releases of the year.</p></div>
-      <div class="cigar-card"><h3>LCA Year of Ed</h3><div class="cigar-meta">Aged 2 Years · Limited</div><p>Jalapa Habano wrapper with a Salvadoran binder. Aged two years before release. Deep wood, leather, and a long, satisfying finish.</p></div>
-      <div class="cigar-card"><h3>LCA The G.O.A.T.</h3><div class="cigar-meta">The LCA Original</div><p>The cigar that started it all for LCA. Superbly balanced with a clean, refined finish. A must-smoke for any boutique fan.</p></div>
-      <div class="cigar-card"><h3>Foundation El Güegüense</h3><div class="cigar-meta">The Heroine · Connecticut Broadleaf</div><p>One of the most decorated cigars of the past decade. Connecticut Broadleaf maduro with dark fruit, cocoa, and cedar. A modern classic.</p></div>
-      <div class="cigar-card"><h3>Tradecraft Azorian Corona Gorda</h3><div class="cigar-meta">The Standout Vitola</div><p>Highlights the blend's natural sweetness, toasted nuts, and subtle floral spice. An unexpected favorite every time.</p></div>
+      <div class="cigar-card"><h3>Coco Berry</h3><div class="cigar-meta">Privada/LCA Exclusive · LCA #154</div><p>A hybrid Rosé wrapper, sun-grown for intensity with just enough shade to stay balanced. Dark chocolate, espresso, red pepper, and a sweet berry finish.</p></div>
+      <div class="cigar-card"><h3>Mexican Chocolate</h3><div class="cigar-meta">Privada/LCA Exclusive · LCA #153</div><p>An extremely dark Mexican San Andrés wrapper, box-pressed. Sweet molasses, cocoa, red pepper, cedar, and espresso.</p></div>
+      <div class="cigar-card"><h3>Oz Family Maracana Gordo</h3><div class="cigar-meta">Brazilian Arapiraca · Medium-Full</div><p>My Father's first cigar built around a Brazilian Arapiraca wrapper — a modern take on the CAO Brazilia. Dark chocolate, roasted coffee, cedar, and baking spices.</p></div>
+      <div class="cigar-card"><h3>Oz Family Karatoba Robusto Extra</h3><div class="cigar-meta">Ecuadorian Sumatra</div><p>A rugged, earthy volcano-inspired blend that opens big and settles into a rich, savory profile with a maple-syrup finish.</p></div>
+      <div class="cigar-card"><h3>Crowned Heads Broadway Toro</h3><div class="cigar-meta">Connecticut Broadleaf</div><p>Chocolate, cream, earth, and mixed fruit up front, with white pepper on the retrohale. Earth and pepper carry it through the final third.</p></div>
+    </div>
+  </div>
+
+  <div class="cotm-archive">
+    <span class="eyebrow dark-teal">Past Selections</span>
+    <h3>Every Month So Far</h3>
+    <div class="archive-list">
+      <div class="archive-row"><strong>Dec 2025</strong><span>The Appreciation Collection — LCA Red Ryder 2025, LCA+ D'Crossier Lumina, New World Dorado, K Decadencia No. 1, RoMa Craft CroMagnon (PA Broadleaf)</span></div>
+      <div class="archive-row"><strong>Feb 2026</strong><span>The Heavy Hitters Collection — LCA Culebra, LCA Super Sea Monkey, Powstanie San Andres, K-Fire by Karen Berger</span></div>
+      <div class="archive-row"><strong>Mar 2026</strong><span>Luck of the Leaf — LCA Milk Shake (Lake Edition), The Purple People Eater, LFD Double Claro Candela, Arturo Fuente Candela Lonsdale, RoMa Craft Fomorian</span></div>
+      <div class="archive-row"><strong>Apr 2026</strong><span>The Boutique Powerhouse Collection — Stolen Throne Crook of the Crown, LCA Year of Ed, LCA The G.O.A.T., Cavalier Genève Paca 3yr, Tradecraft Azorian Corona Gorda</span></div>
+      <div class="archive-row"><strong>May 2026</strong><span>Privada/LCA Cajun Microwave #143, Privada/LCA BBQ Pig 2026 #142, Crowned Heads Tennessee Waltz, Crowned Heads La Imperiosa Magicos, Chip's Mystery Pick</span></div>
+      <div class="archive-row"><strong>Jun 2026</strong><span>Privada Not Brian LCA #144, Bucket de Pepe LCA #145, Casa Magna D. Magnus II Tiberius, JDN Antaño CT, Quesada España</span></div>
+      <div class="archive-row"><strong>Jul 2026</strong><span>One-Year Anniversary Edition — Privada Moon Traveler LCA #146, Fuego LCA #148, W.A. Fireworks LCA #147, King Musa El Negro Maduro Toro, King Musa Empire</span></div>
+      <div class="archive-row"><strong>Aug 2026</strong><span>The Grand Slam Collection — Apex LCA #149, Supermarket Sushi LCA #150, Fable Fourth Prime Mersenne, Guaimaro Robusto, Dissident bLoc Lonsdale</span></div>
+      <div class="archive-row"><strong>Sep 2026</strong><span>The Knockout Collection — Killer Cameroon LCA #151, Newsboys LCA #152, 601 Blue Label Maduro 20th Anniversary, Espinosa Crema Rabito, Espinosa Knuckle Sandwich Puro Nicaragua</span></div>
     </div>
   </div>
 
@@ -816,8 +897,26 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
     <a href="http://eepurl.com/jEkdTk" target="_blank" rel="noopener" class="btn-primary">Get on the List</a>
     &nbsp;&nbsp;
     <a href="#contact" class="btn-ghost">Call Us to Join</a>
+    &nbsp;&nbsp;
+    <button type="button" class="btn-ghost" onclick="openTrsModal()">Email to Join</button>
   </div>
 </section>
+
+<!-- ════════ TRS EMAIL MODAL ════════ -->
+<div class="trs-modal-overlay" id="trs-modal-overlay" onclick="if(event.target===this)closeTrsModal()">
+  <div class="trs-modal">
+    <button type="button" class="trs-modal-close" onclick="closeTrsModal()" aria-label="Close">&times;</button>
+    <h3>Join the Third Rule Society</h3>
+    <p>Fill in your info below and we'll open an email to us with your details — we'll take it from there.</p>
+    <div class="trs-modal-form">
+      <input type="text" id="trs-modal-name" placeholder="Your name">
+      <input type="tel" id="trs-modal-phone" placeholder="Phone number">
+      <input type="email" id="trs-modal-email" placeholder="Email address">
+      <div id="trs-modal-msg" class="trs-modal-msg"></div>
+      <button type="button" class="btn-primary" onclick="submitTrsModal()">Send Email</button>
+    </div>
+  </div>
+</div>
 
 <!-- ════════ EVENTS ════════ -->
 <section class="page-section" id="events">
@@ -855,14 +954,14 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
       <h3>Movie Nights</h3>
       <p>A classic film, a great cigar, and good company. In the lounge, 6:30 PM.</p>
       <ul class="event-list">
-        <li>9 to 5 <span class="date">Sun, Sept 7</span></li>
-        <li>Clue <span class="date">Sun, Sept 14</span></li>
-        <li>The Birdcage <span class="date">Sun, Sept 21</span></li>
-        <li>Varsity Blues <span class="date">Sun, Sept 28</span></li>
-        <li>The Hunt for Red October <span class="date">Sun, Oct 5</span></li>
-        <li>Beetlejuice <span class="date">Sun, Oct 12</span></li>
-        <li>Young Frankenstein <span class="date">Sun, Oct 19</span></li>
-        <li>Ghostbusters <span class="date">Sun, Oct 26</span></li>
+        <li>9 to 5 <span class="date">Mon, Sept 7</span></li>
+        <li>Clue <span class="date">Mon, Sept 14</span></li>
+        <li>The Birdcage <span class="date">Mon, Sept 21</span></li>
+        <li>Varsity Blues <span class="date">Mon, Sept 28</span></li>
+        <li>The Hunt for Red October <span class="date">Mon, Oct 5</span></li>
+        <li>Beetlejuice <span class="date">Mon, Oct 12</span></li>
+        <li>Young Frankenstein <span class="date">Mon, Oct 19</span></li>
+        <li>Ghostbusters <span class="date">Mon, Oct 26</span></li>
       </ul>
     </div>
 
@@ -893,7 +992,7 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
       <h3>Cut &amp; Light w/ Haze Gray Cigars</h3>
       <p>Meet the brand, sample the lineup, and enjoy a cut &amp; light with the Haze Gray Cigars team. Noon to 5 PM in the lounge.</p>
       <ul class="event-list">
-        <li>Haze Gray Cigars <span class="date">Fri, Sept 18 · 12–5 PM</span></li>
+        <li>Haze Gray Cigars <span class="date">Sat, Sept 19 · 12–5 PM</span></li>
       </ul>
     </div>
 
@@ -1062,6 +1161,49 @@ function closeMobileNav() {
 })();
 </script>
 <script>
+(function(){
+  var LOCATOR_API = "https://locator.thetobaccocenter.com/api/stores";
+  var listEl = document.getElementById("locator-list"), statusEl = document.getElementById("locator-status"), searchEl = document.getElementById("locator-search");
+  if (!listEl) return;
+  var allStores = [];
+
+  function escapeHtml(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function renderStores(list){
+    if (list.length === 0) {
+      listEl.innerHTML = "";
+      statusEl.textContent = allStores.length === 0 ? "New locations are being added — check back soon, or visit us at 21 W Church St, Williamsport." : "No locations match that search.";
+      return;
+    }
+    statusEl.textContent = list.length + " location" + (list.length === 1 ? "" : "s") + " found";
+    listEl.innerHTML = list.map(function(s){
+      var meta = [];
+      if (s.phone) meta.push('<a href="tel:' + escapeHtml(s.phone.replace(/[^\d+]/g,'')) + '">' + escapeHtml(s.phone) + '</a>');
+      if (s.website) meta.push('<a href="' + escapeHtml(s.website) + '" target="_blank" rel="noopener">Visit Website</a>');
+      return '<div class="locator-card"><h4>' + escapeHtml(s.name) + '</h4><div class="loc-addr">' + escapeHtml(s.address) + '<br>' + escapeHtml(s.city) + ', ' + escapeHtml(s.state || 'PA') + ' ' + escapeHtml(s.zip || '') + '</div>' +
+        (s.notes ? '<div class="loc-addr" style="margin-top:0.4rem;font-style:italic;">' + escapeHtml(s.notes) + '</div>' : '') +
+        (meta.length ? '<div class="loc-meta">' + meta.join('') + '</div>' : '') + '</div>';
+    }).join('');
+  }
+
+  window.filterLocatorStores = function(){
+    var q = (searchEl.value || '').trim().toLowerCase();
+    if (!q) { renderStores(allStores); return; }
+    renderStores(allStores.filter(function(s){
+      return (s.city||'').toLowerCase().indexOf(q) !== -1 || (s.zip||'').toLowerCase().indexOf(q) !== -1 || (s.name||'').toLowerCase().indexOf(q) !== -1;
+    }));
+  };
+
+  statusEl.textContent = "Loading locations…";
+  fetch(LOCATOR_API, { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(data){
+    allStores = Array.isArray(data) ? data : [];
+    renderStores(allStores);
+  }).catch(function(){
+    statusEl.textContent = "Couldn't load locations right now — please try again later, or visit us at 21 W Church St, Williamsport.";
+  });
+})();
+</script>
+<script>
 async function submitCotmLead() {
   var nameEl = document.getElementById('cotm-lead-name');
   var phoneEl = document.getElementById('cotm-lead-phone');
@@ -1099,6 +1241,33 @@ async function submitCotmLead() {
     btnEl.textContent = 'Hold my spot';
   }
   btnEl.disabled = false;
+}
+
+function openTrsModal() {
+  document.getElementById('trs-modal-msg').style.display = 'none';
+  document.getElementById('trs-modal-overlay').classList.add('open');
+}
+function closeTrsModal() {
+  document.getElementById('trs-modal-overlay').classList.remove('open');
+}
+function submitTrsModal() {
+  var nameEl = document.getElementById('trs-modal-name');
+  var phoneEl = document.getElementById('trs-modal-phone');
+  var emailEl = document.getElementById('trs-modal-email');
+  var msgEl = document.getElementById('trs-modal-msg');
+  var name = nameEl.value.trim();
+  var phone = phoneEl.value.trim();
+  var email = emailEl.value.trim();
+  if (!name || !phone) {
+    msgEl.textContent = 'Please enter your name and phone number.';
+    msgEl.style.display = 'block';
+    return;
+  }
+  var subject = 'I want to be part of the Third Rule Society';
+  var body = 'Name: ' + name + '\nPhone: ' + phone + '\nEmail: ' + (email || 'n/a');
+  var mailto = 'mailto:williamsportcigars@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  window.location.href = mailto;
+  closeTrsModal();
 }
 </script>
 </body>
