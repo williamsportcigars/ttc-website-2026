@@ -1,0 +1,15 @@
+# Cloudflare Pages deploys this whole repo root, so internal pages and
+# Worker source/config would otherwise be publicly reachable. Send them
+# to the homepage instead.
+/ops.html          /  302
+/ops               /  302
+/harry.html        /  302
+/harry             /  302
+/schedule.html     /  302
+/schedule          /  302
+/wrangler.toml     /  302
+/.assetsignore     /  302
+/.gitignore        /  302
+/workers/*         /  302
+/schedule-worker/* /  302
+/podcast-worker/*  /  302

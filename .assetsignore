@@ -4,6 +4,7 @@
 # that shouldn't be publicly fetchable from thetobaccocenter.com.
 schedule-worker/
 podcast-worker/
+workers/
 
 .git
 .DS_Store

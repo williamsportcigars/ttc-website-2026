@@ -2,8 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Virtual Humidor | The Tobacco Center</title>
+  <meta name="description" content="Browse The Tobacco Center's current in-store cigar selection. Premium boutique cigars with strength ratings, blend specs, and wrapper details. Williamsport, PA.">
+  <meta property="og:title" content="Virtual Humidor — The Tobacco Center">
+  <meta property="og:description" content="Browse our current in-store cigar selection with strength ratings and blend specs.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Tobacco Center">
+  <meta property="og:image" content="https://thetobaccocenter.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Virtual Humidor — The Tobacco Center">
+  <meta name="twitter:description" content="Browse our current in-store cigar selection with strength ratings and blend specs.">
+  <link rel="canonical" href="https://www.thetobaccocenter.com/virtual_humidor.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Humidor — Premium Cigars | The Tobacco Center, Williamsport PA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
@@ -69,7 +79,7 @@ select option{background:white;color:black}
 .cigar-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--border);transition:background 0.2s}
 .cigar-card:hover::before{background:var(--mint)}
 .img-box{width:90px;height:90px;background:#f5fdf9;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--border);flex-shrink:0;border-radius:2px}
-.img-box img{width:100%;height:100%;object-fit:contain}
+.img-box img{image-rendering:auto;width:100%;height:100%;object-fit:contain}
 .no-img{font-family:var(--font-display);font-style:italic;font-size:0.55rem;color:rgba(13,74,58,0.2);text-align:center;padding:8px;line-height:1.4}
 .card-body{}
 
@@ -103,6 +113,39 @@ select option{background:white;color:black}
   .controls input[type=text]{width:100%}
   .result-count{margin-left:0}
 }
+
+/* HAMBURGER & MOBILE NAV */
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;cursor:pointer;padding:8px;background:none;border:none;z-index:200;flex-shrink:0}
+.nav-hamburger span{display:block;width:24px;height:2px;background:var(--mint);border-radius:2px;transition:all 0.3s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav-mobile{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--black);z-index:150;overflow-y:auto;padding:2rem 1.5rem;flex-direction:column}
+.nav-mobile.open{display:flex}
+.nav-mobile a{font-family:var(--font-sans);font-size:15px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.65);text-decoration:none;padding:1.1rem 0;border-bottom:1px solid rgba(37,159,138,0.12);display:flex;align-items:center;justify-content:space-between}
+.nav-mobile a::after{content:'→';color:rgba(37,159,138,0.35)}
+.nav-highlight-teal{color:#259f8a!important}
+.nav-highlight-gold{color:#c9a84c!important}
+.nav-mobile-title{font-family:var(--font-display);font-size:1.1rem;color:var(--mint);font-weight:700;text-transform:uppercase;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(37,159,138,0.2);letter-spacing:0.06em}
+@media(max-width:800px){
+  .nav-hamburger{display:flex}
+  .nav-back{display:none}
+  .site-nav>img{display:none}
+  .nav-humidor-link{display:none}
+}
+/* GRAVEYARD */
+.graveyard-section{padding:4rem 2rem;max-width:1200px;margin:0 auto}
+.graveyard-label{font-family:var(--font-sans);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.graveyard-label::after{content:"";flex:1;height:1px;background:rgba(255,255,255,0.08)}
+.graveyard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem}
+.gcard{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.75rem;opacity:0.65;transition:all 0.2s;cursor:default}
+.gcard:hover{opacity:1;border-color:rgba(201,168,76,0.2)}
+.gcard-img{width:100%;aspect-ratio:1;background:rgba(0,0,0,0.2);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.gcard-img img{width:100%;height:100%;object-fit:contain;filter:grayscale(60%)}
+.gcard-name{font-family:var(--font-display);font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.3;margin-bottom:4px}
+.gcard-specs{font-size:9px;color:rgba(255,255,255,0.25);line-height:1.5}
+.gcard-request{font-size:9px;padding:4px 8px;border:1px solid rgba(201,168,76,0.2);background:transparent;color:rgba(201,168,76,0.4);cursor:pointer;font-family:var(--font-sans);text-transform:uppercase;border-radius:3px;width:100%;margin-top:6px;transition:all 0.2s}
+.gcard-request:hover{border-color:var(--gold,#c9a84c);color:#c9a84c}
 </style>
 </head>
 <body>
@@ -110,7 +153,20 @@ select option{background:white;color:black}
 <nav class="site-nav">
   <a href="index.html" class="nav-logo">The Tobacco Center <span>tabacarius qui curat</span></a>
   <a href="index.html" class="nav-back">&larr; Back to Site</a>
+  <a href="graveyard.html" style="font-family:'Josefin Sans',sans-serif;font-size:11px;color:rgba(201,168,76,0.6);letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;">&#x26B0; The Graveyard</a>
+  <a href="/customer_humidor.html" title="Log in to see everything you've purchased" style="font-size:11px;color:rgba(201,168,76,0.7);letter-spacing:0.1em;text-transform:uppercase;text-decoration:none" class="nav-humidor-link">My Humidor</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<!-- MOBILE NAV -->
+<div class="nav-mobile" id="nav-mobile">
+  <div class="nav-mobile-title">The Tobacco Center</div>
+  <a href="/virtual_humidor.html" class="nav-highlight-teal">🌿 Virtual Humidor</a>
+  <a href="/customer_humidor.html" class="nav-highlight-gold">⭐ My Humidor</a>
+  <a href="/support.html" class="nav-highlight-teal">🤝 Support the Shop</a>
+  <a href="index.html">← Back to Site</a>
+</div>
 
 <section class="inv-hero">
   <span class="eyebrow">Williamsport, PA &middot; Est. 1977</span>
@@ -120,8 +176,14 @@ select option{background:white;color:black}
 
 <section class="featured-section">
   <div class="featured-inner">
-    <div class="featured-img">
+    <div class="featured-img" style="position:relative">
       <img src="https://pub-8596cac0edf54e0e81ac8a62402528bf.r2.dev/images/3rd_Rule.jpg" alt="The Third Rule Cigar" onerror="this.style.display='none'">
+      <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center">
+        <div style="text-align:center">
+          <div style="color:white;font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:22px;letter-spacing:0.3em;text-transform:uppercase;border:2px solid white;padding:12px 32px;margin-bottom:10px">SOLD OUT</div>
+          <div style="color:rgba(255,255,255,0.6);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-family:'Josefin Sans',sans-serif">Check back soon</div>
+        </div>
+      </div>
     </div>
     <div class="featured-content">
       <span class="eyebrow">Featured &middot; Tobacco Center Exclusive</span>
@@ -141,7 +203,7 @@ select option{background:white;color:black}
 
 <div class="controls">
   <label>Search:</label>
-  <input type="text" id="searchInput" placeholder="Name, wrapper, tasting notes..." oninput="filterItems()">
+  <input type="text" id="searchInput" placeholder="Name, wrapper, tasting notes..." oninput="debounceFilter()">
   <label>Strength:</label>
   <select id="strengthFilter" onchange="filterItems()">
     <option value="All">All Strengths</option>
@@ -200,8 +262,10 @@ function renderInventory(items) {
     var d = i.details || {};
     var strength = d.strength || 'Medium';
     var dotClass = DOT[strength] || 'dot-medium';
+    var isSoldOut = i.name.toLowerCase().indexOf('3rd rule') !== -1 || i.name.toLowerCase().indexOf('third rule') !== -1;
+    var soldOutOverlay = isSoldOut ? '<div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:2"><span style="color:white;font-family:Josefin Sans,sans-serif;font-weight:700;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;border:2px solid white;padding:6px 14px">SOLD OUT</span></div>' : '';
     var imgHtml = d.image
-      ? '<img src="' + d.image + '" loading="lazy" alt="' + i.name + '" onerror="this.style.display=\'none\'">'
+      ? '<img src="' + d.image + '" loading="lazy" width="200" height="200" alt="' + i.name + ' cigar — The Tobacco Center Williamsport PA" onerror="this.style.display=\'none\'">'
       : '<div class="no-img">The Tobacco Center</div>';
     var price = (typeof i.price === 'number' && i.price > 0) ? '$' + i.price.toFixed(2) : '';
 
@@ -213,7 +277,7 @@ function renderInventory(items) {
     if (d.vitola)  specs += '<span><strong>V:</strong> ' + d.vitola  + '</span>';
 
     return '<div class="cigar-card">' +
-      '<div class="img-box">' + imgHtml + '</div>' +
+      '<div class="img-box" style="position:relative">' + imgHtml + soldOutOverlay + '</div>' +
       '<div class="card-body">' +
         '<div class="strength-row"><div class="strength-dot ' + dotClass + '"></div><div class="strength-label">' + strength + '</div></div>' +
         '<div class="cigar-name">' + i.name + '</div>' +
@@ -225,6 +289,8 @@ function renderInventory(items) {
   }).join('');
 }
 
+var _filterTimer;
+function debounceFilter(){clearTimeout(_filterTimer);_filterTimer=setTimeout(filterItems,200);}
 function filterItems() {
   var q = document.getElementById('searchInput').value.toLowerCase().trim();
   var s = document.getElementById('strengthFilter').value;
@@ -248,5 +314,62 @@ function filterItems() {
 
 loadInventory();
 </script>
+
+<!-- GRAVEYARD SECTION -->
+<section class="graveyard-section" id="graveyard" style="display:none">
+  <div class="graveyard-label">Previously Available — Request In Store</div>
+  <div class="graveyard-grid" id="graveyard-grid"></div>
+</section>
+<script>
+function toggleMobileNav(){
+  var btn=document.getElementById('nav-hamburger');
+  var menu=document.getElementById('nav-mobile');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+  document.body.style.overflow=menu.classList.contains('open')?'hidden':'';
+}
+
+// Load out-of-stock cigars for graveyard
+async function loadGraveyard() {
+  try {
+    var r = await fetch(API + '/inventory', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({password:'6116'})
+    });
+    var allItems = await r.json();
+    if (!Array.isArray(allItems)) return;
+    // Filter to out-of-stock (not in current humidor)
+    var inStock = (window.__humidorItems || []).map(function(i){return i.name;});
+    var oos = allItems.filter(function(i){return !inStock.includes(i.name) && i.name && i.name.toLowerCase() !== 'custom item';});
+    if (!oos.length) return;
+    document.getElementById('graveyard').style.display = 'block';
+    document.getElementById('graveyard-grid').innerHTML = oos.map(function(item) {
+      var det = item.details || {};
+      var img = det.image ? '<img src="'+det.image+'" onerror="this.style.display=\'none\'">' : '<div style="font-size:0.4rem;color:rgba(255,255,255,0.1);text-align:center;padding:4px">TTC</div>';
+      var specs = '';
+      if (det.wrapper) specs += 'W: '+det.wrapper+'<br>';
+      if (det.strength) specs += det.strength;
+      return '<div class="gcard">'+
+        '<div class="gcard-img">'+img+'</div>'+
+        '<div class="gcard-name">'+item.name+'</div>'+
+        (specs?'<div class="gcard-specs">'+specs+'</div>':'')+
+        '<button class="gcard-request" onclick="requestCigar(''+item.name.replace(/'/g,"\'")+'')" >+ Request</button>'+
+      '</div>';
+    }).join('');
+  } catch(e) {}
+}
+function requestCigar(name) {
+  window.location.href = 'mailto:gray@thetobaccocenter.com?subject=Cigar+Request:+'+encodeURIComponent(name)+'&body=Hi,+I+would+like+to+request+'+encodeURIComponent(name)+'.+Please+let+me+know+when+it+is+available.';
+}
+// Store in-stock items globally for graveyard comparison
+window.__humidorItems = [];
+// Load graveyard after humidor loads
+setTimeout(loadGraveyard, 2000);
+// Passive event listeners for better scroll performance
+document.addEventListener('touchstart', function(){}, {passive:true});
+document.addEventListener('wheel', function(){}, {passive:true});
+</script>
 </body>
 </html>
+<!-- v3 -->
