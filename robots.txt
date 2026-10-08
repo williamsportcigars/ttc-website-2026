@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Disallow: /ops.html
+Disallow: /ops
+Disallow: /harry.html
+Disallow: /harry
+Disallow: /schedule.html
+Disallow: /schedule
+Disallow: /workers/
+Disallow: /schedule-worker/
+Disallow: /podcast-worker/
+Disallow: /wrangler.toml
+Disallow: /.assetsignore
+Disallow: /.gitignore
+
+Sitemap: https://thetobaccocenter.com/sitemap.xml
