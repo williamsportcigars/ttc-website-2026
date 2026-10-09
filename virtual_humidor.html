@@ -352,7 +352,7 @@ async function loadGraveyard() {
     document.getElementById('graveyard').style.display = 'block';
     document.getElementById('graveyard-grid').innerHTML = oos.map(function(item) {
       var det = item.details || {};
-      var img = det.image ? '<img src="'+det.image+'" onerror="this.style.display=\'none\'">' : '<div style="font-size:0.4rem;color:rgba(255,255,255,0.1);text-align:center;padding:4px">TTC</div>';
+      var img = det.image ? '<img src="'+det.image+'" alt="'+item.name+' cigar — The Tobacco Center Williamsport PA" onerror="this.style.display=\'none\'">' : '<div style="font-size:0.4rem;color:rgba(255,255,255,0.1);text-align:center;padding:4px">TTC</div>';
       var specs = '';
       if (det.wrapper) specs += 'W: '+det.wrapper+'<br>';
       if (det.strength) specs += det.strength;

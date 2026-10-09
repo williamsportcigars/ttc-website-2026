@@ -275,7 +275,7 @@ function renderTop3() {
   sorted.forEach(function(item,i){
     var p=item.cigar;
     var oi=item.idx;
-    var img=p.image?'<img src="'+p.image+'" onerror="this.style.display=\'none\'">':'<div class="ni">TTC</div>';
+    var img=p.image?'<img src="'+p.image+'" alt="'+p.name+'" onerror="this.style.display=\'none\'">':'<div class="ni">TTC</div>';
     var specs='';
     if(p.wrapper)specs+='<b>W:</b> '+p.wrapper+' ';
     if(p.binder)specs+='<b>B:</b> '+p.binder+' ';
@@ -306,7 +306,7 @@ function renderGrid() {
     var oi=purchases.indexOf(p);
     var stars='';
     for(var s=1;s<=5;s++)stars+='<span class="star '+(s<=(p.rating||0)?'lit':'')+'" onclick="setRating('+oi+','+s+')">&#9733;</span>';
-    var img=p.image?'<img src="'+p.image+'" onerror="this.style.display=\'none\'">':'<div class="ni">TTC</div>';
+    var img=p.image?'<img src="'+p.image+'" alt="'+p.name+'" onerror="this.style.display=\'none\'">':'<div class="ni">TTC</div>';
     var specs='';
     if(p.wrapper)specs+='<b>W:</b> '+p.wrapper+' ';
     if(p.binder)specs+='<b>B:</b> '+p.binder+' ';

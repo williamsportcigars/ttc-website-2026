@@ -517,7 +517,7 @@ function updateCartUI() {
     count += qty;
     var d = item.details || {};
     var imgHtml = d.image
-      ? '<img src="' + d.image + '" onerror="this.style.display=\'none\'">'
+      ? '<img src="' + d.image + '" alt="' + item.name + '" onerror="this.style.display=\'none\'">'
       : '';
     html += '<div class="cart-item">' +
       '<div class="cart-item-img">' + imgHtml + '</div>' +
