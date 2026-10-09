@@ -13,3 +13,7 @@
 /workers/*         /  302
 /schedule-worker/* /  302
 /podcast-worker/*  /  302
+
+# Everything else that doesn't match an existing file gets a branded 404
+# instead of Cloudflare Pages' generic default page.
+/*                 /404.html  404
