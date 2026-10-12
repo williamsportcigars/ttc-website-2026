@@ -144,7 +144,10 @@ async function fetchPage(ctx, r, st, params) {
       st.extra.expandIdx = i;
       return data;
     } catch (e) {
-      if (!(e instanceof CloverError) || e.status !== 400 || i === r.expands.length - 1) throw e;
+      // 400 = unsupported expand; 403 "Invalid permissions for expandable
+      // fields" = the token can read the list but not that expansion.
+      const expandProblem = e instanceof CloverError && (e.status === 400 || (e.status === 403 && /expand/i.test(e.message)));
+      if (!expandProblem || i === r.expands.length - 1) throw e;
     }
   }
 }

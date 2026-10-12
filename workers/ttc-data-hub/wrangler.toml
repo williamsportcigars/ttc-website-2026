@@ -2,6 +2,8 @@ name = "ttc-data-hub"
 main = "src/index.js"
 compatibility_date = "2026-09-01"
 workers_dev = true
+# Keep variables added in the Cloudflare dashboard when deploying from here.
+keep_vars = true
 
 # Pull from Clover + KV every 5 minutes. Each run is resumable, so the first
 # (large) history backfill simply continues across runs.
