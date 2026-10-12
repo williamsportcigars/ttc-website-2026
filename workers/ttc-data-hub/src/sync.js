@@ -213,12 +213,13 @@ export function kvNamespaces(env) {
 }
 
 async function kvGetMany(ns, keys) {
+  let m = new Map();
   try {
-    const m = await ns.get(keys, "text"); // bulk get (one operation)
-    if (m instanceof Map) return m;
+    const bulk = await ns.get(keys, "text"); // bulk get (one operation)
+    if (bulk instanceof Map) m = bulk;
   } catch (_) { /* older runtime: fall back below */ }
-  const m = new Map();
-  for (const k of keys) m.set(k, await ns.get(k, "text"));
+  // Bulk get can return null for keys that do exist; re-read those one by one.
+  for (const k of keys) if (m.get(k) == null) m.set(k, await ns.get(k, "text"));
   return m;
 }
 
