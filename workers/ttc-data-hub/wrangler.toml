@@ -1,0 +1,64 @@
+name = "ttc-data-hub"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+# Pull from Clover + KV every 5 minutes. Each run is resumable, so the first
+# (large) history backfill simply continues across runs.
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+CLOVER_MID = "639WCHYRBTWW1"
+TIMEZONE = "America/New_York"
+BACKFILL_START = "2020-01-01T00:00:00Z"   # how far back to pull order history
+WINDOW_DAYS = "31"                         # backfill window size
+PAGE_SIZE = "100"                          # Clover records per request
+MAX_REQUESTS_PER_RUN = "25"                # pages per cron run
+
+# Secrets (not stored here) — set with `npx wrangler secret put <NAME>`:
+#   CLOVER_TOKEN  Clover API token (read access to orders, payments, inventory, customers, employees)
+#   MCP_KEY       long random string; the MCP URL is https://ttc-data-hub.<subdomain>.workers.dev/mcp/<MCP_KEY>
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ttc_hub"
+database_id = "3ed350c9-96b5-497a-89a9-877395bd4f94"
+
+# Other existing databases, exposed read-only through the sql_query tool
+[[d1_databases]]
+binding = "CASHFLOW_DB"
+database_name = "cash_flow_companion"
+database_id = "06dc5871-856b-4675-b811-d82b4761f3c2"
+
+[[d1_databases]]
+binding = "SCHEDULE_DB"
+database_name = "ttc_schedule"
+database_id = "feffa7bf-ecd2-4b86-a10a-5760d8014954"
+
+[[d1_databases]]
+binding = "LEGACY_CLOVER_DB"
+database_name = "clover_history"
+database_id = "2541e0fe-6dfc-4900-acea-9a6dd1281583"
+
+# Existing KV namespaces (read only — this worker never writes to them)
+[[kv_namespaces]]
+binding = "OPS_KV"          # "TTC Ops" — ttc-inv-api / ttc-ops / flipboard data
+id = "e68a8c440b39487ba55bdf9e7ef5310a"
+
+[[kv_namespaces]]
+binding = "CUSTOMERS_KV"    # "TTC_CUSTOMERS"
+id = "e32734979f32419ea2d804ef40c01a08"
+
+[[kv_namespaces]]
+binding = "LOCATOR_KV"      # "TTC_LOCATOR_KV"
+id = "64f47c642d594794b31729af0fa4941a"
+
+[observability]
+enabled = true
+
+# schema.sql is bundled so the worker can apply it to D1 itself (see src/schema.js)
+[[rules]]
+type = "Text"
+globs = ["**/*.sql"]
+fallthrough = true
