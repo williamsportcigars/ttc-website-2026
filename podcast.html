@@ -8,10 +8,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="The Th3rd Rule Podcast — long-form cigar talk, pairings, and industry conversation hosted by Gray Hogan, Dan Winkleman, and Nate Henderson. New episodes on Spotify.">
+<meta name="description" content="The Th3rd Rule Podcast — long-form cigar talk, pairings, and industry conversation hosted by Gray Hogan, Dan Winkleman, and Nate Henderson. New episodes on Spotify and YouTube.">
 <link rel="canonical" href="https://thetobaccocenter.com/podcast.html">
 <meta property="og:title" content="Th3rd Rule Podcast | The Tobacco Center">
-<meta property="og:description" content="Long-form cigar talk, pairings, and industry conversation hosted by Gray Hogan, Dan Winkleman, and Nate Henderson. New episodes on Spotify.">
+<meta property="og:description" content="Long-form cigar talk, pairings, and industry conversation hosted by Gray Hogan, Dan Winkleman, and Nate Henderson. New episodes on Spotify and YouTube.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://thetobaccocenter.com/podcast.html">
 <meta property="og:site_name" content="The Tobacco Center">
@@ -30,7 +30,7 @@
   --gold:#c9a84c;--gold-light:#e8c76a;
   --cream:#f0fdf8;--warm-white:#f7fffe;
   --text:#001b16;--text-muted:#0d4a3a;--border:#9dd4c8;
-  --spotify:#1db954;
+  --spotify:#1db954;--youtube:#ff0000;
   --font-display:'Playfair Display',Georgia,serif;
   --font-body:'Libre Baskerville',Georgia,serif;
   --font-sans:'Josefin Sans',sans-serif;
@@ -63,6 +63,7 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
 .pod-platforms{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap}
 .platform-pill{font-family:var(--font-sans);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;border:1px solid rgba(77,191,138,0.3);color:rgba(224,254,248,0.55);padding:5px 14px;border-radius:20px}
 .platform-pill.live{border-color:var(--spotify);color:var(--spotify)}
+.platform-pill.live.youtube{border-color:var(--youtube);color:var(--youtube)}
 
 /* ABOUT / HOST */
 .pod-about{background:var(--jungle);padding:6rem 4rem;border-top:1px solid rgba(77,191,138,0.1)}
@@ -93,6 +94,10 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
 .ep-card p{font-size:0.95rem;color:var(--text-muted);margin-bottom:1rem}
 .ep-empty{grid-column:1/-1;text-align:center;padding:3rem;border:1px dashed var(--border);font-family:var(--font-display);font-style:italic;color:var(--teal);font-size:1.25rem;line-height:1.9}
 .ep-empty a{color:var(--teal);font-style:normal;text-decoration:underline}
+.ep-tabs{display:flex;gap:6px;margin-bottom:0.85rem}
+.ep-tab{font-family:var(--font-sans);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:6px 12px;cursor:pointer;border-radius:16px;transition:background 0.15s,color 0.15s,border-color 0.15s}
+.ep-tab.active{background:var(--teal);border-color:var(--teal);color:var(--warm-white)}
+.ep-tab:not(.active):hover{border-color:var(--teal);color:var(--teal)}
 
 /* MEDIA KIT */
 .pod-mediakit{background:var(--black);padding:6rem 4rem;border-top:1px solid rgba(77,191,138,0.1)}
@@ -144,9 +149,11 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
   <p class="hero-sub">The long-form conversation that doesn't fit in a 60-second Short — cigar reviews, pairings, industry guests, and lounge stories from a nearly 50-year-old Williamsport institution. Hosted by Gray Hogan, Dan Winkleman, and Nate Henderson. Two episodes in and counting.</p>
   <div class="pod-ctas">
     <a href="https://open.spotify.com/episode/5kAi3rN8NX5jQOefmTtXzI" target="_blank" rel="noopener" class="btn-primary">Listen on Spotify</a>
+    <a href="https://www.youtube.com/channel/UCzzAMX6JkhISrFNZnMdw7_g" target="_blank" rel="noopener" class="btn-ghost">Watch on YouTube</a>
   </div>
   <div class="pod-platforms">
     <span class="platform-pill live">Spotify — live now</span>
+    <span class="platform-pill live youtube">YouTube — live now</span>
     <span class="platform-pill">Apple Podcasts — launching soon</span>
   </div>
   <p style="margin-top:1.5rem;font-family:var(--font-sans);font-size:11px;letter-spacing:0.08em;color:rgba(224,254,248,0.4);">
@@ -195,6 +202,7 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
   <div class="pod-episodes-inner">
     <span class="eyebrow dark-teal" style="color:var(--teal);">Listen</span>
     <h2>Episodes</h2>
+    <p style="font-family:var(--font-sans);font-size:12px;letter-spacing:0.04em;color:var(--text-muted);margin:-1.5rem 0 2rem;">Full video episodes also posted to our <a href="https://www.youtube.com/channel/UCzzAMX6JkhISrFNZnMdw7_g" target="_blank" rel="noopener" style="color:var(--teal);">YouTube channel</a>.</p>
     <div id="episode-grid"></div>
   </div>
 </section>
@@ -246,9 +254,15 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
 // Add real episodes here once the show is live on Spotify for Podcasters —
 // pull each episode's ID from its Spotify share link (open.spotify.com/episode/{id})
 // and use https://open.spotify.com/embed/episode/{id} as the embed URL.
+//
+// To add the YouTube video for an episode once it's uploaded, set `youtube`
+// to https://www.youtube.com/embed/{VIDEO_ID} (VIDEO_ID is the part after
+// "v=" or "youtu.be/" in the video's share link). A Listen/Watch toggle
+// appears on that card automatically — leave `youtube` blank/omitted and
+// the card just shows the Spotify player, same as today.
 var episodes = [
-  { title: "Episode 2", desc: "Powstanie SBC 26, Asylum Schizo, Paul Stulac Red Screaming Sun, and OZ Family Karatoba vs. Maracana, plus Cigar Page's plan for the world's largest cigar store.", embed: "https://open.spotify.com/embed/episode/5kAi3rN8NX5jQOefmTtXzI" },
-  { title: "Episode 1", desc: "Gray Hogan sits down with Dan Winkleman and Nate Henderson — decades of cigars, straight talk, no filter.", embed: "https://open.spotify.com/embed/episode/55SMr80cShs2rEzn0jHswD" }
+  { title: "Episode 2", desc: "Powstanie SBC 26, Asylum Schizo, Paul Stulac Red Screaming Sun, and OZ Family Karatoba vs. Maracana, plus Cigar Page's plan for the world's largest cigar store.", embed: "https://open.spotify.com/embed/episode/5kAi3rN8NX5jQOefmTtXzI", youtube: "" },
+  { title: "Episode 1", desc: "Gray Hogan sits down with Dan Winkleman and Nate Henderson — decades of cigars, straight talk, no filter.", embed: "https://open.spotify.com/embed/episode/55SMr80cShs2rEzn0jHswD", youtube: "" }
 ];
 
 function renderEpisodes() {
@@ -257,15 +271,38 @@ function renderEpisodes() {
     grid.innerHTML = '<div class="ep-empty">Episode 1 is filmed and in the edit bay. <a href="http://eepurl.com/jEkdTk" target="_blank" rel="noopener">Join the Insider List</a> to hear it first.</div>';
     return;
   }
-  grid.innerHTML = episodes.map(function (e) {
+  grid.innerHTML = episodes.map(function (e, i) {
+    var hasBoth = e.embed && e.youtube;
+    var tabs = hasBoth ? (
+      '<div class="ep-tabs">' +
+        '<button type="button" class="ep-tab active" data-ep="' + i + '" data-media="spotify" onclick="switchEpisodeMedia(this)">Listen</button>' +
+        '<button type="button" class="ep-tab" data-ep="' + i + '" data-media="youtube" onclick="switchEpisodeMedia(this)">Watch</button>' +
+      '</div>'
+    ) : '';
+    var player = hasBoth || e.embed
+      ? '<iframe id="ep-frame-' + i + '" style="border-radius:8px" src="' + (e.embed || e.youtube) + '" width="100%" height="152" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>'
+      : (e.youtube ? '<iframe id="ep-frame-' + i + '" style="border-radius:8px" src="' + e.youtube + '" width="100%" height="152" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>' : '');
     return '<div class="ep-card">' +
       '<h4>' + e.title + '</h4>' +
       '<p>' + e.desc + '</p>' +
-      (e.embed ? '<iframe style="border-radius:8px" src="' + e.embed + '" width="100%" height="152" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>' : '') +
+      tabs +
+      player +
       '</div>';
   }).join('');
 }
 renderEpisodes();
+
+function switchEpisodeMedia(btn) {
+  var i = btn.getAttribute('data-ep');
+  var media = btn.getAttribute('data-media');
+  var e = episodes[i];
+  var frame = document.getElementById('ep-frame-' + i);
+  if (!frame) return;
+  frame.src = media === 'youtube' ? e.youtube : e.embed;
+  var tabs = btn.parentElement.querySelectorAll('.ep-tab');
+  for (var t = 0; t < tabs.length; t++) tabs[t].classList.remove('active');
+  btn.classList.add('active');
+}
 </script>
 </body>
 </html>
