@@ -230,7 +230,7 @@ body { font-family: var(--font-body); background: var(--warm-white); color: var(
 .events-hero h2 { font-family: var(--font-display); font-size: clamp(2.5rem,5vw,4rem); font-weight: 900; color: var(--warm-white); line-height: 1.05; position: relative; z-index: 1; }
 .events-hero h2 em { color: var(--mint); font-style: italic; }
 .events-hero p { color: rgba(253,252,248,0.62); margin-top: 1rem; max-width: 520px; position: relative; z-index: 1; }
-.events-grid { padding: 5rem 4rem; display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 2rem; }
+.events-grid { padding: 5rem 4rem; display: grid; grid-template-columns: repeat(auto-fit,minmax(min(300px,100%),1fr)); gap: 2rem; }
 .event-card { border: 1px solid var(--border); padding: 2rem; background: var(--warm-white); position: relative; overflow: hidden; }
 .event-card::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--mint); }
 .event-day { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.6rem; }
