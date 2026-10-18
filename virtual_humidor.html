@@ -368,7 +368,7 @@ async function loadGraveyard() {
         '<div class="gcard-img">'+img+'</div>'+
         '<div class="gcard-name">'+item.name+'</div>'+
         (specs?'<div class="gcard-specs">'+specs+'</div>':'')+
-        '<button class="gcard-request" onclick="requestCigar(''+item.name.replace(/'/g,"\'")+'')" >+ Request</button>'+
+        '<button class="gcard-request" onclick="requestCigar(\'' + item.name.replace(/'/g, "\\'") + '\')" >+ Request</button>'+
       '</div>';
     }).join('');
   } catch(e) {}
