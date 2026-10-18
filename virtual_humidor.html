@@ -192,12 +192,6 @@ select option{background:white;color:black}
   <div class="featured-inner">
     <div class="featured-img" style="position:relative">
       <img src="https://pub-8596cac0edf54e0e81ac8a62402528bf.r2.dev/images/3rd_Rule.jpg" alt="The Third Rule Cigar" onerror="this.style.display='none'">
-      <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center">
-        <div style="text-align:center">
-          <div style="color:white;font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:22px;letter-spacing:0.3em;text-transform:uppercase;border:2px solid white;padding:12px 32px;margin-bottom:10px">SOLD OUT</div>
-          <div style="color:rgba(255,255,255,0.6);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-family:'Josefin Sans',sans-serif">Check back soon</div>
-        </div>
-      </div>
     </div>
     <div class="featured-content">
       <span class="eyebrow">Featured &middot; Our House Cigar</span>
@@ -276,8 +270,6 @@ function renderInventory(items) {
     var d = i.details || {};
     var strength = d.strength || 'Medium';
     var dotClass = DOT[strength] || 'dot-medium';
-    var isSoldOut = i.name.toLowerCase().indexOf('3rd rule') !== -1 || i.name.toLowerCase().indexOf('third rule') !== -1;
-    var soldOutOverlay = isSoldOut ? '<div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:2"><span style="color:white;font-family:Josefin Sans,sans-serif;font-weight:700;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;border:2px solid white;padding:6px 14px">SOLD OUT</span></div>' : '';
     var imgHtml = d.image
       ? '<img src="' + d.image + '" loading="lazy" width="200" height="200" alt="' + i.name + ' cigar — The Tobacco Center Williamsport PA" onerror="this.style.display=\'none\'">'
       : '<div class="no-img">The Tobacco Center</div>';
@@ -291,7 +283,7 @@ function renderInventory(items) {
     if (d.vitola)  specs += '<span><strong>V:</strong> ' + d.vitola  + '</span>';
 
     return '<div class="cigar-card">' +
-      '<div class="img-box" style="position:relative">' + imgHtml + soldOutOverlay + '</div>' +
+      '<div class="img-box" style="position:relative">' + imgHtml + '</div>' +
       '<div class="card-body">' +
         '<div class="strength-row"><div class="strength-dot ' + dotClass + '"></div><div class="strength-label">' + strength + '</div></div>' +
         '<div class="cigar-name">' + i.name + '</div>' +
