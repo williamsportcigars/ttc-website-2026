@@ -177,6 +177,7 @@ select option{background:white;color:black}
 <div class="nav-mobile" id="nav-mobile">
   <div class="nav-mobile-title">The Tobacco Center</div>
   <a href="/virtual_humidor.html" class="nav-highlight-teal">🌿 Virtual Humidor</a>
+  <a href="/pipe-cellar.html" class="nav-highlight-teal">🪈 The Pipe Cellar</a>
   <a href="/customer_humidor.html" class="nav-highlight-gold">⭐ My Humidor</a>
   <a href="/support.html" class="nav-highlight-teal">🤝 Support the Shop</a>
   <a href="index.html">← Back to Site</a>
@@ -251,7 +252,8 @@ async function loadInventory() {
   try {
     var res = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
     var data = await res.json();
-    fullInventory = Array.isArray(data) ? data : [];
+    data = Array.isArray(data) ? data : [];
+    fullInventory = data.filter(function(i) { return !i.category || i.category === 'cigar'; });
     renderInventory(fullInventory);
   } catch(e) {
     grid.innerHTML = '<div class="status-msg">Vault offline. Please refresh.</div>';
@@ -336,6 +338,7 @@ function toggleMobileNav(){
 }
 
 // Load out-of-stock cigars for graveyard
+var API = 'https://ttc-inv-api.williamsportcigars.workers.dev';
 async function loadGraveyard() {
   try {
     var r = await fetch(API + '/inventory', {
@@ -345,6 +348,7 @@ async function loadGraveyard() {
     });
     var allItems = await r.json();
     if (!Array.isArray(allItems)) return;
+    allItems = allItems.filter(function(i){ return !i.category || i.category === 'cigar'; });
     // Filter to out-of-stock (not in current humidor)
     var inStock = (window.__humidorItems || []).map(function(i){return i.name;});
     var oos = allItems.filter(function(i){return !inStock.includes(i.name) && i.name && i.name.toLowerCase() !== 'custom item';});
