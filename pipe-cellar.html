@@ -75,13 +75,20 @@ select option{background:white;color:black}
 .img-box img{width:100%;height:100%;object-fit:contain}
 .no-img{font-family:var(--font-display);font-style:italic;font-size:0.55rem;color:rgba(13,74,58,0.2);text-align:center;padding:8px;line-height:1.4}
 
-.type-tag{display:inline-block;font-family:var(--font-sans);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-bottom:5px}
+.type-tag{display:inline-block;font-family:var(--font-sans);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-bottom:6px}
 .type-tag.tobacco{background:rgba(37,159,138,0.12);color:var(--teal)}
 .type-tag.pipe{background:rgba(201,168,76,0.15);color:var(--gold)}
+
+.strength-meter{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.sm-label{font-family:var(--font-sans);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);opacity:0.6}
+.sm-pips{display:flex;gap:3px}
+.sm-pip{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--border);background:transparent;display:inline-block;box-sizing:border-box}
+.sm-pip.filled{border-color:transparent}
 
 .cigar-name{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--black);margin-bottom:5px;line-height:1.3}
 .cigar-profile{font-size:0.78rem;color:var(--text-muted);line-height:1.7;margin-bottom:7px}
 .cigar-price{font-family:var(--font-sans);font-size:0.88rem;font-weight:600;color:var(--gold);letter-spacing:0.05em}
+.house-note{font-family:var(--font-sans);font-size:9px;letter-spacing:0.04em;color:rgba(13,74,58,0.4);font-style:italic;margin-top:4px}
 
 .status-msg{grid-column:1/-1;text-align:center;padding:5rem;font-family:var(--font-display);font-style:italic;color:var(--teal);font-size:1.2rem}
 .site-footer{background:var(--black);border-top:1px solid rgba(77,191,138,0.1);padding:2rem 4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
@@ -197,19 +204,36 @@ async function loadInventory() {
   }
 }
 
+var STRENGTH_COLORS = ['#3db87a','#3db87a','#c9a84c','#e88c30','#e84040'];
+function strengthMeter(n) {
+  n = parseInt(n, 10);
+  if (!n || n < 1) return '';
+  n = Math.min(5, n);
+  var color = STRENGTH_COLORS[n - 1];
+  var pips = '';
+  for (var s = 1; s <= 5; s++) {
+    pips += '<span class="sm-pip' + (s <= n ? ' filled' : '') + '"' + (s <= n ? ' style="background:' + color + '"' : '') + '></span>';
+  }
+  return '<div class="strength-meter" title="Strength ' + n + '/5"><span class="sm-label">Strength</span><div class="sm-pips">' + pips + '</div></div>';
+}
+
 function cardHtml(i) {
   var d = i.details || {};
   var imgHtml = d.image
     ? '<img src="' + d.image + '" loading="lazy" width="200" height="200" alt="' + i.name + ' — The Tobacco Center Williamsport PA" onerror="this.style.display=\'none\'">'
     : '<div class="no-img">The Tobacco Center</div>';
   var price = (typeof i.price === 'number' && i.price > 0) ? '$' + i.price.toFixed(2) : '';
-  var tag = i.category === 'pipe' ? '<span class="type-tag pipe">Pipe</span>' : '<span class="type-tag tobacco">Tobacco</span>';
+  var tagLabel = d.type || (i.category === 'pipe' ? 'Pipe' : 'Tobacco');
+  var tag = '<span class="type-tag ' + (i.category === 'pipe' ? 'pipe' : 'tobacco') + '">' + tagLabel + '</span>';
+  var houseNote = d.houseBlend ? '<div class="house-note">House blend — ask in-store for current notes</div>' : '';
   return '<div class="cigar-card">' +
     '<div class="img-box" style="position:relative">' + imgHtml + '</div>' +
     '<div class="card-body">' +
       tag +
       '<div class="cigar-name">' + i.name + '</div>' +
+      strengthMeter(d.strength) +
       (d.profile ? '<div class="cigar-profile">' + d.profile + '</div>' : '') +
+      houseNote +
       '<div class="cigar-price">' + price + '</div>' +
     '</div>' +
   '</div>';
