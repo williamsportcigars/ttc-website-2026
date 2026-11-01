@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-  <meta name="description" content="Browse The Tobacco Center's current in-store pipe tobacco and pipe selection. Loose blends, tins, and pipes. Williamsport, PA.">
+  <meta name="description" content="Browse The Tobacco Center's current in-store pipe tobacco selection. Loose blends and tins. Williamsport, PA.">
   <meta property="og:title" content="The Pipe Cellar — The Tobacco Center">
-  <meta property="og:description" content="Browse our current in-store pipe tobacco and pipe selection.">
+  <meta property="og:description" content="Browse our current in-store pipe tobacco selection.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://thetobaccocenter.com/pipe-cellar.html">
   <meta property="og:site_name" content="The Tobacco Center">
   <meta property="og:image" content="https://thetobaccocenter.com/og-image.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The Pipe Cellar — The Tobacco Center">
-  <meta name="twitter:description" content="Browse our current in-store pipe tobacco and pipe selection.">
+  <meta name="twitter:description" content="Browse our current in-store pipe tobacco selection.">
   <meta name="twitter:image" content="https://thetobaccocenter.com/og-image.jpg">
   <link rel="canonical" href="https://thetobaccocenter.com/pipe-cellar.html">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Pipe Cellar — Pipe Tobacco & Pipes | The Tobacco Center, Williamsport PA</title>
+<title>The Pipe Cellar — Pipe Tobacco | The Tobacco Center, Williamsport PA</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -154,18 +154,12 @@ select option{background:white;color:black}
 <section class="inv-hero">
   <span class="eyebrow">Williamsport, PA &middot; Est. 1977</span>
   <h1>The Pipe <em>Cellar.</em></h1>
-  <p class="hero-sub">Browse our current in-store pipe tobacco &amp; pipes</p>
+  <p class="hero-sub">Browse our current in-store pipe tobacco</p>
 </section>
 
 <div class="controls">
   <label>Search:</label>
   <input type="text" id="searchInput" placeholder="Name, blend, notes..." oninput="debounceFilter()">
-  <label>Show:</label>
-  <select id="typeFilter" onchange="filterItems()">
-    <option value="All">Everything</option>
-    <option value="pipe-tobacco">Tobacco Blends</option>
-    <option value="pipe">Pipes</option>
-  </select>
   <div class="result-count" id="result-count"></div>
 </div>
 
@@ -197,7 +191,7 @@ async function loadInventory() {
     var res = await fetch('https://ttc-inv-api.williamsportcigars.workers.dev/');
     var data = await res.json();
     data = Array.isArray(data) ? data : [];
-    fullInventory = data.filter(function(i) { return i.category === 'pipe-tobacco' || i.category === 'pipe'; });
+    fullInventory = data.filter(function(i) { return i.category === 'pipe-tobacco'; });
     renderInventory(fullInventory);
   } catch(e) {
     grid.innerHTML = '<div class="status-msg">Cellar offline. Please refresh.</div>';
@@ -223,8 +217,8 @@ function cardHtml(i) {
     ? '<img src="' + d.image + '" loading="lazy" width="200" height="200" alt="' + i.name + ' — The Tobacco Center Williamsport PA" onerror="this.style.display=\'none\'">'
     : '<div class="no-img">The Tobacco Center</div>';
   var price = (typeof i.price === 'number' && i.price > 0) ? '$' + i.price.toFixed(2) : '';
-  var tagLabel = d.type || (i.category === 'pipe' ? 'Pipe' : 'Tobacco');
-  var tag = '<span class="type-tag ' + (i.category === 'pipe' ? 'pipe' : 'tobacco') + '">' + tagLabel + '</span>';
+  var tagLabel = d.type || 'Tobacco';
+  var tag = '<span class="type-tag tobacco">' + tagLabel + '</span>';
   var houseNote = d.houseBlend ? '<div class="house-note">House blend — ask in-store for current notes</div>' : '';
   return '<div class="cigar-card">' +
     '<div class="img-box" style="position:relative">' + imgHtml + '</div>' +
@@ -247,27 +241,14 @@ function renderInventory(items) {
     grid.innerHTML = '<div class="status-msg">Nothing matches your search.</div>';
     return;
   }
-  var tobacco = items.filter(function(i){ return i.category === 'pipe-tobacco'; });
-  var pipes = items.filter(function(i){ return i.category === 'pipe'; });
-  var html = '';
-  if (tobacco.length) {
-    html += '<div class="section-block"><div class="section-label">Tobacco Blends</div><div id="tobacco-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:1.5rem;max-width:1400px;margin:0 auto">' +
-      tobacco.map(cardHtml).join('') + '</div></div>';
-  }
-  if (pipes.length) {
-    html += '<div class="section-block"><div class="section-label">Pipes</div><div id="pipes-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:1.5rem;max-width:1400px;margin:0 auto">' +
-      pipes.map(cardHtml).join('') + '</div></div>';
-  }
-  grid.innerHTML = html;
+  grid.innerHTML = items.map(cardHtml).join('');
 }
 
 var _filterTimer;
 function debounceFilter(){clearTimeout(_filterTimer);_filterTimer=setTimeout(filterItems,200);}
 function filterItems() {
   var q = document.getElementById('searchInput').value.toLowerCase().trim();
-  var t = document.getElementById('typeFilter').value;
   var filtered = fullInventory.filter(function(i) {
-    if (t !== 'All' && i.category !== t) return false;
     if (!q) return true;
     var d = i.details || {};
     var searchable = [i.name, d.profile || ''].join(' ').toLowerCase();
