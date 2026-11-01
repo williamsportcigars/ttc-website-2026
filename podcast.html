@@ -149,7 +149,7 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
   <p class="hero-sub">The long-form conversation that doesn't fit in a 60-second Short — cigar reviews, pairings, industry guests, and lounge stories from a nearly 50-year-old Williamsport institution. Hosted by Gray Hogan, Dan Winkleman, and Nate Henderson. Three episodes in and counting.</p>
   <div class="pod-ctas">
     <a href="https://open.spotify.com/episode/1I0acxo0lthTOTqPpP0XxV" target="_blank" rel="noopener" class="btn-primary">Listen on Spotify</a>
-    <a href="https://www.youtube.com/playlist?list=PLUgrnk81DGGg" target="_blank" rel="noopener" class="btn-ghost">Watch on YouTube</a>
+    <a href="https://www.youtube.com/watch?v=srvKROzIE3A" target="_blank" rel="noopener" class="btn-ghost">Listen on YouTube</a>
   </div>
   <div class="pod-platforms">
     <span class="platform-pill live">Spotify — live now</span>
@@ -202,7 +202,7 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
   <div class="pod-episodes-inner">
     <span class="eyebrow dark-teal" style="color:var(--teal);">Listen</span>
     <h2>Episodes</h2>
-    <p style="font-family:var(--font-sans);font-size:12px;letter-spacing:0.04em;color:var(--text-muted);margin:-1.5rem 0 2rem;">Full video episodes also posted to our <a href="https://www.youtube.com/channel/UCzzAMX6JkhISrFNZnMdw7_g" target="_blank" rel="noopener" style="color:var(--teal);">YouTube channel</a>.</p>
+    <p style="font-family:var(--font-sans);font-size:12px;letter-spacing:0.04em;color:var(--text-muted);margin:-1.5rem 0 2rem;">Full episodes are also on our <a href="https://www.youtube.com/channel/UCzzAMX6JkhISrFNZnMdw7_g" target="_blank" rel="noopener" style="color:var(--teal);">YouTube channel</a>.</p>
     <div id="episode-grid"></div>
   </div>
 </section>
@@ -257,7 +257,7 @@ body{font-family:var(--font-body);background:var(--warm-white);color:var(--text)
 //
 // To add the YouTube video for an episode once it's uploaded, set `youtube`
 // to https://www.youtube.com/embed/{VIDEO_ID} (VIDEO_ID is the part after
-// "v=" or "youtu.be/" in the video's share link). A Listen/Watch toggle
+// "v=" or "youtu.be/" in the video's share link). A Listen/YouTube toggle
 // appears on that card automatically — leave `youtube` blank/omitted and
 // the card just shows the Spotify player, same as today.
 var episodes = [
@@ -277,7 +277,7 @@ function renderEpisodes() {
     var tabs = hasBoth ? (
       '<div class="ep-tabs">' +
         '<button type="button" class="ep-tab active" data-ep="' + i + '" data-media="spotify" onclick="switchEpisodeMedia(this)">Listen</button>' +
-        '<button type="button" class="ep-tab" data-ep="' + i + '" data-media="youtube" onclick="switchEpisodeMedia(this)">Watch</button>' +
+        '<button type="button" class="ep-tab" data-ep="' + i + '" data-media="youtube" onclick="switchEpisodeMedia(this)">YouTube</button>' +
       '</div>'
     ) : '';
     var player = hasBoth || e.embed
