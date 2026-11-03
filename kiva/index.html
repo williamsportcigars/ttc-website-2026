@@ -13,17 +13,17 @@
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
 }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.45; }
 .wrap { max-width: 1100px; margin: 0 auto; padding: clamp(14px, 3vw, 32px); }
-button { font: inherit; cursor: pointer; }
+button { font: inherit; cursor: pointer; color: inherit; }
 h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; }
 .head { display: flex; align-items: flex-end; gap: 22px; flex-wrap: wrap; margin-bottom: 20px; }
 .arch { width: 124px; height: 100px; flex: none; }
 .headtext { flex: 1 1 18rem; min-width: 0; }
 .head h1 { font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.05; letter-spacing: -0.01em; }
 .sub { color: var(--muted); font-size: 18px; margin: 6px 0 0; }
-.level { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+.level { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
 .lvl-pill { background: var(--ink); color: #fff; border-radius: 999px; padding: 6px 16px; font-weight: 700; font-size: 16px; }
 .xp { flex: 1 1 14rem; min-width: 12rem; }
 .xp .bar { height: 14px; background: var(--line); border-radius: 8px; overflow: hidden; }
@@ -43,13 +43,21 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(14px, 2.5vw, 22px); margin-bottom: 20px; }
 .card h2 { font-size: 1.7rem; margin-bottom: 4px; }
 .note { color: var(--muted); font-size: 15px; margin: 0 0 14px; }
-.btn { border: 0; border-radius: 999px; padding: 10px 20px; font-weight: 700; background: var(--pink); color: #fff; box-shadow: 0 2px 0 rgba(0,0,0,.15); }
+.btn { display: inline-block; border: 0; border-radius: 999px; padding: 10px 20px; font-weight: 700; background: var(--pink); color: #fff; box-shadow: 0 2px 0 rgba(0,0,0,.15); text-decoration: none; text-align: center; }
 .btn.alt { background: var(--ink); } .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); box-shadow: none; }
-.btn:hover { filter: brightness(1.07); } .btn:focus-visible, .chip:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--aqua); outline-offset: 2px; }
+.btn:hover { filter: brightness(1.07); }
+.btn:focus-visible, .chip:focus-visible, select:focus-visible, input:focus-visible, .badge:focus-visible, .goal:focus-visible, .qcat:focus-visible { outline: 3px solid var(--aqua); outline-offset: 2px; }
+
+.give { background: linear-gradient(135deg, #fff5fa, #fff9e8); border-color: var(--blush); }
+.give-btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn.cash { background: #00d632; color: #0b2410; font-size: 17px; padding: 12px 24px; }
+.btn.venmo { background: #3d95ce; color: #04131f; font-size: 17px; padding: 12px 24px; }
+.fine { color: var(--muted); font-size: 14px; margin: 12px 0 0; }
 
 .next { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 12px; }
-.goal { border: 2px dashed var(--line); border-radius: 14px; padding: 12px 14px; background: #fff; }
-.goal b { display: block; font-size: 16px; } .goal span { color: var(--muted); font-size: 15px; }
+.goal { border: 2px dashed var(--line); border-radius: 14px; padding: 12px 14px; background: #fff; text-align: left; width: 100%; }
+.goal:hover { border-color: var(--pink); }
+.goal b { display: block; font-size: 16px; } .goal span { color: var(--muted); font-size: 15px; display: block; }
 .meter { height: 10px; background: var(--line); border-radius: 6px; overflow: hidden; margin-top: 8px; }
 .meter i { display: block; height: 100%; border-radius: 6px; background: var(--pink); }
 
@@ -75,20 +83,32 @@ circle.unf { stroke-width: 1; } circle.pay, circle.fund, circle.rep { stroke: #f
 .steps { display: flex; justify-content: space-between; margin: 10px 0 2px; font-size: 13px; color: var(--muted); gap: 4px; }
 .steps span { text-align: center; flex: 1; } .steps span.on { color: var(--ink); font-weight: 700; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.chip { border: 2px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 3px 11px; font-size: 14px; }
-.chip.on { color: var(--ink); border-color: transparent; font-weight: 700; }
-.chip:not(.on):hover { border-color: var(--pink); }
+.chip { border: 2px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 3px 11px; font-size: 14px; font-family: inherit; display: inline-block; }
+.chip.on { border-color: transparent; font-weight: 700; background: var(--mustard); }
+button.chip:not(.on):hover { border-color: var(--pink); }
+.chip.need { border-style: dashed; }
 
-.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.qcats { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 12px; }
+.qcat { text-align: left; border: 2px solid var(--line); background: #fff; border-radius: 16px; padding: 14px; width: 100%; }
+.qcat:hover { border-color: var(--pink); }
+.qcat .t { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; }
+.qcat .t span.e { font-size: 1.6rem; }
+.qcat p { margin: 6px 0 8px; color: var(--muted); font-size: 14px; }
+.qcat .st { font-size: 14px; display: flex; justify-content: space-between; margin-top: 6px; color: var(--muted); }
+.qcat.has { border-color: var(--aqua); background: linear-gradient(#f4fffd, #fff); }
+
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
 .badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr)); gap: 12px; }
-.badge { border-radius: 16px; padding: 14px; background: #fff; border: 2px solid var(--line); text-align: center; position: relative; }
+.badge { border-radius: 16px; padding: 14px; background: #fff; border: 2px solid var(--line); text-align: center; position: relative; width: 100%; font-family: inherit; }
+.badge:hover { border-color: var(--pink); transform: translateY(-2px); }
 .badge .e { font-size: 2.3rem; line-height: 1.1; filter: grayscale(1); opacity: .45; }
 .badge b { display: block; margin-top: 4px; font-size: 16px; } .badge p { margin: 2px 0 8px; color: var(--muted); font-size: 14px; }
 .badge .meter i { background: var(--aqua); }
 .badge.got { border-color: var(--mustard); background: linear-gradient(#fffaf0, #fff); }
 .badge.got .e { filter: none; opacity: 1; }
 .badge.got::after { content: "✓"; position: absolute; top: 8px; right: 12px; color: var(--pink); font-weight: 900; font-size: 18px; }
-.badge small { color: var(--muted); font-size: 14px; }
+.badge small { color: var(--muted); font-size: 14px; display: block; margin-top: 4px; }
+.more { margin: 14px 0 0; }
 
 .tablewrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 15px; }
@@ -98,15 +118,28 @@ td.r, th.r { text-align: right; }
 select, input { font: inherit; padding: 8px 10px; border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); max-width: 100%; }
 td select { padding: 4px 8px; }
 .x { background: none; border: 0; color: var(--muted); font-size: 18px; padding: 4px 8px; border-radius: 8px; } .x:hover { color: var(--coral); background: #fff0ea; }
+.mini { display: inline-block; background: #f3efe4; border-radius: 999px; padding: 1px 9px; margin: 2px 4px 2px 0; font-size: 13px; white-space: nowrap; }
+.needcat { border: 2px dashed var(--coral); background: #fff4ef; border-radius: 999px; padding: 2px 12px; font-size: 14px; font-weight: 600; color: #a33; }
+.warn { background: #fff4ef; border: 2px dashed var(--coral); border-radius: 14px; padding: 10px 14px; margin: 0 0 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 15px; }
+.warn[hidden] { display: none; }
 
 .modal { position: fixed; inset: 0; background: rgba(22,49,74,.55); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
 .modal[hidden] { display: none; }
-.sheet { background: var(--card); border-radius: 20px; padding: 22px; width: min(100%, 30rem); max-height: 92vh; overflow: auto; }
+.sheet { background: var(--card); border-radius: 20px; padding: 22px; width: min(100%, 32rem); max-height: 92vh; overflow: auto; }
 .sheet h2 { font-size: 1.8rem; margin-bottom: 10px; }
 .sheet label { display: block; font-weight: 600; margin: 10px 0 4px; font-size: 15px; }
 .sheet input, .sheet select { width: 100%; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+.actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+.pickgrid { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip.pick { cursor: pointer; position: relative; user-select: none; }
+.chip.pick input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.chip.pick.on { background: var(--aqua); }
+.chip.pick:focus-within { outline: 3px solid var(--aqua); outline-offset: 2px; }
+.dbig { font-family: var(--serif); font-size: 2.4rem; line-height: 1.1; }
+.dhead { display: flex; gap: 12px; align-items: center; margin-bottom: 6px; }
+.dhead .e { font-size: 2.6rem; }
+.dsec { margin-top: 16px; font-weight: 700; font-size: 15px; }
 .toast { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 90px); background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 999px; font-weight: 600; z-index: 60; transition: transform .35s; max-width: 92vw; text-align: center; }
 .toast.show { transform: translate(-50%, 0); }
 #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 70; }
@@ -130,6 +163,7 @@ td select { padding: 4px 8px; }
         <span class="lvl-pill" id="lvl">Level</span>
         <div class="xp"><div class="bar"><i id="xpbar" style="width:0"></i></div><small id="xptxt"></small></div>
         <button class="btn" id="addTop">+ Add a loan</button>
+        <a class="btn ghost" href="#give">💌 Chip in</a>
       </div>
     </div>
   </header>
@@ -138,8 +172,18 @@ td select { padding: 4px 8px; }
 
   <section class="card">
     <h2>🎯 Closest goals</h2>
-    <p class="note">The next wins that are nearly in reach.</p>
+    <p class="note">The next wins that are nearly in reach. Tap one to see your progress.</p>
     <div class="next" id="next"></div>
+  </section>
+
+  <section class="card give" id="give">
+    <h2>💌 Help fill the map</h2>
+    <p class="note">Want to help with the next loan? Send a few dollars with Cash App or Venmo.</p>
+    <div class="give-btns">
+      <a class="btn cash" href="https://cash.app/$Jennu1neArticle" target="_blank" rel="noopener noreferrer">Send with Cash App</a>
+      <a class="btn venmo" href="https://venmo.com/code?user_id=3089764978786304893&amp;created=1793685385" target="_blank" rel="noopener noreferrer">Send with Venmo</a>
+    </div>
+    <p class="fine">These buttons just open Cash App or Venmo. Nothing is collected on this page.</p>
   </section>
 
   <section class="card">
@@ -162,20 +206,28 @@ td select { padding: 4px 8px; }
   </section>
 
   <section class="card">
+    <h2>🏷️ Kiva category quests</h2>
+    <p class="note">Kiva groups loans into categories. Tag each of Jenn's loans (a loan can have several) and chase a badge in every one. Tap a category to see your progress.</p>
+    <div class="qcats" id="qcats"></div>
+  </section>
+
+  <section class="card">
     <h2>🏅 Badges</h2>
     <p class="note" id="badgenote"></p>
     <div class="filters" id="filters">
       <button class="btn alt" data-f="all">All</button><button class="btn ghost" data-f="got">Unlocked</button><button class="btn ghost" data-f="todo">Still to earn</button>
+      <select id="grp" aria-label="Badge group"></select>
     </div>
     <div class="badges" id="badges"></div>
   </section>
 
   <section class="card">
     <h2>📒 Loan log</h2>
-    <p class="note">Every loan she has made. Change a status when a loan gets funded or repaid, and the map and badges update.</p>
+    <p class="note">Every loan she has made. Tap ✏️ to fix anything: the country, the business, the Kiva categories, the status.</p>
+    <div class="warn" id="catwarn" hidden><span id="catwarntxt"></span><button class="btn" id="catfix">Fix next one</button></div>
     <p><button class="btn" id="addBtn">+ Add a loan</button></p>
     <div class="tablewrap"><table>
-      <thead><tr><th>Borrower</th><th>Country</th><th class="hide-sm">Business</th><th class="hide-sm">Loan made</th><th>Status</th><th class="r">Amount</th><th></th></tr></thead>
+      <thead><tr><th>Borrower</th><th>Country</th><th class="hide-sm">What they do</th><th>Categories</th><th>Status</th><th class="r hide-sm">Amount</th><th></th></tr></thead>
       <tbody id="log"></tbody>
     </table></div>
   </section>
@@ -191,13 +243,15 @@ td select { padding: 4px 8px; }
 
 <div class="modal" id="modal" hidden>
   <form class="sheet" id="form" autocomplete="off">
-    <h2>Add a loan 💖</h2>
+    <h2 id="ftitle">Add a loan 💖</h2>
     <label for="fCountry">Country</label>
     <select id="fCountry" required></select>
     <div class="row2">
       <div><label for="fName">Borrower</label><input id="fName" required maxlength="60" placeholder="e.g. Amina"></div>
-      <div><label for="fBiz">Business</label><input id="fBiz" maxlength="60" placeholder="e.g. Tailoring"></div>
+      <div><label for="fBiz">What they do</label><input id="fBiz" maxlength="60" placeholder="e.g. Tailoring"></div>
     </div>
+    <label id="fCatsLbl">Kiva categories (pick any that fit)</label>
+    <div class="pickgrid" id="fCats" role="group" aria-labelledby="fCatsLbl"></div>
     <div class="row2">
       <div><label for="fAmt">Amount ($)</label><input id="fAmt" type="number" min="1" step="1" value="25" required></div>
       <div><label for="fDate">Loan made</label><input id="fDate" type="date" required></div>
@@ -209,6 +263,7 @@ td select { padding: 4px 8px; }
     <div class="actions"><button type="button" class="btn ghost" id="cancel">Cancel</button><button class="btn" type="submit">Save loan</button></div>
   </form>
 </div>
+<div class="modal" id="dmodal" hidden><div class="sheet" id="dsheet" role="dialog" aria-modal="true" aria-labelledby="dtitle"></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <canvas id="confetti" aria-hidden="true"></canvas>
 
@@ -227,20 +282,58 @@ var SEED = [{"country":"Burkina Faso","borrower":"Wendtoin","business":"Weaving"
     'North America': {e: '🌎', c: '#5cc8c0'}, 'South America': {e: '🦜', c: '#ef6a4c'}, 'Oceania': {e: '🏝️', c: '#a67bd1'}
   };
   var CONT_ORDER = ['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
+  /* Kiva's loan categories (https://www.kiva.org/categories). Descriptions are short paraphrases. */
+  var CATS = [
+    {n: 'Agriculture', e: '🌾', d: 'Farmers growing crops through weather and price swings.'},
+    {n: 'Education', e: '🎓', d: 'Students paying for vocational school or university.'},
+    {n: 'Refugees and IDPs', e: '🕊️', d: 'People who had to leave home, and the communities hosting them.'},
+    {n: 'Eco-friendly', e: '🌱', d: 'Clean energy, recycling and farming that is kind to the planet.'},
+    {n: 'Kiva U.S.', e: '🇺🇸', d: '0% loans to small business owners in the United States.'},
+    {n: 'Livestock', e: '🐄', d: 'Cows, pigs and other animals that grow a farm’s income.'},
+    {n: 'Arts', e: '🎨', d: 'Artisans buying materials to make and sell their crafts.'},
+    {n: 'Women', e: '👩', d: 'Women building their own financial independence.'},
+    {n: 'Single parents', e: '👨‍👧', d: 'Moms and dads supporting a family on their own.'},
+    {n: 'Health', e: '🩺', d: 'Medicine, surgeries and healthcare for families.'},
+    {n: 'Food', e: '🍲', d: 'Markets, grocery shops and restaurants feeding communities.'},
+    {n: 'Water and sanitation', e: '💧', d: 'Safe drinking water and better sanitation.'}
+  ];
+  var CATN = CATS.map(function (c) { return c.n; });
+  var CATBY = {}; CATS.forEach(function (c) { CATBY[c.n] = c; });
   var byName = {}; COUNTRIES.forEach(function (c) { byName[c.name] = c; });
   var byGeo = {}; COUNTRIES.forEach(function (c) { byGeo[c.geo] = c; });
+  var LETTERS = {}; COUNTRIES.forEach(function (c) { var k = c.name.charAt(0).toUpperCase(); (LETTERS[k] = LETTERS[k] || []).push(c.name); });
+  var LETTER_KEYS = Object.keys(LETTERS).sort();
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (m) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[m]; }); };
   var money = function (n) { return '$' + Number(n).toLocaleString('en-US'); };
   var uid = function () { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); };
   var fmtDate = function (s) { var d = new Date(s + 'T12:00:00'); return isNaN(d) ? s : d.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}); };
   var today = function () { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  var monthLabel = function (idx) { var y = Math.floor((idx - 1) / 12), m = idx - y * 12; return new Date(y, m - 1, 1).toLocaleDateString('en-US', {month: 'short', year: 'numeric'}); };
+
+  /* ---------- categories ---------- */
+  function guessCats(b) {
+    var s = (b || '').toLowerCase(), out = [];
+    if (/livestock|cow|goat|pig|chicken/.test(s)) { out.push('Livestock'); out.push('Agriculture'); }
+    else if (/farm|agri|crop/.test(s)) out.push('Agriculture');
+    if (/weav|craft|artisan|\bart/.test(s)) out.push('Arts');
+    if (/biogas|solar|energy|recycl/.test(s)) out.push('Eco-friendly');
+    if (/toilet|sanit|water/.test(s)) out.push('Water and sanitation');
+    if (/food|grocery|restaurant|stall|bakery|market/.test(s)) out.push('Food');
+    return out;
+  }
+  function norm(l) {
+    var o = Object.assign({}, l);
+    if (!o.id) o.id = uid();
+    o.cats = Array.isArray(o.cats) ? o.cats.filter(function (c) { return CATBY[c]; }) : guessCats(o.business);
+    return o;
+  }
 
   /* ---------- state ---------- */
   var state = {loans: [], updated: 0};
-  function seedState() { return {loans: SEED.map(function (l) { var o = Object.assign({}, l); o.id = uid(); return o; }), updated: Date.now()}; }
+  function seedState() { return {loans: SEED.map(norm), updated: Date.now()}; }
   function loadLocal() {
-    try { var raw = localStorage.getItem(STORE); if (raw) { var s = JSON.parse(raw); if (s && Array.isArray(s.loans)) return s; } } catch (e) {}
+    try { var raw = localStorage.getItem(STORE); if (raw) { var s = JSON.parse(raw); if (s && Array.isArray(s.loans)) { s.loans = s.loans.map(norm); return s; } } } catch (e) {}
     return null;
   }
   var syncTimer = null;
@@ -273,6 +366,7 @@ var SEED = [{"country":"Burkina Faso","borrower":"Wendtoin","business":"Weaving"
     if (/craft|art/.test(s)) return 'craft';
     return b ? 'other' : '';
   }
+  var BIZNAME = {weave: 'weaving', fashion: 'sewing, tailoring or dressmaking', food: 'food or shop', farm: 'farming or livestock', energy: 'clean energy', water: 'water or sanitation', craft: 'craft', other: 'other'};
   function stats() {
     var L = state.loans.filter(function (l) { return byName[l.country]; });
     var cs = {}; L.forEach(function (l) { (cs[l.country] = cs[l.country] || []).push(l); });
@@ -281,65 +375,163 @@ var SEED = [{"country":"Burkina Faso","borrower":"Wendtoin","business":"Weaving"
     COUNTRIES.forEach(function (c) { cont[c.cont].total++; if (cs[c.name]) cont[c.cont].got++; });
     var months = {}; L.forEach(function (l) { if (l.made) months[l.made.slice(0, 7)] = 1; });
     var mk = Object.keys(months).sort();
-    var streak = 0, best = 0, prev = null;
-    mk.forEach(function (m) { var y = +m.slice(0, 4), mo = +m.slice(5, 7), idx = y * 12 + mo; streak = (prev !== null && idx === prev + 1) ? streak + 1 : 1; prev = idx; if (streak > best) best = streak; });
-    var days = L.map(function (l) { return new Date(l.made + 'T12:00:00').getTime(); }).filter(function (t) { return !isNaN(t); }).sort(function (a, b) { return a - b; });
-    var spree = 0; for (var i = 0; i < days.length; i++) { var n = 0; for (var j = i; j < days.length && days[j] - days[i] <= 6 * 864e5; j++) n++; if (n > spree) spree = n; }
+    var idxs = mk.map(function (m) { return +m.slice(0, 4) * 12 + +m.slice(5, 7); });
+    var streak = 0, best = 0, prev = null, bestEnd = null;
+    idxs.forEach(function (idx) { streak = (prev !== null && idx === prev + 1) ? streak + 1 : 1; prev = idx; if (streak > best) { best = streak; bestEnd = idx; } });
+    var dated = L.map(function (l) { return {l: l, t: new Date(l.made + 'T12:00:00').getTime()}; }).filter(function (x) { return !isNaN(x.t); }).sort(function (a, b) { return a.t - b.t; });
+    var spree = 0, spreeLoans = [];
+    for (var i = 0; i < dated.length; i++) { var win = []; for (var j = i; j < dated.length && dated[j].t - dated[i].t <= 6 * 864e5; j++) win.push(dated[j].l); if (win.length > spree) { spree = win.length; spreeLoans = win; } }
     var initials = {}; set.forEach(function (n) { initials[n.charAt(0).toUpperCase()] = 1; });
     var cats = {}; L.forEach(function (l) { var c = bizCat(l.business); if (c) cats[c] = (cats[c] || 0) + 1; });
+    var catLoans = {}, catCountries = {}; CATN.forEach(function (c) { catLoans[c] = []; catCountries[c] = {}; });
+    var uncat = [], multi2 = 0, multi3 = 0;
+    L.forEach(function (l) {
+      if (!l.cats.length) uncat.push(l);
+      if (l.cats.length >= 2) multi2++; if (l.cats.length >= 3) multi3++;
+      l.cats.forEach(function (c) { catLoans[c].push(l); catCountries[c][l.country] = 1; });
+    });
+    var catKinds = CATN.filter(function (c) { return catLoans[c].length; });
     return {
       loans: L, n: L.length, amount: L.reduce(function (s, l) { return s + Number(l.amount || 0); }, 0),
       set: set, countries: set.length, cont: cont, conts: CONT_ORDER.filter(function (k) { return cont[k].got > 0; }).length,
       repaid: L.filter(function (l) { return l.status === 'Repaid'; }).length,
       paying: L.filter(function (l) { return l.status === 'Paying back'; }).length,
       fund: L.filter(function (l) { return l.status === 'Fundraising'; }).length,
-      streak: best, spree: spree, months: mk.length, initials: Object.keys(initials).length, cats: cats, catKinds: Object.keys(cats).length,
+      streak: best, streakEnd: bestEnd, mk: mk, spree: spree, spreeLoans: spreeLoans, months: mk.length, initials: Object.keys(initials).length, initSet: initials, cats: cats, catKinds: Object.keys(cats).length,
       island: set.filter(function (n) { return ISLANDS.indexOf(n) >= 0; }).length,
       land: set.filter(function (n) { return LANDLOCKED.indexOf(n) >= 0; }).length,
       equator: set.filter(function (n) { return EQUATOR.indexOf(n) >= 0; }).length,
       repeat: set.filter(function (n) { return cs[n].length > 1; }).length,
-      cs: cs
+      cs: cs, catLoans: catLoans, catCountries: catCountries, uncat: uncat, multi2: multi2, multi3: multi3, catKinds2: catKinds
     };
   }
 
-  /* ---------- badges ---------- */
+  /* ---------- badges (each has a detail view that shows progress so far) ---------- */
+  var loanItem = function (l) { return {t: l.borrower + ' · ' + l.country}; };
+  function countryDet(S, names, extra) {
+    var have = [], need = [];
+    names.forEach(function (n) { if (S.cs[n]) have.push({t: n}); else need.push({t: n, c: n}); });
+    return {have: have, need: need, note: extra || ''};
+  }
   function buildBadges(S) {
     var B = [];
-    var add = function (id, e, name, desc, cur, goal) { B.push({id: id, e: e, name: name, desc: desc, cur: Math.min(cur, goal), raw: cur, goal: goal, got: cur >= goal}); };
-    [[1, '🌱', 'First Loan', 'Make your very first loan'], [10, '🔟', 'Ten Loans', 'Make 10 loans'], [25, '🌟', 'Twenty-Five Loans', 'Make 25 loans'], [50, '🚀', 'Fifty Loans', 'Make 50 loans'], [100, '👑', 'One Hundred Loans', 'Make 100 loans']]
-      .forEach(function (b) { add('loans' + b[0], b[1], b[2], b[3], S.n, b[0]); });
-    [[100, '💵', '$100 Lent'], [250, '💰', '$250 Lent'], [500, '🎉', '$500 Lent'], [1000, '🏆', '$1,000 Lent'], [2500, '💎', '$2,500 Lent']]
-      .forEach(function (b) { add('amt' + b[0], b[1], b[2], 'Lend ' + money(b[0]) + ' in total', S.amount, b[0]); });
-    [[1, '🧭', 'Explorer'], [5, '🥾', 'Five Countries'], [10, '✈️', 'Ten Countries'], [20, '🌐', 'Twenty Countries'], [30, '🛸', 'Thirty Countries'], [50, '🪐', 'Fifty Countries'], [COUNTRIES.length, '🌈', 'The Whole World']]
-      .forEach(function (b) { add('co' + b[0], b[1], b[2], 'Lend in ' + (b[0] === COUNTRIES.length ? 'every Kiva country' : b[0] + (b[0] === 1 ? ' country' : ' countries')), S.countries, b[0]); });
-    add('six', '🗺️', 'Six Continents', 'Fund a loan on all six Kiva continents', S.conts, 6);
+    var add = function (id, e, name, desc, cur, goal, grp, det) { B.push({id: id, e: e, name: name, desc: desc, cur: Math.min(cur, goal), raw: cur, goal: goal, got: cur >= goal, grp: grp, det: det}); };
+    var allNames = COUNTRIES.map(function (c) { return c.name; });
+    [[1, '🌱', 'First Loan'], [10, '🔟', 'Ten Loans'], [25, '🌟', 'Twenty-Five Loans'], [50, '🚀', 'Fifty Loans'], [100, '👑', 'One Hundred Loans']].forEach(function (b) {
+      add('loans' + b[0], b[1], b[2], 'Make ' + (b[0] === 1 ? 'your very first loan' : b[0] + ' loans'), S.n, b[0], 'Loans', function () {
+        return {have: S.loans.slice().sort(function (a, c) { return (a.made || '').localeCompare(c.made || ''); }).map(loanItem), need: [], note: S.n + ' of ' + b[0] + ' loans made.' + (S.n < b[0] ? ' Every new loan counts, including a second loan in the same country.' : '')};
+      });
+    });
+    [[100, '💵'], [250, '💰'], [500, '🎉'], [1000, '🏆'], [2500, '💎']].forEach(function (b) {
+      add('amt' + b[0], b[1], money(b[0]) + ' Lent', 'Lend ' + money(b[0]) + ' in total', S.amount, b[0], 'Money', function () {
+        var rem = b[0] - S.amount;
+        return {have: S.loans.map(function (l) { return {t: l.borrower + ' · ' + money(l.amount)}; }), need: [], note: money(S.amount) + ' lent so far across ' + S.n + ' loans.' + (rem > 0 ? ' ' + money(rem) + ' to go, which is about ' + Math.ceil(rem / 25) + ' more $25 loans.' : '')};
+      });
+    });
+    [[1, '🧭', 'Explorer'], [5, '🥾', 'Five Countries'], [10, '✈️', 'Ten Countries'], [20, '🌐', 'Twenty Countries'], [30, '🛸', 'Thirty Countries'], [50, '🪐', 'Fifty Countries'], [COUNTRIES.length, '🌈', 'The Whole World']].forEach(function (b) {
+      add('co' + b[0], b[1], b[2], 'Lend in ' + (b[0] === COUNTRIES.length ? 'every Kiva country' : b[0] + (b[0] === 1 ? ' country' : ' countries')), S.countries, b[0], 'Countries', function () {
+        var d = countryDet(S, allNames, S.countries + ' of ' + b[0] + ' countries funded so far. Tap any country below to add a loan there.'); return d;
+      });
+    });
+    add('six', '🗺️', 'Six Continents', 'Fund a loan on all six Kiva continents', S.conts, 6, 'Countries', function () {
+      var have = [], need = [];
+      CONT_ORDER.forEach(function (k) { if (S.cont[k].got) have.push({t: k + ' (' + S.cont[k].got + ')'}); else need.push({t: k}); });
+      return {have: have, need: need, note: S.conts + ' of 6 continents.'};
+    });
     CONT_ORDER.forEach(function (k) {
       var t = S.cont[k].total, half = Math.ceil(t / 2), c = S.cont[k].got, nm = k.replace('North America', 'N. America').replace('South America', 'S. America');
-      add('half' + k, CONT[k].e, nm + ' Halfway', 'Fund ' + half + ' of ' + t + ' countries in ' + k, c, half);
-      add('all' + k, '🏆', nm + ' Complete', 'Fund all ' + t + ' countries in ' + k, c, t);
+      var names = COUNTRIES.filter(function (x) { return x.cont === k; }).map(function (x) { return x.name; });
+      add('half' + k, CONT[k].e, nm + ' Halfway', 'Fund ' + half + ' of ' + t + ' countries in ' + k, c, half, 'Continents', function () { return countryDet(S, names, c + ' of ' + half + ' countries funded for the halfway mark (' + t + ' countries in ' + k + ').'); });
+      add('all' + k, '🏆', nm + ' Complete', 'Fund all ' + t + ' countries in ' + k, c, t, 'Continents', function () { return countryDet(S, names, c + ' of ' + t + ' countries in ' + k + ' funded.'); });
     });
-    add('islands', '🏝️', 'Island Hopper', 'Fund 5 island nations', S.island, 5);
-    add('islands10', '🐚', 'Island Queen', 'Fund 10 island nations', S.island, 10);
-    add('equator', '☀️', 'Equator Crosser', 'Fund 3 countries the equator touches', S.equator, 3);
-    add('land', '⛰️', 'Landlocked Legend', 'Fund 5 landlocked countries', S.land, 5);
-    add('abc10', '🔤', 'Alphabet Soup', 'Fund countries starting with 10 different letters', S.initials, 10);
-    add('abc18', '📚', 'Almost A to Z', 'Fund countries starting with 18 different letters', S.initials, 18);
-    add('streak3', '🔥', 'Three-Month Streak', 'Make a loan 3 months in a row', S.streak, 3);
-    add('streak6', '🌋', 'Six-Month Streak', 'Make a loan 6 months in a row', S.streak, 6);
-    add('spree', '🎈', 'Loan Spree', 'Make 3 loans in one week', S.spree, 3);
-    add('spree5', '🎆', 'Mega Spree', 'Make 5 loans in one week', S.spree, 5);
-    add('months', '📅', 'Year Round', 'Make loans in 12 different months', S.months, 12);
-    add('rep1', '🔄', 'First Repayment', 'Get one loan fully repaid', S.repaid, 1);
-    add('rep5', '♻️', 'Money Boomerang', 'Get 5 loans fully repaid', S.repaid, 5);
-    add('rep10', '🪃', 'Reinvestor', 'Get 10 loans fully repaid', S.repaid, 10);
-    add('repeat', '🤝', 'Back Again', 'Lend a second time in a country you already funded', S.repeat, 1);
-    add('weave', '🧵', 'Weaver’s Friend', 'Fund 3 weaving loans', S.cats.weave || 0, 3);
-    add('fashion', '👗', 'Fashion Forward', 'Fund 3 sewing, tailoring or dressmaking loans', S.cats.fashion || 0, 3);
-    add('food', '🍲', 'Food Hero', 'Fund 5 food or shop loans', S.cats.food || 0, 5);
-    add('farm', '🐐', 'Farm Friend', 'Fund 3 farming or livestock loans', S.cats.farm || 0, 3);
-    add('energy', '🌿', 'Green Energy', 'Fund a clean energy loan', S.cats.energy || 0, 1);
-    add('water', '💧', 'Clean & Safe', 'Fund a water or sanitation loan', S.cats.water || 0, 1);
-    add('variety', '🎨', 'Jack of All Trades', 'Fund 6 different kinds of business', S.catKinds, 6);
+    add('islands', '🏝️', 'Island Hopper', 'Fund 5 island nations', S.island, 5, 'Fun', function () { return countryDet(S, ISLANDS, S.island + ' of 5 island nations. Kiva island countries are listed below.'); });
+    add('islands10', '🐚', 'Island Queen', 'Fund 10 island nations', S.island, 10, 'Fun', function () { return countryDet(S, ISLANDS, S.island + ' of 10 island nations.'); });
+    add('equator', '☀️', 'Equator Crosser', 'Fund 3 countries the equator touches', S.equator, 3, 'Fun', function () { return countryDet(S, EQUATOR, S.equator + ' of 3 equator countries.'); });
+    add('land', '⛰️', 'Landlocked Legend', 'Fund 5 landlocked countries', S.land, 5, 'Fun', function () { return countryDet(S, LANDLOCKED, S.land + ' of 5 landlocked countries.'); });
+    var letterDet = function (goal) {
+      return function () {
+        var have = [], need = [];
+        LETTER_KEYS.forEach(function (k) {
+          var funded = LETTERS[k].filter(function (n) { return S.cs[n]; });
+          if (funded.length) have.push({t: k + ' · ' + funded.join(', ')});
+          else need.push({t: k + ' · ' + LETTERS[k].slice(0, 3).join(', '), c: LETTERS[k][0]});
+        });
+        return {have: have, need: need, note: S.initials + ' of ' + goal + ' letters covered. Kiva has countries for ' + LETTER_KEYS.length + ' different letters. Tap a missing letter to add a loan.'};
+      };
+    };
+    add('abc10', '🔤', 'Alphabet Soup', 'Fund countries starting with 10 different letters', S.initials, 10, 'Fun', letterDet(10));
+    add('abc18', '📚', 'Almost A to Z', 'Fund countries starting with 18 different letters', S.initials, 18, 'Fun', letterDet(18));
+    add('abcall', '🔡', 'Letter Legend', 'Fund every letter Kiva has (' + LETTER_KEYS.length + ' letters)', S.initials, LETTER_KEYS.length, 'Fun', letterDet(LETTER_KEYS.length));
+    var streakDet = function (goal) {
+      return function () {
+        var have = S.mk.map(function (m) { return {t: monthLabel(+m.slice(0, 4) * 12 + +m.slice(5, 7))}; });
+        var need = []; if (S.streak < goal && S.streakEnd) need.push({t: monthLabel(S.streakEnd + 1) + ' (lend then to extend your streak)'});
+        return {have: have, need: need, note: 'Your best run is ' + S.streak + ' month' + (S.streak === 1 ? '' : 's') + ' in a row. Goal: ' + goal + '.'};
+      };
+    };
+    add('streak3', '🔥', 'Three-Month Streak', 'Make a loan 3 months in a row', S.streak, 3, 'Fun', streakDet(3));
+    add('streak6', '🌋', 'Six-Month Streak', 'Make a loan 6 months in a row', S.streak, 6, 'Fun', streakDet(6));
+    add('streak12', '🌞', 'Year-Long Streak', 'Make a loan 12 months in a row', S.streak, 12, 'Fun', streakDet(12));
+    var spreeDet = function (goal) { return function () { return {have: S.spreeLoans.map(function (l) { return {t: l.borrower + ' · ' + l.country + ' · ' + fmtDate(l.made)}; }), need: [], note: 'Your busiest week had ' + S.spree + ' loans. Goal: ' + goal + ' loans within 7 days.'}; }; };
+    add('spree', '🎈', 'Loan Spree', 'Make 3 loans in one week', S.spree, 3, 'Fun', spreeDet(3));
+    add('spree5', '🎆', 'Mega Spree', 'Make 5 loans in one week', S.spree, 5, 'Fun', spreeDet(5));
+    add('months', '📅', 'Year Round', 'Make loans in 12 different months', S.months, 12, 'Fun', function () {
+      return {have: S.mk.map(function (m) { return {t: monthLabel(+m.slice(0, 4) * 12 + +m.slice(5, 7))}; }), need: [], note: S.months + ' of 12 different months so far.'};
+    });
+    var repDet = function (goal) { return function () {
+      return {have: S.loans.filter(function (l) { return l.status === 'Repaid'; }).map(loanItem), need: S.loans.filter(function (l) { return l.status !== 'Repaid'; }).map(function (l) { return {t: l.borrower + ' · ' + l.country + ' (' + l.status.toLowerCase() + ')', e: l.id}; }),
+        note: S.repaid + ' of ' + goal + ' loans repaid. When a loan finishes, change its status to Repaid. Tap a loan below to update it.'}; }; };
+    add('rep1', '🔄', 'First Repayment', 'Get one loan fully repaid', S.repaid, 1, 'Fun', repDet(1));
+    add('rep5', '♻️', 'Money Boomerang', 'Get 5 loans fully repaid', S.repaid, 5, 'Fun', repDet(5));
+    add('rep10', '🪃', 'Reinvestor', 'Get 10 loans fully repaid', S.repaid, 10, 'Fun', repDet(10));
+    add('repeat', '🤝', 'Back Again', 'Lend a second time in a country you already funded', S.repeat, 1, 'Fun', function () {
+      var have = [], need = [];
+      S.set.forEach(function (n) { if (S.cs[n].length > 1) have.push({t: n + ' (' + S.cs[n].length + ' loans)'}); else need.push({t: n, c: n}); });
+      return {have: have, need: need, note: 'Tap a country you already funded to add a second loan there.'};
+    });
+    var bizDet = function (key, goal) { return function () {
+      var list = S.loans.filter(function (l) { return bizCat(l.business) === key; });
+      return {have: list.map(loanItem), need: [], note: list.length + ' of ' + goal + ' ' + BIZNAME[key] + ' loans. This counts the "What they do" text on each loan.'}; }; };
+    add('weave', '🧵', 'Weaver’s Friend', 'Fund 3 weaving loans', S.cats.weave || 0, 3, 'Business', bizDet('weave', 3));
+    add('fashion', '👗', 'Fashion Forward', 'Fund 3 sewing, tailoring or dressmaking loans', S.cats.fashion || 0, 3, 'Business', bizDet('fashion', 3));
+    add('food', '🍲', 'Food Hero', 'Fund 5 food or shop loans', S.cats.food || 0, 5, 'Business', bizDet('food', 5));
+    add('farm', '🐐', 'Farm Friend', 'Fund 3 farming or livestock loans', S.cats.farm || 0, 3, 'Business', bizDet('farm', 3));
+    add('energy', '🌿', 'Green Energy', 'Fund a clean energy loan', S.cats.energy || 0, 1, 'Business', bizDet('energy', 1));
+    add('water', '💧', 'Clean & Safe', 'Fund a water or sanitation loan', S.cats.water || 0, 1, 'Business', bizDet('water', 1));
+    add('variety', '🎨', 'Jack of All Trades', 'Fund 6 different kinds of business', S.catKinds, 6, 'Business', function () {
+      var have = [], need = [];
+      Object.keys(BIZNAME).forEach(function (k) { if (S.cats[k]) have.push({t: BIZNAME[k] + ' (' + S.cats[k] + ')'}); else need.push({t: BIZNAME[k]}); });
+      return {have: have, need: need, note: S.catKinds + ' of 6 kinds of business.'};
+    });
+
+    /* Kiva category badges */
+    CATS.forEach(function (c) {
+      var n = S.catLoans[c.n].length, ctry = Object.keys(S.catCountries[c.n]).length;
+      [[1, 'Starter', 'Fund your first'], [3, 'Supporter', 'Fund 3'], [5, 'Superstar', 'Fund 5']].forEach(function (t) {
+        add('cat' + t[0] + ':' + c.n, c.e, c.n + ' ' + t[1], t[2] + ' ' + c.n + (t[0] === 1 ? ' loan' : ' loans'), n, t[0], 'Categories', function () {
+          return {have: S.catLoans[c.n].map(loanItem), need: [], note: n + ' of ' + t[0] + ' ' + c.n + ' loans. ' + c.d + ' To count a loan here, tap ✏️ on it in the loan log and tick "' + c.n + '".'};
+        });
+      });
+      void ctry;
+    });
+    var wideDet = function (cat, goal) { return function () {
+      var cl = Object.keys(S.catCountries[cat]);
+      return {have: cl.map(function (n) { return {t: n}; }), need: [], note: cl.length + ' of ' + goal + ' countries with a ' + cat + ' loan.'}; }; };
+    add('wideWomen', '🌐', 'Women Worldwide', 'Fund Women loans in 5 different countries', Object.keys(S.catCountries['Women']).length, 5, 'Categories', wideDet('Women', 5));
+    add('wideFood', '🥘', 'Food Around the World', 'Fund Food loans in 5 different countries', Object.keys(S.catCountries['Food']).length, 5, 'Categories', wideDet('Food', 5));
+    add('wideEco', '🌍', 'Green Globetrotter', 'Fund Eco-friendly loans in 3 different countries', Object.keys(S.catCountries['Eco-friendly']).length, 3, 'Categories', wideDet('Eco-friendly', 3));
+    add('wideArts', '🖌️', 'Artisan Atlas', 'Fund Arts loans in 5 different countries', Object.keys(S.catCountries['Arts']).length, 5, 'Categories', wideDet('Arts', 5));
+    var kindDet = function (goal) { return function () {
+      var have = [], need = [];
+      CATS.forEach(function (c) { if (S.catLoans[c.n].length) have.push({t: c.e + ' ' + c.n + ' (' + S.catLoans[c.n].length + ')'}); else need.push({t: c.e + ' ' + c.n}); });
+      return {have: have, need: need, note: have.length + ' of ' + goal + ' Kiva categories so far.'}; }; };
+    add('catsix', '🧺', 'Category Collector', 'Fund loans in 6 different Kiva categories', S.catKinds2.length, 6, 'Categories', kindDet(6));
+    add('catall', '🌟', 'Every Category', 'Fund a loan in all 12 Kiva categories', S.catKinds2.length, 12, 'Categories', kindDet(12));
+    add('multi2', '✨', 'Double Impact', 'Tag one loan with 2 or more categories', Math.min(S.multi2, 1), 1, 'Categories', function () { return {have: S.loans.filter(function (l) { return l.cats.length >= 2; }).map(function (l) { return {t: l.borrower + ' · ' + l.cats.join(' + ')}; }), need: [], note: 'A loan can sit in several categories, like Livestock and Agriculture.'}; });
+    add('multi3', '💫', 'Triple Impact', 'Tag one loan with 3 or more categories', Math.min(S.multi3, 1), 1, 'Categories', function () { return {have: S.loans.filter(function (l) { return l.cats.length >= 3; }).map(function (l) { return {t: l.borrower + ' · ' + l.cats.join(' + ')}; }), need: [], note: 'Tap ✏️ on a loan and tick three categories that fit.'}; });
+    add('tidy', '🧹', 'Tidy Shelf', 'Give every loan at least one Kiva category', S.n - S.uncat.length, Math.max(S.n, 1), 'Categories', function () {
+      return {have: S.loans.filter(function (l) { return l.cats.length; }).map(function (l) { return {t: l.borrower + ' · ' + l.cats.join(' + ')}; }), need: S.uncat.map(function (l) { return {t: l.borrower + ' · ' + l.country + ' (needs a category)', e: l.id}; }), note: (S.n - S.uncat.length) + ' of ' + S.n + ' loans have a category. Tap a loan below to pick one.'};
+    });
     return B;
   }
 
@@ -372,7 +564,7 @@ var SEED = [{"country":"Burkina Faso","borrower":"Wendtoin","business":"Weaving"
     var tip = $('tip'), box = $('mapbox');
     function geoOf(t) { return t && t.getAttribute && t.getAttribute('data-geo'); }
     svg.addEventListener('mousemove', function (ev) {
-      var geo = geoOf(ev.target), c = geo && byGeo[geo], name = null, html = '';
+      var geo = geoOf(ev.target), c = geo && byGeo[geo], html = '';
       if (c) {
         var ls = (stats().cs[c.name]) || [];
         html = '<b>' + esc(c.name) + '</b>' + (ls.length ? ls.map(function (l) { return '<span>' + esc(l.borrower) + (l.business ? ' · ' + esc(l.business) : '') + ' · ' + esc(l.status) + '</span>'; }).join('<br>') : '<span>Not funded yet. Tap to add a loan!</span>');
@@ -404,23 +596,24 @@ var SEED = [{"country":"Burkina Faso","borrower":"Wendtoin","business":"Weaving"
   }
 
   /* ---------- rendering ---------- */
-  var seen = null;
+  var seen = null, curStatus = 'all', curGrp = 'all', lastBadges = [];
+  var GROUPS = ['Loans', 'Money', 'Countries', 'Continents', 'Fun', 'Business', 'Categories'];
   function render(announce) {
-    var S = stats(), B = buildBadges(S);
+    var S = stats(), B = buildBadges(S); lastBadges = B;
     var lv = LEVELS[0], nx = null;
     LEVELS.forEach(function (l, i) { if (S.countries >= l[0]) { lv = l; nx = LEVELS[i + 1] || null; } });
     $('lvl').textContent = '⭐ ' + lv[1];
     if (nx) { $('xpbar').style.width = Math.max(4, 100 * (S.countries - lv[0]) / (nx[0] - lv[0])) + '%'; $('xptxt').textContent = (nx[0] - S.countries) + ' more ' + (nx[0] - S.countries === 1 ? 'country' : 'countries') + ' to reach ' + nx[1]; }
     else { $('xpbar').style.width = '100%'; $('xptxt').textContent = 'Top level reached. Incredible!'; }
 
-    $('tiles').innerHTML = [[money(S.amount), 'lent so far'], [S.n, 'loans'], [S.countries + ' / ' + COUNTRIES.length, 'Kiva countries'], [S.conts + ' / 6', 'continents'], [S.paying + ' · ' + S.fund + ' · ' + S.repaid, 'paying · raising · repaid']]
+    $('tiles').innerHTML = [[money(S.amount), 'lent so far'], [S.n, 'loans'], [S.countries + ' / ' + COUNTRIES.length, 'Kiva countries'], [S.catKinds2.length + ' / ' + CATS.length, 'Kiva categories'], [S.paying + ' · ' + S.fund + ' · ' + S.repaid, 'paying · raising · repaid']]
       .map(function (t) { return '<div class="tile"><div class="n">' + esc(t[0]) + '</div><div class="l">' + esc(t[1]) + '</div></div>'; }).join('');
 
     var todo = B.filter(function (b) { return !b.got; }).map(function (b) { b.ratio = b.cur / b.goal; return b; })
       .sort(function (a, b) { return (b.ratio - a.ratio) || ((a.goal - a.cur) - (b.goal - b.cur)); }).slice(0, 4);
     $('next').innerHTML = todo.length ? todo.map(function (b) {
-      var left = Math.ceil(b.goal - b.raw); var unit = /amt/.test(b.id) ? ' more dollars' : ' to go';
-      return '<div class="goal"><b>' + b.e + ' ' + esc(b.name) + '</b><span>' + esc(b.desc) + '</span><div class="meter"><i style="width:' + (100 * b.ratio) + '%"></i></div><span>' + (/amt/.test(b.id) ? money(left) + ' to go' : left + unit) + '</span></div>';
+      var left = Math.ceil(b.goal - b.raw);
+      return '<button class="goal" data-b="' + esc(b.id) + '"><b>' + b.e + ' ' + esc(b.name) + '</b><span>' + esc(b.desc) + '</span><div class="meter"><i style="width:' + (100 * b.ratio) + '%"></i></div><span>' + (/^amt/.test(b.id) ? money(left) + ' to go' : left + ' to go') + '</span></button>';
     }).join('') : '<div class="goal"><b>🎉 Every badge earned!</b><span>You are officially a legend.</span></div>';
 
     paintMap(S);
@@ -437,29 +630,62 @@ var SEED = [{"country":"Burkina Faso","borrower":"Wendtoin","business":"Weaving"
         '<div class="meter"><i style="width:' + pct + '%;background:' + col + '"></i></div><div class="steps">' + steps + '</div><div class="chips">' + chips + '</div></div>';
     }).join('');
 
-    var got = B.filter(function (b) { return b.got; }).length;
-    $('badgenote').textContent = got + ' of ' + B.length + ' badges unlocked. Keep going!';
-    var f = document.querySelector('#filters .alt').getAttribute('data-f');
-    $('badges').innerHTML = B.filter(function (b) { return f === 'all' || (f === 'got' ? b.got : !b.got); }).map(function (b) {
-      var shown = /amt/.test(b.id) ? money(Math.floor(b.raw)) + ' / ' + money(b.goal) : Math.floor(b.raw) + ' / ' + b.goal;
-      return '<div class="badge' + (b.got ? ' got' : '') + '"><div class="e">' + b.e + '</div><b>' + esc(b.name) + '</b><p>' + esc(b.desc) + '</p><div class="meter"><i style="width:' + (100 * b.cur / b.goal) + '%"></i></div><small>' + (b.got ? 'Unlocked!' : shown) + '</small></div>';
+    $('qcats').innerHTML = CATS.map(function (c) {
+      var n = S.catLoans[c.n].length, ctry = Object.keys(S.catCountries[c.n]).length, nextGoal = [1, 3, 5].filter(function (x) { return n < x; })[0];
+      return '<button class="qcat' + (n ? ' has' : '') + '" data-cat="' + esc(c.n) + '"><div class="t"><span class="e">' + c.e + '</span>' + esc(c.n) + '</div><p>' + esc(c.d) + '</p><div class="meter"><i style="width:' + (nextGoal ? 100 * n / nextGoal : 100) + '%;background:var(--aqua)"></i></div><div class="st"><span>' + n + (n === 1 ? ' loan' : ' loans') + ' · ' + ctry + (ctry === 1 ? ' country' : ' countries') + '</span><span>' + (nextGoal ? 'next: ' + nextGoal : '⭐ maxed') + '</span></div></button>';
     }).join('');
+
+    var got = B.filter(function (b) { return b.got; }).length;
+    $('badgenote').textContent = got + ' of ' + B.length + ' badges unlocked. Tap any badge to see your progress.';
+    var shownB = B.filter(function (b) { return (curStatus === 'all' || (curStatus === 'got' ? b.got : !b.got)) && (curGrp === 'all' || b.grp === curGrp); });
+    $('badges').innerHTML = shownB.map(function (b) {
+      var shown = /^amt/.test(b.id) ? money(Math.floor(b.raw)) + ' / ' + money(b.goal) : Math.floor(b.raw) + ' / ' + b.goal;
+      return '<button class="badge' + (b.got ? ' got' : '') + '" data-b="' + esc(b.id) + '"><div class="e">' + b.e + '</div><b>' + esc(b.name) + '</b><p>' + esc(b.desc) + '</p><div class="meter"><i style="width:' + (100 * b.cur / b.goal) + '%"></i></div><small>' + (b.got ? 'Unlocked!' : shown) + '</small></button>';
+    }).join('') || '<p class="note">Nothing here yet.</p>';
 
     var rows = state.loans.slice().sort(function (a, b) { return (b.made || '').localeCompare(a.made || ''); });
     $('log').innerHTML = rows.map(function (l) {
-      return '<tr><td><b>' + esc(l.borrower) + '</b></td><td>' + esc(l.country) + '</td><td class="hide-sm">' + esc(l.business || '—') + '</td><td class="hide-sm">' + esc(fmtDate(l.made)) + '</td>' +
+      var cats = l.cats.length ? l.cats.map(function (c) { return '<span class="mini">' + CATBY[c].e + ' ' + esc(c) + '</span>'; }).join('') : '<button class="needcat" data-edit="' + esc(l.id) + '">＋ Pick categories</button>';
+      return '<tr><td><b>' + esc(l.borrower) + '</b></td><td>' + esc(l.country) + '</td><td class="hide-sm">' + esc(l.business || '—') + '</td><td>' + cats + '</td>' +
         '<td><select data-st="' + esc(l.id) + '" aria-label="Status for ' + esc(l.borrower) + '">' + ['Fundraising', 'Paying back', 'Repaid'].map(function (s) { return '<option' + (s === l.status ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></td>' +
-        '<td class="r">' + money(l.amount) + '</td><td><button class="x" data-del="' + esc(l.id) + '" aria-label="Delete loan for ' + esc(l.borrower) + '">✕</button></td></tr>';
+        '<td class="r hide-sm">' + money(l.amount) + '</td><td style="white-space:nowrap"><button class="x" data-edit="' + esc(l.id) + '" aria-label="Edit loan for ' + esc(l.borrower) + '">✏️</button><button class="x" data-del="' + esc(l.id) + '" aria-label="Delete loan for ' + esc(l.borrower) + '">✕</button></td></tr>';
     }).join('') || '<tr><td colspan="7">No loans yet. Add the first one!</td></tr>';
+    if (S.uncat.length) { $('catwarn').hidden = false; $('catwarntxt').textContent = S.uncat.length + (S.uncat.length === 1 ? ' loan still needs' : ' loans still need') + ' a Kiva category. Fixing them unlocks badges.'; $('catwarn').setAttribute('data-id', S.uncat[0].id); }
+    else $('catwarn').hidden = true;
 
     var ids = B.filter(function (b) { return b.got; }).map(function (b) { return b.id; });
     if (announce && seen) {
       var fresh = B.filter(function (b) { return b.got && seen.indexOf(b.id) < 0; });
-      if (fresh.length) { toast('🎉 New badge: ' + fresh.map(function (b) { return b.e + ' ' + b.name; }).join(', ')); confetti(); }
+      if (fresh.length) { toast('🎉 New badge: ' + fresh.slice(0, 3).map(function (b) { return b.e + ' ' + b.name; }).join(', ') + (fresh.length > 3 ? ' and ' + (fresh.length - 3) + ' more' : '')); confetti(); }
     }
     seen = ids;
     try { localStorage.setItem(STORE + '-seen', JSON.stringify(ids)); } catch (e) {}
   }
+
+  /* ---------- badge detail ---------- */
+  var detailOpener = null;
+  function chipHtml(it, cls) {
+    var attrs = it.c ? ' data-c="' + esc(it.c) + '"' : (it.e ? ' data-edit="' + esc(it.e) + '"' : '');
+    var tag = (it.c || it.e) ? 'button' : 'span';
+    return '<' + tag + ' class="chip ' + cls + '"' + attrs + '>' + esc(it.t) + '</' + tag + '>';
+  }
+  function openDetail(id, catName) {
+    var S = stats(), B = buildBadges(S), b = B.filter(function (x) { return x.id === id; })[0];
+    if (!b) return;
+    var d = b.det(S), LIM = 60;
+    var pct = 100 * b.cur / b.goal, isAmt = /^amt/.test(b.id);
+    var big = isAmt ? money(Math.floor(b.raw)) + ' of ' + money(b.goal) : Math.floor(b.raw) + ' of ' + b.goal;
+    var html = '<div class="dhead"><span class="e">' + b.e + '</span><div><h2 id="dtitle" style="margin:0">' + esc(catName || b.name) + '</h2><div class="note" style="margin:0">' + esc(b.desc) + '</div></div></div>' +
+      '<div class="dbig">' + (b.got ? '🎉 Unlocked!' : big) + '</div><div class="meter"><i style="width:' + pct + '%;background:' + (b.got ? 'var(--mustard)' : 'var(--aqua)') + '"></i></div>' +
+      (b.got ? '<p class="note" style="margin-top:8px">You earned this one. Here is what counted.</p>' : '') +
+      (d.note ? '<p class="note" style="margin-top:8px">' + esc(d.note) + '</p>' : '');
+    if (d.have.length) html += '<div class="dsec">✅ Done so far (' + d.have.length + ')</div><div class="chips">' + d.have.slice(0, LIM).map(function (it) { return chipHtml(it, 'on'); }).join('') + (d.have.length > LIM ? '<span class="chip">+' + (d.have.length - LIM) + ' more</span>' : '') + '</div>';
+    if (d.need.length && !b.got) html += '<div class="dsec">🎯 Still to go' + ((d.need.some(function (i) { return i.c; })) ? ' (tap one to add a loan)' : ((d.need.some(function (i) { return i.e; })) ? ' (tap one to update it)' : '')) + '</div><div class="chips">' + d.need.slice(0, LIM).map(function (it) { return chipHtml(it, 'need'); }).join('') + (d.need.length > LIM ? '<span class="chip">+' + (d.need.length - LIM) + ' more</span>' : '') + '</div>';
+    html += '<div class="actions"><button class="btn" id="dclose">Close</button></div>';
+    $('dsheet').innerHTML = html;
+    $('dmodal').hidden = false; $('dclose').focus();
+  }
+  function closeDetail() { $('dmodal').hidden = true; }
 
   /* ---------- toast + confetti ---------- */
   var toastTimer;
@@ -478,45 +704,85 @@ var SEED = [{"country":"Burkina Faso","borrower":"Wendtoin","business":"Weaving"
     })(t0);
   }
 
-  /* ---------- form ---------- */
-  function buildSelect() {
+  /* ---------- form (add + edit) ---------- */
+  var editId = null;
+  function buildForm() {
     var h = '';
     CONT_ORDER.forEach(function (k) { h += '<optgroup label="' + esc(k) + '">' + COUNTRIES.filter(function (c) { return c.cont === k; }).map(function (c) { return '<option>' + esc(c.name) + '</option>'; }).join('') + '</optgroup>'; });
     $('fCountry').innerHTML = h;
+    $('fCats').innerHTML = CATS.map(function (c) { return '<label class="chip pick"><input type="checkbox" value="' + esc(c.n) + '"> ' + c.e + ' ' + esc(c.n) + '</label>'; }).join('');
+    $('fCats').addEventListener('change', function (e) { var l = e.target.closest('label'); if (l) l.classList.toggle('on', e.target.checked); });
+    $('grp').innerHTML = '<option value="all">All groups</option>' + GROUPS.map(function (g) { return '<option>' + g + '</option>'; }).join('');
   }
-  function openForm(country) {
-    $('form').reset(); $('fAmt').value = 25; $('fDate').value = today(); $('fStatus').value = 'Fundraising';
-    if (country) $('fCountry').value = country;
-    $('modal').hidden = false; $('fName').focus();
+  function setCats(list) { Array.prototype.forEach.call($('fCats').querySelectorAll('input'), function (i) { i.checked = list.indexOf(i.value) >= 0; i.closest('label').classList.toggle('on', i.checked); }); }
+  function openForm(country, loanId) {
+    closeDetail();
+    var l = loanId ? state.loans.filter(function (x) { return x.id === loanId; })[0] : null;
+    editId = l ? l.id : null;
+    $('form').reset();
+    $('ftitle').textContent = l ? 'Edit loan ✏️' : 'Add a loan 💖';
+    if (l) {
+      $('fCountry').value = l.country; $('fName').value = l.borrower; $('fBiz').value = l.business || ''; $('fAmt').value = l.amount; $('fDate').value = l.made || today();
+      $('fStatus').value = l.status; $('fMonths').value = l.months == null ? '' : l.months; setCats(l.cats);
+    } else {
+      $('fAmt').value = 25; $('fDate').value = today(); $('fStatus').value = 'Fundraising'; setCats([]);
+      if (country) $('fCountry').value = country;
+    }
+    $('modal').hidden = false; (l && !l.cats.length ? $('fCats').querySelector('input') : $('fName')).focus();
   }
-  function closeForm() { $('modal').hidden = true; }
+  function closeForm() { $('modal').hidden = true; editId = null; }
+  function pickedCats() { return Array.prototype.filter.call($('fCats').querySelectorAll('input'), function (i) { return i.checked; }).map(function (i) { return i.value; }); }
 
   function wire() {
     $('addTop').onclick = function () { openForm(); }; $('addBtn').onclick = function () { openForm(); };
     $('cancel').onclick = closeForm;
     $('modal').addEventListener('click', function (e) { if (e.target === $('modal')) closeForm(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeForm(); });
+    $('dmodal').addEventListener('click', function (e) { if (e.target === $('dmodal')) closeDetail(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeForm(); closeDetail(); } });
     $('form').onsubmit = function (e) {
       e.preventDefault();
-      var wasNew = !stats().cs[$('fCountry').value];
-      state.loans.push({id: uid(), country: $('fCountry').value, borrower: $('fName').value.trim(), business: $('fBiz').value.trim(), made: $('fDate').value, status: $('fStatus').value, months: $('fMonths').value ? Number($('fMonths').value) : null, amount: Number($('fAmt').value)});
-      save(); closeForm(); render(true);
-      toast(wasNew ? '💖 A brand-new country! ' + $('fCountry').value + ' is on the map.' : '💖 Loan added. Thank you!'); confetti();
+      var country = $('fCountry').value, cats = pickedCats();
+      var fields = {country: country, borrower: $('fName').value.trim(), business: $('fBiz').value.trim(), cats: cats, made: $('fDate').value, status: $('fStatus').value, months: $('fMonths').value ? Number($('fMonths').value) : null, amount: Number($('fAmt').value)};
+      if (editId) {
+        state.loans.forEach(function (l) { if (l.id === editId) Object.assign(l, fields); });
+        save(); closeForm(); render(true); toast('Saved ✏️');
+      } else {
+        var wasNew = !stats().cs[country];
+        state.loans.push(Object.assign({id: uid()}, fields));
+        save(); closeForm(); render(true);
+        toast(wasNew ? '💖 A brand-new country! ' + country + ' is on the map.' : '💖 Loan added. Thank you!'); confetti();
+      }
     };
     $('quests').addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.chip'); if (b) openForm(b.getAttribute('data-c')); });
+    $('qcats').addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.qcat'); if (!b) return;
+      var n = b.getAttribute('data-cat'), cnt = stats().catLoans[n].length, step = [1, 3, 5].filter(function (x) { return cnt < x; })[0] || 5;
+      openDetail('cat' + step + ':' + n, CATBY[n].e + ' ' + n);
+    });
+    var openBadge = function (e) { var b = e.target.closest && e.target.closest('[data-b]'); if (b) openDetail(b.getAttribute('data-b')); };
+    $('badges').addEventListener('click', openBadge); $('next').addEventListener('click', openBadge);
+    $('dsheet').addEventListener('click', function (e) {
+      if (e.target.id === 'dclose') { closeDetail(); return; }
+      var c = e.target.closest && e.target.closest('[data-c]'); if (c) { openForm(c.getAttribute('data-c')); return; }
+      var ed = e.target.closest && e.target.closest('[data-edit]'); if (ed) openForm(null, ed.getAttribute('data-edit'));
+    });
     $('log').addEventListener('change', function (e) {
       var id = e.target.getAttribute('data-st'); if (!id) return;
       state.loans.forEach(function (l) { if (l.id === id) l.status = e.target.value; }); save(); render(true);
     });
     $('log').addEventListener('click', function (e) {
-      var id = e.target.getAttribute('data-del'); if (!id) return;
+      var t = e.target.closest && e.target.closest('button'); if (!t) return;
+      var ed = t.getAttribute('data-edit'); if (ed) { openForm(null, ed); return; }
+      var id = t.getAttribute('data-del'); if (!id) return;
       var l = state.loans.filter(function (x) { return x.id === id; })[0];
       if (l && confirm('Remove the loan for ' + l.borrower + ' in ' + l.country + '?')) { state.loans = state.loans.filter(function (x) { return x.id !== id; }); save(); render(false); }
     });
+    $('catfix').onclick = function () { openForm(null, $('catwarn').getAttribute('data-id')); };
     $('filters').addEventListener('click', function (e) {
       var f = e.target.getAttribute && e.target.getAttribute('data-f'); if (!f) return;
-      Array.prototype.forEach.call($('filters').children, function (b) { b.className = 'btn ' + (b === e.target ? 'alt' : 'ghost'); }); render(false);
+      curStatus = f; Array.prototype.forEach.call($('filters').querySelectorAll('button'), function (b) { b.className = 'btn ' + (b === e.target ? 'alt' : 'ghost'); }); render(false);
     });
+    $('grp').onchange = function () { curGrp = $('grp').value; render(false); };
     $('exp').onclick = function () {
       var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'}));
       a.download = 'jenn-kiva-loans-' + today() + '.json'; document.body.appendChild(a); a.click(); a.remove();
@@ -524,24 +790,25 @@ var SEED = [{"country":"Burkina Faso","borrower":"Wendtoin","business":"Weaving"
     $('imp').onclick = function () { $('file').click(); };
     $('file').onchange = function () {
       var f = $('file').files[0]; if (!f) return; var r = new FileReader();
-      r.onload = function () { try { var s = JSON.parse(r.result); if (!s || !Array.isArray(s.loans)) throw 0; state = {loans: s.loans, updated: Date.now()}; save(); render(false); toast('Backup restored 💾'); } catch (e) { toast('That file doesn’t look like a backup.'); } };
+      r.onload = function () { try { var s = JSON.parse(r.result); if (!s || !Array.isArray(s.loans)) throw 0; state = {loans: s.loans.map(norm), updated: Date.now()}; save(); render(false); toast('Backup restored 💾'); } catch (e) { toast('That file doesn’t look like a backup.'); } };
       r.readAsText(f); $('file').value = '';
     };
-    $('reset').onclick = function () { if (confirm('Go back to the original 20 loans? Anything you added will be removed.')) { state = seedState(); save(); render(false); } };
+    $('reset').onclick = function () { if (confirm('Go back to the original 20 loans? Anything you added or edited will be removed.')) { state = seedState(); save(); render(false); } };
   }
 
   /* ---------- boot ---------- */
-  buildSelect(); wire();
-  state = loadLocal() || seedState();
+  buildForm(); wire();
+  var local = loadLocal();
+  state = local || seedState();
   try { seen = JSON.parse(localStorage.getItem(STORE + '-seen') || 'null'); } catch (e) { seen = null; }
   if (!seen) seen = buildBadges(stats()).filter(function (b) { return b.got; }).map(function (b) { return b.id; });
-  if (!loadLocal()) { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
+  if (!local) { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
   render(false);
   if (SYNC_URL) {
     setSyncNote('Loading from the cloud…');
     fetch(SYNC_URL, {headers: {'x-key': SYNC_KEY}}).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
-      if (s && Array.isArray(s.loans) && (s.updated || 0) > (state.updated || 0)) { state = s; try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} render(false); }
-      else if (s === null || !s.loans) save();
+      if (s && Array.isArray(s.loans) && (s.updated || 0) > (state.updated || 0)) { state = {loans: s.loans.map(norm), updated: s.updated}; try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} render(false); }
+      else if (!s || !s.loans) save();
       setSyncNote('Synced ☁️');
     }).catch(function () { setSyncNote('Working offline. Saved on this device.'); });
   }
