@@ -203,7 +203,7 @@ h1 em{color:var(--mint);font-style:italic}
 <script>
 var API = 'https://ttc-customer.williamsportcigars.workers.dev';
 var SK = 'ttc_cust_v2';
-var purchases = [], phone = '', sortMode = 'date';
+var purchases = [], phone = '', sortMode = 'date', points = null;
 var RLABELS = ['Tap to rate','Not for me','It was okay',"I'd smoke again",'Highly recommend','Buy a box!'];
 
 function fmtPhone(el) {
@@ -251,6 +251,7 @@ function loadPortal(data) {
   document.getElementById('pmeta').textContent=data.email||'';
   phone=data.phone||phone;
   purchases=data.purchases||[];
+  points=typeof data.points==='number'?data.points:null;
   renderSummary();renderTop3();renderGrid();
 }
 
@@ -261,11 +262,13 @@ function renderSummary() {
   var rated=purchases.filter(function(p){return p.rating>0;});
   var avg=rated.length?(rated.reduce(function(a,p){return a+(p.rating||0);},0)/rated.length).toFixed(1):'—';
   var wish=purchases.filter(function(p){return p.wishlist;}).length;
-  document.getElementById('summary').innerHTML=
+  var html=
     '<div class="stat"><div class="val">'+total+'</div><div class="lbl">Cigars</div></div>'+
     '<div class="stat"><div class="val">'+avg+'</div><div class="lbl">Avg Rating</div></div>'+
     '<div class="stat"><div class="val">'+rated.length+'</div><div class="lbl">Rated</div></div>'+
     '<div class="stat"><div class="val">'+wish+'</div><div class="lbl">Wishlist</div></div>';
+  if(typeof points==='number')html+='<div class="stat"><div class="val">'+points+'</div><div class="lbl">Points</div></div>';
+  document.getElementById('summary').innerHTML=html;
 }
 
 function renderTop3() {
