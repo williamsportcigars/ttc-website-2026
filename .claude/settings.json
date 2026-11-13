@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Zapier__inspect_zapier_actions",
+      "mcp__Clover__sql_query",
+      "mcp__Zapier__get_workflow",
+      "mcp__Zapier__check_workflow_run",
+      "mcp__Zapier__get_run_output",
+      "Bash(curl -sS -X PUT \"https://api.cloudflare.com/client/v4/accounts/41d08c83315b8677acdf10895cc2f7cd/workers/scripts/*)"
+    ]
+  }
+}
