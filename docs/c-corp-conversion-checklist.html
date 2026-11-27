@@ -1,0 +1,301 @@
+<title>C-Corp Conversion Checklist</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #eef1ee;
+    --surface: #ffffff;
+    --surface-2: #e3e8e3;
+    --ink: #182420;
+    --ink-soft: #55645d;
+    --ink-faint: #7c8a83;
+    --border: #cfd7cf;
+    --accent: #2c5f57;
+    --accent-soft: #d9e6e2;
+    --brass: #8a6a30;
+    --good: #2f7d4f;
+    --good-soft: #dcefdf;
+    --warn: #a8631c;
+    --warn-soft: #f3e6d1;
+    --bad: #a83a2b;
+    --bad-soft: #f6dcd6;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121815; --surface: #1a2119; --surface-2: #222a22;
+      --ink: #e8ece8; --ink-soft: #aab5ac; --ink-faint: #7e8a82;
+      --border: #34403a; --accent: #7bbcae; --accent-soft: #1f3733;
+      --brass: #d2ac6b; --good: #7bc797; --good-soft: #1d3324;
+      --warn: #e0a35c; --warn-soft: #3a2c16; --bad: #e2897b; --bad-soft: #3b1f1a;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121815; --surface: #1a2119; --surface-2: #222a22;
+    --ink: #e8ece8; --ink-soft: #aab5ac; --ink-faint: #7e8a82;
+    --border: #34403a; --accent: #7bbcae; --accent-soft: #1f3733;
+    --brass: #d2ac6b; --good: #7bc797; --good-soft: #1d3324;
+    --warn: #e0a35c; --warn-soft: #3a2c16; --bad: #e2897b; --bad-soft: #3b1f1a;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, sans-serif;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 20px 48px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; margin: 0; text-wrap: balance; }
+  code, .mono, .num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  a { color: var(--accent); }
+
+  header.page { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-bottom: 6px; }
+  header.page h1 { font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.1rem); }
+  header.page .updated { font-size: 0.78rem; color: var(--ink-faint); white-space: nowrap; }
+  .tagline { color: var(--ink-soft); font-size: 0.92rem; max-width: 60ch; margin-bottom: 16px; }
+
+  .disclaimer { background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 6px; padding: 12px 14px; font-size: 0.86rem; line-height: 1.5; margin: 0 0 22px; }
+  .disclaimer strong.lead { color: var(--warn); font-family: "Fraunces", serif; font-size: 0.95rem; }
+
+  .fork-note { background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 6px; padding: 12px 14px; font-size: 0.86rem; line-height: 1.5; margin: 0 0 22px; }
+  .fork-note strong.lead { color: var(--accent); font-family: "Fraunces", serif; font-size: 0.95rem; }
+
+  .progress-bar-wrap { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; margin-bottom: 24px; }
+  .progress-track { flex: 1; height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--good); border-radius: 4px; transition: width 0.25s ease; width: 0%; }
+  .progress-label { font-family: "IBM Plex Mono"; font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+  .progress-bar-wrap button.ghost { font-size: 0.76rem; padding: 5px 8px; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; }
+
+  section.phase { margin-bottom: 26px; }
+  .phase-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  .phase-head h2 { font-size: 1.1rem; }
+  .phase-head .phase-progress { font-family: "IBM Plex Mono"; font-size: 0.76rem; color: var(--ink-faint); }
+  .phase-lede { font-size: 0.86rem; color: var(--ink-soft); margin: 0 0 10px; line-height: 1.5; }
+
+  ul.items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; }
+  .item.checked { opacity: 0.55; }
+  .item input[type="checkbox"] { width: 17px; height: 17px; margin-top: 2px; accent-color: var(--good); cursor: pointer; }
+  .item .body { font-size: 0.87rem; line-height: 1.5; }
+  .item .t { color: var(--ink); }
+  .item .d { color: var(--ink-soft); margin-top: 2px; }
+  .item .d code { background: var(--surface-2); padding: 1px 5px; border-radius: 3px; font-size: 0.82em; }
+  .item .d a { font-weight: 600; }
+  .tag { display: inline-block; font-family: "IBM Plex Mono"; font-size: 0.68rem; padding: 1px 6px; border-radius: 4px; margin-right: 6px; vertical-align: middle; }
+  .tag.needs-you { background: var(--warn-soft); color: var(--warn); }
+  .tag.needs-accountant { background: var(--accent-soft); color: var(--accent); }
+  .tag.draft-ready { background: var(--good-soft); color: var(--good); }
+
+  footer.final { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--ink-faint); text-align: center; }
+</style>
+
+<div class="wrap">
+
+  <header class="page">
+    <h1>C-Corp Conversion Checklist</h1>
+    <div class="updated">Built 2026‑11‑27</div>
+  </header>
+  <div class="tagline">Converting The Tobacco Center, LLC into a Pennsylvania business corporation — full statutory conversion, step by step.</div>
+
+  <div class="disclaimer">
+    <strong class="lead">Working draft — not legal or tax advice.</strong>
+    This checklist and the draft documents it links to are a starting point for your accountant and a business attorney to review, mark up, and finalize. Nothing here should be filed, signed, or relied on until they've signed off — fees, forms, and tax treatment should all be independently confirmed before you act on them.
+  </div>
+
+  <div class="fork-note">
+    <strong class="lead">Confirm this is the right path before you start.</strong>
+    This checklist assumes a full statutory conversion into an actual Pennsylvania corporation — new entity, new EIN, real stock. If what you actually want is just C-corp <em>tax treatment</em> while staying legally an LLC, that's a single IRS form (8832), not this whole process — ask your accountant which one matches your goal before filing anything below. The full conversion is the right call if you're planning an eventual sale (for the QSBS capital-gains exclusion) or want to issue real stock to investors or employees.
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label" id="progressLabel">0 / 0 done</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <button class="ghost" id="resetProgress" type="button">Reset</button>
+  </div>
+
+  <div id="phases"></div>
+
+  <footer class="final">Prepared for The Tobacco Center (Williamsport, PA). Produced by an AI research process — not reviewed by an attorney or CPA. Not legal or tax advice.</footer>
+</div>
+
+<script>
+(function(){
+  var PHASES = [
+    {
+      name: "Decide & gather the facts",
+      lede: "Nail these down before anything gets drafted for real — every later document depends on them.",
+      items: [
+        {t:"Confirm with your accountant: full conversion, Form 8832 election, or new-corp-plus-contribution", d:"<span class=\"tag needs-accountant\">accountant</span> This is the single highest-leverage decision in the whole project — it determines whether everything below is a one-page form or a month of paperwork."},
+        {t:"Decide the new corporation's name", d:"Draft documents below use <code>The Tobacco Center, Inc.</code> as a placeholder — confirm it's available via the PA Dept. of State's business name search before filing anything."},
+        {t:"Confirm the LLC's exact legal name and PA entity (file) number", d:"Needed on the Statement of Conversion and Docketing Statement."},
+        {t:"List every current LLC member and their ownership percentage", d:"Determines how many shares each person receives in the conversion."},
+        {t:"Decide authorized shares and par value", d:"<span class=\"tag needs-accountant\">accountant</span> Draft Articles use 1,000 shares of common stock, no par value, as a placeholder — a common small-corporation default, but confirm it doesn't complicate QSBS basis calculations if that's part of the plan."},
+        {t:"Decide initial directors and officers", d:"Typically the current LLC members become the initial director(s); officer titles (President, Secretary, Treasurer) get assigned in the organizational consent."},
+        {t:"Confirm the registered office street address", d:"Must be a physical PA street address, not a PO box."},
+        {t:"Decide on a registered agent", d:"Can be an officer/director at the registered office address, or a commercial registered agent service."},
+        {t:"Pick a target conversion effective date", d:"Lining this up with a clean fiscal-period boundary simplifies the final LLC return and the first corporate return."}
+      ]
+    },
+    {
+      name: "Member approval",
+      lede: "The LLC members have to formally approve the conversion before it's filed.",
+      items: [
+        {t:"Review the draft Plan of Conversion", d:"<span class=\"tag draft-ready\">draft ready</span> See <code>docs/c-corp-conversion/plan-of-conversion.md</code> in the project repo."},
+        {t:"Circulate it to all members for review", d:"<span class=\"tag needs-you\">you</span>"},
+        {t:"Obtain signed written consent approving the plan", d:"<span class=\"tag needs-you\">you</span> Per your operating agreement's amendment procedure, or unanimous written consent if it's silent."}
+      ]
+    },
+    {
+      name: "State filing — PA Department of State",
+      lede: "Three documents, one filing fee, one agency: the Bureau of Corporations and Charitable Organizations.",
+      items: [
+        {t:"Review the draft Articles of Incorporation", d:"<span class=\"tag draft-ready\">draft ready</span> See <code>docs/c-corp-conversion/articles-of-incorporation.md</code>."},
+        {t:"Complete Statement of Conversion — Form DSCB:15‑355", d:"$70 filing fee."},
+        {t:"Complete Docketing Statement — Form DSCB:15‑134B", d:"Required to accompany the Statement of Conversion."},
+        {t:"Ask PA DOS whether your tobacco license makes this a \"regulated entity\" conversion", d:"<span class=\"tag needs-you\">you</span> The Statement of Conversion form itself flags that a regulated entity may need a government agency's approval before the conversion becomes effective — worth a direct call before filing."},
+        {t:"File all documents + fee via file.dos.pa.gov (or by mail)", d:"<span class=\"tag needs-you\">you</span>"},
+        {t:"Receive confirmation the conversion is effective", d:""}
+      ]
+    },
+    {
+      name: "Federal — IRS",
+      lede: "The new corporation is a new taxpayer.",
+      items: [
+        {t:"Apply for a new EIN — Form SS‑4", d:"<span class=\"tag needs-you\">you</span> Required: the IRS treats a statutory LLC-to-corporation conversion as a new taxpayer, unlike a Form 8832 tax-only election."},
+        {t:"Confirm whether a separate Form 8832 is also needed", d:"<span class=\"tag needs-accountant\">accountant</span> A newly formed corporation is a C-corp by default for federal tax purposes — this may not be necessary, but have your accountant confirm given your specific facts."},
+        {t:"Document the conversion date for IRC §351 nonrecognition treatment", d:"<span class=\"tag needs-accountant\">accountant</span> Confirms the asset contribution from members to the new corporation is tax-free."}
+      ]
+    },
+    {
+      name: "PA state tax re-registration",
+      lede: "New entity, new tax accounts.",
+      items: [
+        {t:"File PA‑100 (PA Enterprise Registration) under the new EIN", d:"Covers sales tax license, employer withholding, unemployment compensation."},
+        {t:"Set up RCT‑101 Corporate Tax Report filing going forward", d:"Replaces whatever pass-through form the LLC filed."},
+        {t:"Close out the LLC's final pass-through return with your accountant", d:"<span class=\"tag needs-accountant\">accountant</span>"},
+        {t:"Confirm the PA sales tax license reissues under the new entity", d:""}
+      ]
+    },
+    {
+      name: "Re-license everything tied to the old LLC",
+      lede: "This is the step most likely to get missed, and the one with the most downstream consequences — especially given the cigar compliance work already done.",
+      items: [
+        {t:"PA OTP tobacco license — contact PA DOR tobacco licensing to transfer or reissue", d:"<span class=\"tag needs-you\">you</span> This license is the credential several planned state filings (Maryland's Remote Tobacco Seller License, for one) require as proof of an active home-state license — it needs to show the new corporate entity before those filings happen."},
+        {t:"Hold off on starting the 43-state Registration Playbook until this transfers", d:"Filing in other states under the LLC's name now means redoing them under the corporation's name later."},
+        {t:"Clover POS / merchant processing account — update legal entity", d:""},
+        {t:"Business bank account(s) — open new account under the new EIN, transition funds", d:"<span class=\"tag needs-you\">you</span>"},
+        {t:"Lease agreement — assignment or amendment to the new entity name", d:""},
+        {t:"Insurance policies — update the named insured", d:"General liability, property, any product liability coverage."},
+        {t:"Any local Williamsport / Lycoming County business licenses or permits", d:""},
+        {t:"Vendor and supplier accounts", d:""},
+        {t:"Website, e-commerce terms, invoices, and signage", d:"Legal entity name should match what's filed with the state."},
+        {t:"Payroll provider / employer accounts, if applicable", d:""}
+      ]
+    },
+    {
+      name: "Corporate governance setup",
+      lede: "Turning the filing into an operating corporation.",
+      items: [
+        {t:"Review the draft Bylaws", d:"<span class=\"tag draft-ready\">draft ready</span> See <code>docs/c-corp-conversion/bylaws.md</code>."},
+        {t:"Review the draft Organizational Board Consent", d:"<span class=\"tag draft-ready\">draft ready</span> See <code>docs/c-corp-conversion/organizational-consent.md</code> — adopts the bylaws, issues stock, appoints officers, authorizes the bank account and EIN application."},
+        {t:"Hold the organizational meeting (or sign the consent in lieu of a meeting)", d:"<span class=\"tag needs-you\">you</span>"},
+        {t:"Issue stock certificates to former LLC members, per the conversion ratio", d:""},
+        {t:"Appoint officers", d:"President, Secretary, Treasurer, or as decided above."},
+        {t:"Set up a corporate minute book", d:"Paper or digital — keep every signed resolution together going forward."}
+      ]
+    },
+    {
+      name: "Ongoing compliance calendar",
+      lede: "What this creates as a recurring obligation, so it doesn't get forgotten.",
+      items: [
+        {t:"PA Annual Report — Form DSCB:15‑146, $7 fee, due January 1 – June 30 every year", d:"Replaces the old $70 decennial report. Missing it risks administrative dissolution starting with the 2027 report cycle."},
+        {t:"Federal Form 1120 annually", d:""},
+        {t:"PA RCT‑101 annually", d:""},
+        {t:"Re-confirm every multi-state cigar filing reflects the new entity name before relying on it", d:"Cross-check against the Registration Playbook once the conversion is complete."}
+      ]
+    }
+  ];
+
+  var phasesEl = document.getElementById("phases");
+  var progressLabel = document.getElementById("progressLabel");
+  var progressFill = document.getElementById("progressFill");
+  var STORAGE_KEY = "ttc-ccorp-checklist-v1";
+
+  function loadDone(){
+    try { var raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : {}; }
+    catch(e){ return {}; }
+  }
+  function saveDone(done){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(done)); } catch(e){}
+  }
+  var done = loadDone();
+
+  function totalItems(){
+    return PHASES.reduce(function(n, p){ return n + p.items.length; }, 0);
+  }
+  function doneCount(){
+    var n = 0;
+    PHASES.forEach(function(p, pi){ p.items.forEach(function(it, ii){ if (done[pi+"-"+ii]) n++; }); });
+    return n;
+  }
+  function updateProgress(){
+    var total = totalItems(), filed = doneCount();
+    progressLabel.textContent = filed + " / " + total + " done";
+    progressFill.style.width = (total ? (filed/total*100) : 0) + "%";
+  }
+  function phaseDone(pi, items){
+    var n = 0;
+    items.forEach(function(it, ii){ if (done[pi+"-"+ii]) n++; });
+    return n;
+  }
+
+  function render(){
+    phasesEl.innerHTML = PHASES.map(function(phase, pi){
+      var itemsHtml = phase.items.map(function(it, ii){
+        var key = pi + "-" + ii;
+        var checked = !!done[key];
+        return '' +
+        '<li class="item' + (checked ? ' checked' : '') + '" data-key="' + key + '">' +
+          '<input type="checkbox" ' + (checked ? 'checked' : '') + ' aria-label="Mark done" />' +
+          '<div class="body"><div class="t">' + it.t + '</div>' + (it.d ? '<div class="d">' + it.d + '</div>' : '') + '</div>' +
+        '</li>';
+      }).join("");
+      return '' +
+      '<section class="phase">' +
+        '<div class="phase-head"><h2>' + (pi+1) + '. ' + phase.name + '</h2><span class="phase-progress">' + phaseDone(pi, phase.items) + '/' + phase.items.length + '</span></div>' +
+        '<p class="phase-lede">' + phase.lede + '</p>' +
+        '<ul class="items">' + itemsHtml + '</ul>' +
+      '</section>';
+    }).join("");
+
+    Array.prototype.forEach.call(phasesEl.querySelectorAll(".item"), function(row){
+      var cb = row.querySelector("input[type=checkbox]");
+      cb.addEventListener("change", function(){
+        var key = row.getAttribute("data-key");
+        if (cb.checked) { done[key] = true; } else { delete done[key]; }
+        saveDone(done);
+        render();
+        updateProgress();
+      });
+    });
+  }
+
+  document.getElementById("resetProgress").addEventListener("click", function(){
+    done = {};
+    saveDone(done);
+    render();
+    updateProgress();
+  });
+
+  render();
+  updateProgress();
+})();
+</script>
