@@ -40,7 +40,6 @@ There are three different ways to get from "LLC" to "C-corp," and they are not i
 - **Registered office / agent**: needs an actual PA street address (no PO box) and a named registered agent.
 - **Initial directors/officers**: placeholder assumes the current LLC members become the initial director(s); officer titles need to be assigned.
 - **Regulated-entity approval**: Pennsylvania's Statement of Conversion form (DSCB:15-355) flags that a conversion involving a regulated entity may need a government agency's prior approval. Worth confirming directly with PA DOS whether the PA OTP tobacco license triggers this before filing.
-- **Sequencing with the multi-state tobacco compliance work**: The Tobacco Center has a 43-state cigar-shipping registration plan in progress (separate project, see the Registration Playbook and Compliance Atlas in this repo). Several of those state filings require proof of an active PA tobacco license held by the filing entity. Recommend completing the entity conversion and re-licensing the PA tobacco permit under the new corporate name **before** starting those state filings, to avoid filing 43 states under the LLC's name and then redoing them.
 
 ## Filing mechanics already confirmed (as of this pull date)
 
